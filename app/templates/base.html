@@ -1,0 +1,48 @@
+{% extends "bootstrap.html" %}
+
+{% block title %}SmartHub{% endblock %}
+
+{% block style %}
+body {
+    font-family: arial, verdana, sans-serif;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: #5A5A5A;
+    margin-top: 35px;
+    margin-bottom: 35px;
+    height: auto;
+    min-height: 100%;
+    overflow-x:hidden;
+}
+.nav {
+    background-color: #464646;
+}
+.nav > li > a {
+    padding: 10px 20px;
+}
+.nav-pills > li.active > a,
+.nav-pills > li.active > a:hover,
+.nav-pills > li.active > a:focus {
+    background-color: #00A0B4;
+}
+{% endblock %}
+
+{% block navbar %}
+<ul class="nav nav-pills navbar-fixed-bottom">
+    <li class="active"><a href="/">状态</a></li>
+    <li><a href="/devices">设备</a></li>
+    <li><a href="/crontab">定时</a></li>
+</ul>
+{% endblock %}
+
+{% block footer %}
+<br>
+<div class="row" style="color: #fff;">
+    <footer>
+        <div>
+            <p>Copyright © 2017-2018 WYU SmartHub. All Rights Reserved.</p>
+        </div>
+    </footer>
+</div>
+{% endblock %}
