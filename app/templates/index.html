@@ -3,60 +3,67 @@
 {% block style %}
 {{ super() }}
 .toggle {
-	position: relative;
-	display: block;
-	margin: 0 auto;
-	width: 95px;
-	height: 35px;
-	color: white;
-	outline: 0;
-	text-decoration: none;
-	border-radius: 100px;
-	border: 2px solid #AAAAAA;
-	background-color: #464646;
-	transition: all 300ms;
+  position: relative;
+  display: block;
+  margin: 0 auto;
+  width: 95px;
+  height: 35px;
+  color: white;
+  outline: 0;
+  text-decoration: none;
+  border-radius: 100px;
+  border: 2px solid #AAAAAA;
+  background-color: #464646;
+  transition: all 300ms;
 }
+
 .toggle:active {
-	background-color: #1c2429;
+  background-color: #1c2429;
 }
+
 .toggle:hover:not(.toggle--moving):after {
-	background-color: #282828;
+  background-color: #282828;
 }
+
 .toggle:after {
-	display: block;
-	position: absolute;
-	top: 3px;
-	bottom: 3px;
-	left: 3px;
-	width: calc(50% - 3px);
-	line-height: 20px;
-	text-align: center;
-	text-transform: uppercase;
-	font-size: 15px;
-	color: white;
-	background-color: #3C3C3C;
-	border: 2px solid;
-	transition: all 300ms;
+  display: block;
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: calc(50% - 3px);
+  line-height: 20px;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 15px;
+  color: white;
+  background-color: #3C3C3C;
+  border: 2px solid;
+  transition: all 300ms;
 }
+
 .toggle--on:after {
-	content: '开';
-	border-radius: 50px 5px 5px 50px;
-	color: #66C56F;
+  content: '开';
+  border-radius: 50px 5px 5px 50px;
+  color: #66C56F;
 }
+
 .toggle--off:after {
-	content: '关';
-	border-radius: 5px 50px 50px 5px;
-	transform: translate(100%, 0);
-	color: #f44336;
+  content: '关';
+  border-radius: 5px 50px 50px 5px;
+  transform: translate(100%, 0);
+  color: #f44336;
 }
+
 .toggle--moving {
-	background-color: #323232;
+  background-color: #323232;
 }
+
 .toggle--moving:after {
-	color: transparent;
-	border-color: #435862;
-	background-color: #222c31;
-	transition: color 0s, transform 300ms, border-radius 300ms, background-color 300ms;
+  color: transparent;
+  border-color: #435862;
+  background-color: #222c31;
+  transition: color 0s, transform 300ms, border-radius 300ms, background-color 300ms;
 }
 {% endblock %}
 
@@ -67,8 +74,8 @@
 
     <!--echart-->
     <div id="VA" class="row">
-        <div id="V" class="col-sm-6 col-sm-offset-2" style="width: 325px;height: 325px;"></div>
-        <div id="A" class="col-sm-6 col-sm-offset-1" style="width: 325px;height: 325px;"></div>
+        <div id="V" class="col-sm-6 col-sm-offset-2" style="width: 320px;height: 320px;"></div>
+        <div id="A" class="col-sm-6 col-sm-offset-1" style="width: 320px;height: 320px;"></div>
     </div>
 
     <!--total-->
@@ -85,166 +92,225 @@
 {% endblock %}
 
 {% block script %}
-$(document).ready(function() {
+{{ super() }}
+  // 排插是否上线
+  $.ajax({
+    url: '/hub/online',
+    type: 'GET',
+    success: function(data) {
+      var hub_online = data.online;
 
-    $('.toggle').click(function(e) {
+      if (hub_online == false) {
+        $('.toggle').removeClass('toggle--on');
+        $('.toggle').addClass('toggle--off');
+        alert('排插已下线');
+      }
+      // 排插开关
+      $('.toggle').click(function(e) {
         var toggle = this;
 
         e.preventDefault();
 
-        $(toggle).toggleClass('toggle--on')
-        .toggleClass('toggle--off')
-        .addClass('toggle--moving');
+        $.ajax({
+          url: '/hub/online',
+          type: 'GET',
+          success: function(data) {
+            if (data.online == false) {
+              alert('排插已下线');
+            } else { // 排插上线才能控制
+              $(toggle).toggleClass('toggle--on')
+                .toggleClass('toggle--off')
+                .addClass('toggle--moving');
 
-        $(".toggle").attr("class",function(i,origValue){
-            if('toggle--on' == origValue.split(' ')[1]){
-                    alert('open');
+              setTimeout(function() {
+                $(toggle).removeClass('toggle--moving');
+              }, 200);
+
+              // 发送开关命令
+              /*
+                $(".toggle").attr("class",function(i,origValue){
+                    if('toggle--on' == origValue.split(' ')[1]){
+                        $.ajax({
+                            url: '/hub/open',
+                            type: 'GET',
+                            success: function(data) {
+                                alert(data.cmd_status);
+                            }
+                        });
+                    }
+                    else{
+                        $.ajax({
+                            //url: '/hub/close',
+                            type: 'GET',
+                            success: function(data) {
+                                alert(data.cmd_status);
+                            }
+                        });
+                    }
+                  });
+                  */
             }
-            else{
-                alert('close');
-            }
-          });
+          }
+        });
+      });
 
-        setTimeout(function() {
-            $(toggle).removeClass('toggle--moving');
-        }, 200);
-    });
-
-    var Vechart = echarts.init(document.getElementById('V'));
-    var Aechart = echarts.init(document.getElementById('A'));
-    var refresh_rate = 1000;
-    Voption = {
+      // 图表
+      var Vechart = echarts.init(document.getElementById('V'));
+      var Aechart = echarts.init(document.getElementById('A'));
+      var refresh_rate = 2000;
+      Voption = {
         tooltip: {
-        formatter: "{b} : {c}V"
-    },
-    series: [{
-        type: 'gauge',
-        min: 0,
-        max: 300,
-        axisLine: { // 坐标轴线
+          formatter: "{b} : {c}V"
+        },
+        series: [{
+          type: 'gauge',
+          min: 0,
+          max: 300,
+          axisLine: { // 坐标轴线
             lineStyle: { // 属性lineStyle控制线条样式
-                color: [[0.09, 'lime'],
-                        [0.82, '#1e90ff'],
-                        [1, '#ff4500']],
-                width: 3,
-                shadowColor: '#000',
-                shadowBlur: 10
+              color: [
+                [0.09, 'lime'],
+                [0.82, '#1e90ff'],
+                [1, '#ff4500']
+              ],
+              width: 3,
+              shadowColor: '#000',
+              shadowBlur: 10
             }
-        },
-        axisLabel: { // 坐标轴小标记
+          },
+          axisLabel: { // 坐标轴小标记
             textStyle: { // 属性lineStyle控制线条样式
-                fontWeight: 'bolder',
-                color: '#fff',
-                shadowColor: '#000',
-                shadowBlur: 10
+              fontWeight: 'bolder',
+              color: '#fff',
+              shadowColor: '#000',
+              shadowBlur: 10
             }
-        },
-        axisTick: { // 坐标轴小标记
+          },
+          axisTick: { // 坐标轴小标记
             length: 15, // 属性length控制线长
             lineStyle: { // 属性lineStyle控制线条样式
-                color: 'auto',
-                shadowColor: '#000',
-                shadowBlur: 10
+              color: 'auto',
+              shadowColor: '#000',
+              shadowBlur: 10
             }
-        },
-        splitLine: { // 分隔线
+          },
+          splitLine: { // 分隔线
             length: 25, // 属性length控制线长
             lineStyle: { // 属性lineStyle（详见lineStyle）控制线条样式
-                width: 3,
-                color: '#fff',
-                shadowBlur: 10
+              width: 3,
+              color: '#fff',
+              shadowBlur: 10
             }
-        },
-        title: {
+          },
+          title: {
             textStyle: { // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-                fontWeight: 'bolder',
-                fontSize: 25,
-                fontStyle: 'Microsoft YaHei',
-                color: '#fff',
-                shadowColor: '#000',
-                shadowBlur: 10
+              fontWeight: 'bolder',
+              fontSize: 25,
+              fontStyle: 'Microsoft YaHei',
+              color: '#fff',
+              shadowColor: '#000',
+              shadowBlur: 10
             }
-        },
-        detail: {
+          },
+          detail: {
             formatter: '{value}V',
             fontSize: 17
-        },
-        data: [{
-                value: 0,
-                name: '实时电压'
-            }]
+          },
+          data: [{
+            value: 0,
+            name: '实时电压'
+          }]
         }]
-    };
-    Aoption = {
+      };
+      Aoption = {
         tooltip: {
-            formatter: "{b} : {c}A"
-    },
-    series: [{
-        type: 'gauge',
-        min: 0,
-        max: 10,
-        axisLine: { // 坐标轴线
+          formatter: "{b} : {c}A"
+        },
+        series: [{
+          type: 'gauge',
+          min: 0,
+          max: 10,
+          axisLine: { // 坐标轴线
             lineStyle: { // 属性lineStyle控制线条样式
-            color: [[0.09, 'lime'],
-                    [0.82, '#1e90ff'],
-                    [1, '#ff4500']],
-                width: 3,
-                shadowColor: '#000',
-                shadowBlur: 10
+              color: [
+                [0.09, 'lime'],
+                [0.82, '#1e90ff'],
+                [1, '#ff4500']
+              ],
+              width: 3,
+              shadowColor: '#000',
+              shadowBlur: 10
             }
-        },
-        axisLabel: { // 坐标轴小标记
+          },
+          axisLabel: { // 坐标轴小标记
             textStyle: { // 属性lineStyle控制线条样式
-                fontWeight: 'bolder',
-                color: '#fff',
-                shadowColor: '#000',
-                shadowBlur: 10
+              fontWeight: 'bolder',
+              color: '#fff',
+              shadowColor: '#000',
+              shadowBlur: 10
             }
-        },
-        axisTick: { // 坐标轴小标记
+          },
+          axisTick: { // 坐标轴小标记
             length: 15, // 属性length控制线长
             lineStyle: { // 属性lineStyle控制线条样式
-                color: 'auto',
-                shadowColor: '#000',
-                shadowBlur: 10
+              color: 'auto',
+              shadowColor: '#000',
+              shadowBlur: 10
             }
-        },
-        splitLine: { // 分隔线
+          },
+          splitLine: { // 分隔线
             length: 25, // 属性length控制线长
             lineStyle: { // 属性lineStyle（详见lineStyle）控制线条样式
-                width: 3,
-                color: '#fff',
-                shadowBlur: 10
+              width: 3,
+              color: '#fff',
+              shadowBlur: 10
             }
-        },
-        title: {
+          },
+          title: {
             textStyle: { // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-                fontWeight: 'bolder',
-                fontSize: 25,
-                fontStyle: 'Microsoft YaHei',
-                color: '#fff',
-                shadowColor: '#000',
-                shadowBlur: 10
+              fontWeight: 'bolder',
+              fontSize: 25,
+              fontStyle: 'Microsoft YaHei',
+              color: '#fff',
+              shadowColor: '#000',
+              shadowBlur: 10
             }
-        },
-        detail: {
+          },
+          detail: {
             formatter: '{value}A',
             fontSize: 17
-        },
-        data: [{
+          },
+          data: [{
             value: 0,
             name: '实时电流'
-            }]
+          }]
         }]
-    };
-    Vechart.setOption(Voption, true);
-    Aechart.setOption(Aoption, true);
+      };
+      Vechart.setOption(Voption, true);
+      Aechart.setOption(Aoption, true);
 
-    setInterval(function() {
-        Voption.series[0].data[0].value = (Math.random() * 50).toFixed(2) - 0;
-        Aoption.series[0].data[0].value = (Math.random() * 5).toFixed(2) - 0;
-        Vechart.setOption(Voption, true);
-        Aechart.setOption(Aoption, true);
-    }, refresh_rate);
+      // 排插上线才刷新
+      if (hub_online == ture) {
+        setInterval(function() {
+          $.ajax({
+            url: '/api/va/v',
+            type: 'GET',
+            success: function(data) {
+              Voption.series[0].data[0].value = (data.value).toFixed(2) - 0;
+              Vechart.setOption(Voption, true);
+            }
+          });
+          $.ajax({
+            url: '/api/va/a',
+            type: 'GET',
+            success: function(data) {
+              Aoption.series[0].data[0].value = (data.value).toFixed(2) - 0;
+              Vechart.setOption(Aoption, true);
+            }
+          });
+        }, refresh_rate);
+      }
+    }
+  });
 });
 {% endblock %}
