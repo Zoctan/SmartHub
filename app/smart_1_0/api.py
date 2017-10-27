@@ -4,7 +4,6 @@
 from flask import jsonify, request
 from . import smart
 import pickle
-import json
 import requests
 import time
 from ..models import *
@@ -14,10 +13,10 @@ from ..models import *
 def v_a(which):
     if which == 'v':
         with open('/tmp/onenet_v', 'rb') as f:
-            now_data_dict = json.loads(pickle.load(f).decode())
+            now_data_dict = pickle.load(f).decode()
     else:
         with open('/tmp/onenet_a', 'rb') as f:
-            now_data_dict = json.loads(pickle.load(f).decode())
+            now_data_dict = pickle.load(f).decode()
     return jsonify({'key': now_data_dict['msg']['ds_id'],
                     'value': now_data_dict['msg']['value']})
 

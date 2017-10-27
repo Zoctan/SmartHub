@@ -21,11 +21,10 @@ def onenet():
             if base64.b64encode(tmp.digest()).decode() == signature:
                 return msg
     if request.method == 'POST':
-        print(request.json)
         if request.json['msg']['ds_id'] == 'Humidity':  # !
             with open('/tmp/onenet_v', 'wb') as f:
                 pickle.dump(request.data, f)
-        else:
+        elif request.json['msg']['ds_id'] == 'Temperature':
             with open('/tmp/onenet_a', 'wb') as f:
                 pickle.dump(request.data, f)
         return 'well'
