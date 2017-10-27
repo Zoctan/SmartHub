@@ -305,7 +305,7 @@
             type: 'GET',
             success: function(data) {
               Aoption.series[0].data[0].value = (data.value).toFixed(2) - 0;
-              Vechart.setOption(Aoption, true);
+              Aechart.setOption(Aoption, true);
             }
           });
         }, refresh_rate);
