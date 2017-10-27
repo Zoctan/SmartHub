@@ -23,10 +23,10 @@ def onenet():
     if request.method == 'POST':
         if request.json['msg']['ds_id'] == 'Humidity':  # !
             with open('/tmp/onenet_v', 'wb') as f:
-                pickle.dump(request.data, f)
+                pickle.dump(request.json, f)
         elif request.json['msg']['ds_id'] == 'Temperature':
             with open('/tmp/onenet_a', 'wb') as f:
-                pickle.dump(request.data, f)
+                pickle.dump(request.json, f)
         return 'well'
     return 'error'
 
