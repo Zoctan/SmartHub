@@ -13,10 +13,10 @@ from ..models import *
 def v_a(which):
     if which == 'v':
         with open('/tmp/onenet_v', 'rb') as f:
-            now_data_dict = pickle.load(f).decode()
+            now_data_dict = pickle.load(f)
     else:
         with open('/tmp/onenet_a', 'rb') as f:
-            now_data_dict = pickle.load(f).decode()
+            now_data_dict = pickle.load(f)
     return jsonify({'key': now_data_dict['msg']['ds_id'],
                     'value': now_data_dict['msg']['value']})
 
