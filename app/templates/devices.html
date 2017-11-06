@@ -16,7 +16,7 @@
   border-color: #00A0B4;
 }
 .navbar-default .navbar-toggle .icon-bar {
-  background-color: #FAFAFA;
+  background-color: #FFFFFF;
 }
 .navbar-toggle {
   padding: 7px 8px;
@@ -48,15 +48,15 @@
         <div class="row">
         {% endif %}
         <div class="col-md-6">
-          <div style="background-color: #FAFAFA; margin-bottom: 15px;">
+          <div style="background-color: #FFFFFF; margin-bottom: 15px;">
             <nav class="navbar navbar-default" role="navigation">
               <div class="container-fluid">
                 <div class="navbar-header">
                   <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#modify-navbar-collapse{{ device.id }}">
-                                            <span class="sr-only">切换导航</span>
-                                            <span class="icon-bar"></span>
-                                            <span class="icon-bar"></span>
-                                        </button>
+                        <span class="sr-only">切换导航</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
                   <a id="name{{ device.id }}" class="navbar-brand" href="#" style="color: #ffffff;">{{ device.name }}</a>
                 </div>
                 <div class="collapse navbar-collapse" id="modify-navbar-collapse{{ device.id }}">
@@ -67,11 +67,11 @@
                 </div>
               </div>
             </nav>
-            <div style="background-color: #FAFAFA; margin-bottom: 20px;">
-              <img src="{{ url_for('static', filename='default.png')}}" class="img-circle" style="width: 30%; height: 30%;margin:0 auto">
+            <div style="margin-bottom: 10px;">
+                <span style="font-size: 120px; color: #5cae4c; padding-top: 8px" class="glyphicon glyphicon-tower"></span>
             </div>
             <div style="border-style:solid; border-bottom: 1px #5A5A5A;"></div>
-            <div style="height: 30px; background-color: #FAFAFA; padding-top: 3px;">
+            <div style="height: 30px; padding-top: 3px;">
               <span class="label label-info">信息标签</span>
               <span class="label label-warning">警告标签</span>
               <span class="label label-danger">危险标签</span>

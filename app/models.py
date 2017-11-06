@@ -9,7 +9,6 @@ class Device(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Unicode(256, collation='utf8_bin'), nullable=False)
     picture = db.Column(db.Text)
-    crontab = db.Column(db.Text)
 
     @staticmethod
     def insert_default_data():
@@ -25,8 +24,7 @@ class Device(db.Model):
         json = {
             'id': self.id,
             'name': self.name,
-            'picture': self.picture,
-            'crontab': self.crontab
+            'picture': self.picture
         }
         return json
 

@@ -1,17 +1,173 @@
 {% extends "base.html" %}
 
+{% block styles %}
+{{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/timedropper.css') }}">
+{% endblock %}
+
 {% block style %}
 {{ super() }}
+.navbar-brand {
+  height: 20px;
+  font-size: 15px;
+  line-height: 5px;
+}
 
+.navbar-default {
+  background-color: #464646;
+  border-color: #464646;
+}
+.navbar-default .navbar-toggle {
+  border-color: #00A0B4;
+}
+.navbar-default .navbar-toggle .icon-bar {
+  background-color: #FAFAFA;
+}
+.navbar-toggle {
+  padding: 7px 8px;
+  margin-top: 5px;
+  margin-bottom: 2px;
+}
+
+.navbar {
+  min-height: 38px;
+}
+
+.navbar-nav {
+  margin: 5px;
+}
+
+.navbar-nav>li>a {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  line-height: 15px;
+}
 {% endblock %}
 
 {% block content %}
 <div class="container">
-lll
+  <div id="main_row" class="row">
+    <div class="col-md-12">
+      <form role="form" action="#">
+        <div class="row form-group">
+
+      {% for crontab in crontabs %}
+          <div class="col-md-6" style="margin-bottom: 30px;">
+            <div style="background-color: #464646;">
+              <div class="container-fluid" style="height: 40px">
+                <div class="accordion" id="accordion_{{ crontab.id }}">
+                  <div class="accordion-group">
+                    <div class="accordion-heading">
+                      <a href="#collapse_{{ crontab.id }}" class="accordion-toggle" data-toggle="collapse" data-parent="#accordion_{{ crontab.id }}" style="color: #FFFFFF;text-decoration:none;">
+                        <h4 style="font-size: 16px">{{ crontab.name }}</h4>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div id="collapse_{{ crontab.id }}" class="accordion-body collapse in" style="background-color: #FAFAFA">
+                <div style="height: 130px">
+                  <div style="padding-top: 20px">
+                    <div class="row">
+                      <div class="col-xs-6" style="padding-top: 8px">
+                        {% if crontab.id == "power_on" %}
+                        <span style="font-size: 70px; color: #00A0FA" class="glyphicon glyphicon-off"></span>
+                        {% else %}
+                        <span style="font-size: 70px" class="glyphicon glyphicon-off"></span>
+                        {% endif %}
+                      </div>
+                      <div class="col-xs-4">
+                        <div class="form-group">
+                          <select id="{{ crontab.id }}_select" class="text-center" style="font-size: 18px">
+                                  <option>每天</option>
+                                  <option>每周</option>
+                                  <option>一次</option>
+                                </select>
+                        </div>
+                        <div class="form-group">
+                          <input id="{{ crontab.id }}_alarm" class="text-center" type="text" style="font-size: 18px" size="8" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      {% endfor %}
+
+        </div>
+        <div class="form-group">
+          <button id="submit" class="btn btn-success form-control" type="submit">确认</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+    <script src="{{ url_for('static', filename='js/timedropper.js')}}"></script>
 {% endblock %}
 
 {% block script %}
 {{ super() }}
+    $( "#power_on_alarm" ).timeDropper();
+    $( "#power_off_alarm" ).timeDropper();
+
+    // 确认
+    $("#submit").click(function() {
+
+    var power_on_alarm_val = $( "#power_on_alarm" ).val().split(":");
+    var power_on_hour = power_on_alarm_val[0];
+    var power_on_minute = power_on_alarm_val[1].split(" ")[0];
+    var power_on_repeat = $( "#power_on_select" ).val();
+    alert(power_on_repeat);
+
+    var power_off_alarm_val = $( "#power_off_alarm" ).val().split(":");
+    var power_off_hour = power_off_alarm_val[0];
+    var power_off_minute = power_off_alarm_val[1].split(" ")[0];
+    var power_off_repeat = $( "#power_off_select" ).val();
+
+    /*
+    */
+      $.ajax({
+        type: "post",
+        url: '/crontabs',
+        async: false,
+        // 1 需要使用JSON.stringify 否则格式为 a=2&b=3&now=14...
+        // 2 需要强制类型转换，否则格式为 {"a":"2","b":"3"}
+        data: JSON.stringify({
+          on: [power_on_hour, power_on_minute],
+          off: [power_off_hour, power_off_minute]
+        }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        beforeSend: function() {
+          // loading
+          $("div[id=main_row]").append("<div class='spinner'></div>");
+          // 禁用按钮防止重复提交
+          $("#submit").attr('disabled', "disabled");
+        },
+        success: function(data) {
+          if (data.msg == "ok") {
+            $("div[id=main_row]").append("<p id='ajax_info' style='color: #FFFFFF'>成功</p>");
+
+          } else {
+            $("div[id=main_row]").append("<p id='ajax_info' style='color: #FFFFFF'>" + data.error + "</p>");
+          }
+        },
+        complete: function() {
+          $("#submit").removeAttr("disabled");
+          $(".spinner").fadeOut("slow");
+          $("#ajax_info").fadeOut(2000);
+        },
+        error: function(data) {
+          console.info("error: " + data.responseText);
+        }
+      });
+
+    });
   });
 {% endblock %}
