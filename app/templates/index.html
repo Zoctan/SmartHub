@@ -93,6 +93,7 @@
 
 {% block script %}
 {{ super() }}
+
   // 排插是否上线
   $.ajax({
     url: '/hub/online',
@@ -153,8 +154,7 @@
           }
         });
       });
-
-      // 图表
+    // 图表
       var Vechart = echarts.init(document.getElementById('V'));
       var Aechart = echarts.init(document.getElementById('A'));
       var refresh_rate = 2000;
@@ -289,7 +289,7 @@
       Vechart.setOption(Voption, true);
       Aechart.setOption(Aoption, true);
 
-      // 排插上线才刷新
+      // 排插上线才刷新图表
       if (hub_online == true) {
         setInterval(function() {
           $.ajax({

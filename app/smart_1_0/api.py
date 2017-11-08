@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from flask import jsonify, request
+from flask import jsonify
 from . import smart
-from .common import is_found
-from ..models import *
 import pickle
 import requests
 import time
-import re
 
 
 @smart.route('/api/va/<which>', methods=['GET'])
@@ -52,59 +49,3 @@ def hub_turn_on_or_off(status):
     cmd_response = requests.get(cmd_res_url, headers=headers)
     return jsonify({'cmd_status': query_response.json()['data']['desc'],
                     'text': cmd_response.text})
-
-
-@smart.route('/devices/name/<old_name>', methods=['POST'])
-def modify_device_name(old_name):
-    name = request.json.get('name')
-    device = Device.query.filter_by(name=old_name).first()
-    device.name = name
-    try:
-        db.session.commit()
-        return jsonify({'msg': 'ok', 'result': device.to_json()})
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'msg': 'no', 'error': str(e)})
-    finally:
-        db.session.remove()
-
-
-def process_crontab(key_word, task):
-    crontab = '/etc/crontab'
-    if is_found(crontab, key_word):
-        if not is_found(crontab, task):
-            # replace crontab
-            with open(crontab, 'w') as f:
-                lines = f.readlines()
-                for i in range(len(lines)):
-                    if re.findall(key_word, lines[i]):
-                        lines[i] = task
-                        f.writelines(lines)
-                        break
-    else:
-        if task:
-            # write crontab
-            with open(crontab, 'w') as f:
-                f.write(task)
-
-
-@smart.route('/crontabs', methods=['POST'])
-def set_crontabs():
-    power_on = request.json.get('on')
-    power_off = request.json.get('off')
-    print(power_on)
-    if power_on[0] is None:
-        power_on = None
-    else:
-        minute = power_on[1]
-        hour = power_on[0]
-        day = ''
-        month = ''
-        week = ''
-        user = 'root'
-        command = 'curl smart.txdna.cn/hub/on'
-        power_on = '{} {}	{} {} {}	{}    {}'.format(
-                minute, hour, day, month, week, user, command)
-    time.sleep(0.5)
-    #process_crontab('/hub/on', power_on)
-    return jsonify({'msg': 'ok', 'result': 'ok'})

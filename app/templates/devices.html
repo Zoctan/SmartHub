@@ -112,54 +112,56 @@
 
 {% block script %}
 {{ super() }}
-    var old_name = null;
-    $("[class^='myModal_']").click(function() {
-      $('#myModal').modal('toggle');
-      old_name = $(this).attr('id');
-      $('#modify_name').attr('placeholder', old_name);
-    });
+var old_name = null;
+$("[class^='myModal_']").click(function() {
+  $('#myModal').modal('toggle');
+  old_name = $(this).attr('id');
+  $('#modify_name').attr('placeholder', old_name);
+});
 
-    $('#myModal').on('hide.bs.modal', function() {
-      //清空输入框
-      $("input[type=reset]").trigger("click");
-      $("#ajax_info").fadeOut("slow");
-    })
-    // 修改
-    $("#submit_name").click(function() {
-      $.ajax({
-        type: "post",
-        url: '/devices/name/' + old_name,
-        async: false,
-        // 1 需要使用JSON.stringify 否则格式为 a=2&b=3&now=14...
-        // 2 需要强制类型转换，否则格式为 {"a":"2","b":"3"}
-        data: JSON.stringify({
-          name: $("#modify_name").val(),
-        }),
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-        beforeSend: function() {
-          // loading
-          $("div[class=modal-footer]").append("<div class='spinner'></div>");
-          // 禁用按钮防止重复提交
-          $("#submit_name").attr('disabled', "disabled");
-        },
-        success: function(data) {
-          if (data.msg == "ok") {
-            $("div[class=modal-footer]").append("<h4 id='ajax_info'>修改成功</h4>");
-            $('#name' + data.result.id).text(data.result.name);
-            $('#' + old_name).attr('id', data.result.name);
-          } else {
-            $("div[class=modal-footer]").append("<h4 id='ajax_info'>" + data.error + "</h4>");
-          }
-        },
-        complete: function() {
-          $("#submit_name").removeAttr("disabled");
-          $(".spinner").fadeOut("slow");
-        },
-        error: function(data) {
-          console.info("error: " + data.responseText);
-        }
-      });
-    });
+$('#myModal').on('hide.bs.modal', function() {
+  //清空输入框
+  $("input[type=reset]").trigger("click");
+  $("#ajax_info").fadeOut("slow");
+})
+// 修改
+$("#submit_name").click(function() {
+  $.ajax({
+    type: "post",
+    url: '/devices/name/' + old_name,
+    async: false,
+    // 1 需要使用JSON.stringify 否则格式为 a=2&b=3&now=14...
+    // 2 需要强制类型转换，否则格式为 {"a":"2","b":"3"}
+    data: JSON.stringify({
+      name: $("#modify_name").val(),
+    }),
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    beforeSend: function() {
+      // loading
+      $("div[class=modal-footer]").append("<div class='spinner'></div>");
+      // 禁用按钮防止重复提交
+      $("#submit_name").attr('disabled', "disabled");
+    },
+    success: function(data) {
+      if (data.msg == "ok") {
+        $("div[class=modal-footer]").append("<h4 class='ajax_info'>修改成功</h4>");
+        $('#name' + data.result.id).text(data.result.name);
+        $('#' + old_name).attr('id', data.result.name);
+      } else {
+        $("div[class=modal-footer]").append("<h4 class='ajax_info'>" + data.error + "</h4>");
+      }
+    },
+    complete: function() {
+      $("#submit_name").removeAttr("disabled");
+      $(".ajax_info").fadeOut(3000);
+      $(".spinner").fadeOut(3000);
+      $('#myModal').modal('toggle');
+    },
+    error: function(data) {
+      console.info("error: " + data.responseText);
+    }
+  });
+});
 });
 {% endblock %}

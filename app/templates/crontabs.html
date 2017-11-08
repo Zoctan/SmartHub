@@ -42,25 +42,107 @@
   padding-bottom: 5px;
   line-height: 15px;
 }
+
+/*=====================*/
+.toggle_on_off {
+  position: relative;
+  display: inline-block;
+}
+.toggle_on_off:after, .toggle_on_off:before {
+  font-family: FontAwesome;
+  -webkit-font-feature-settings: normal;
+     -moz-font-feature-settings: normal;
+          font-feature-settings: normal;
+  -webkit-font-kerning: auto;
+     -moz-font-kerning: auto;
+          font-kerning: auto;
+  -webkit-font-language-override: normal;
+     -moz-font-language-override: normal;
+          font-language-override: normal;
+  font-stretch: normal;
+  font-style: normal;
+  font-synthesis: weight style;
+  font-variant: normal;
+  font-weight: normal;
+  text-rendering: auto;
+}
+.toggle_on_off label {
+  width: 68px;
+  height: 30px;
+  background: #ccc;
+  position: relative;
+  display: inline-block;
+  border-radius: 46px;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+.toggle_on_off label:after {
+  content: '';
+  position: absolute;
+  width: 50px;
+  height: 30px;
+  border-radius: 100%;
+  left: 0;
+  top: -5px;
+  z-index: 2;
+  background: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+.toggle_on_off input {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  opacity: 0;
+  cursor: pointer;
+}
+.toggle_on_off input:hover + label:after {
+  box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.2), 0 3px 8px 0 rgba(0, 0, 0, 0.15);
+}
+.toggle_on_off input:checked + label:after {
+  left: 50px;
+}
 {% endblock %}
 
 {% block content %}
 <div class="container">
   <div id="main_row" class="row">
     <div class="col-md-12">
-      <form role="form" action="#">
+      <form role="form" action="#" autocomplete="off">
         <div class="row form-group">
 
-      {% for crontab in crontabs %}
+          {% for crontab in crontabs %}
           <div class="col-md-6" style="margin-bottom: 30px;">
             <div style="background-color: #464646;">
               <div class="container-fluid" style="height: 40px">
                 <div class="accordion" id="accordion_{{ crontab.id }}">
                   <div class="accordion-group">
                     <div class="accordion-heading">
+                      <!--
                       <a href="#collapse_{{ crontab.id }}" class="accordion-toggle" data-toggle="collapse" data-parent="#accordion_{{ crontab.id }}" style="color: #FFFFFF;text-decoration:none;">
                         <h4 style="font-size: 16px">{{ crontab.name }}</h4>
                       </a>
+                        -->
+
+                      <div class="col-xs-9">
+                        <div style="color: #FFFFFF; padding-top: 3px;padding-left: 70px">
+                          <h4 style="font-size: 16px">{{ crontab.name }}</h4>
+                        </div>
+                      </div>
+
+                      <div class="col-xs-2">
+                        <div class="spinner2" style="padding-top: 8px">
+                          <div class="toggle_on_off">
+                            <input id="spinner2_{{ crontab.id }}" type="checkbox" {{ crontab.status }} />
+                            <label></label>
+                          </div>
+                        </div>
+                      </div>
+
                     </div>
                   </div>
                 </div>
@@ -69,23 +151,29 @@
                 <div style="height: 130px">
                   <div style="padding-top: 20px">
                     <div class="row">
-                      <div class="col-xs-6" style="padding-top: 8px">
+                      <div class="col-xs-6" style="padding-top: 10px">
                         {% if crontab.id == "power_on" %}
-                        <span style="font-size: 70px; color: #00A0FA" class="glyphicon glyphicon-off"></span>
-                        {% else %}
-                        <span style="font-size: 70px" class="glyphicon glyphicon-off"></span>
-                        {% endif %}
+                        <span style="font-size: 70px; color: #00A0FA" class="glyphicon glyphicon-off"></span> {% else %}
+                        <span style="font-size: 70px" class="glyphicon glyphicon-off"></span> {% endif %}
                       </div>
                       <div class="col-xs-4">
                         <div class="form-group">
-                          <select id="{{ crontab.id }}_select" class="text-center" style="font-size: 18px">
-                                  <option>每天</option>
-                                  <option>每周</option>
-                                  <option>一次</option>
-                                </select>
+                          <select id="select_{{ crontab.id }}" class="text-center" style="font-size: 18px">
+                                {% if crontab.status != '' %}
+                                <option>{{ crontab.repeat }}</option>
+                                {% endif %}
+                              {% for i in ['每天', '每周1-5', '一次性'] %}
+                                    {% if crontab.status != '' and i != crontab.repeat %}
+                                    <option>{{ i }}</option>
+                                  {% else %}
+                                      <option>{{ i }}</option>
+                                  {% endif %}
+                              {% endfor %}
+                              <option id="custom_{{ crontab.id }}">自定义</option>
+                            </select>
                         </div>
                         <div class="form-group">
-                          <input id="{{ crontab.id }}_alarm" class="text-center" type="text" style="font-size: 18px" size="8" />
+                          <input id="alarm_{{ crontab.id }}" class="text-center" value="{{ crontab.time }}" type="text" style="font-size: 18px" size="8" />
                         </div>
                       </div>
                     </div>
@@ -94,13 +182,34 @@
               </div>
             </div>
           </div>
-      {% endfor %}
+          {% endfor %}
 
         </div>
         <div class="form-group">
           <button id="submit" class="btn btn-success form-control" type="submit">确认</button>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" style="background-color: transparent; top: 30px; border: 0;-webkit-box-shadow: 0 0 0;box-shadow: 0 0 0;">
+
+      <form autocomplete="off">
+        <ul class="list-group">
+          {% for i in "一二三四五六日" %}
+            <li class="list-group-item" style="width: 50%">
+                <div class="checkbox">
+                    <label><input id="week_{{ loop.index }}" type="checkbox" value="{{ loop.index }}">星期{{ i }}</label>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+      </form>
+
     </div>
   </div>
 </div>
@@ -113,61 +222,150 @@
 
 {% block script %}
 {{ super() }}
-    $( "#power_on_alarm" ).timeDropper();
-    $( "#power_off_alarm" ).timeDropper();
+// 时间选择插件
+function if_alarm_null(which) {
+  if ($("#alarm_" + which).val() == "") {
+    $("#alarm_" + which).timeDropper();
+  }
+}
 
-    // 确认
-    $("#submit").click(function() {
+if_alarm_null("power_on");
+if_alarm_null("power_off");
 
-    var power_on_alarm_val = $( "#power_on_alarm" ).val().split(":");
-    var power_on_hour = power_on_alarm_val[0];
-    var power_on_minute = power_on_alarm_val[1].split(" ")[0];
-    var power_on_repeat = $( "#power_on_select" ).val();
-    alert(power_on_repeat);
+// 开启或关闭定时
+function toggle_on_off(which) {
+  if ($("#spinner2_" + which).prop("checked") == true) {
+    $("#select_" + which).removeAttr("disabled");
+    $("#alarm_" + which).removeAttr("disabled");
+  } else {
+    $("#select_" + which).attr('disabled', "disabled");
+    $("#alarm_" + which).attr('disabled', "disabled");
+  }
+}
 
-    var power_off_alarm_val = $( "#power_off_alarm" ).val().split(":");
-    var power_off_hour = power_off_alarm_val[0];
-    var power_off_minute = power_off_alarm_val[1].split(" ")[0];
-    var power_off_repeat = $( "#power_off_select" ).val();
+toggle_on_off("power_on");
+toggle_on_off("power_off");
 
-    /*
-    */
-      $.ajax({
-        type: "post",
-        url: '/crontabs',
-        async: false,
-        // 1 需要使用JSON.stringify 否则格式为 a=2&b=3&now=14...
-        // 2 需要强制类型转换，否则格式为 {"a":"2","b":"3"}
-        data: JSON.stringify({
-          on: [power_on_hour, power_on_minute],
-          off: [power_off_hour, power_off_minute]
-        }),
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-        beforeSend: function() {
-          // loading
-          $("div[id=main_row]").append("<div class='spinner'></div>");
-          // 禁用按钮防止重复提交
-          $("#submit").attr('disabled', "disabled");
-        },
-        success: function(data) {
-          if (data.msg == "ok") {
-            $("div[id=main_row]").append("<p id='ajax_info' style='color: #FFFFFF'>成功</p>");
+$("[id^='spinner2_power_']").click(function() {
+  var arr = $(this).attr('id').split("_");
+  var which = arr[1] + "_" + arr[2];
+  toggle_on_off(which);
+});
 
-          } else {
-            $("div[id=main_row]").append("<p id='ajax_info' style='color: #FFFFFF'>" + data.error + "</p>");
-          }
-        },
-        complete: function() {
-          $("#submit").removeAttr("disabled");
-          $(".spinner").fadeOut("slow");
-          $("#ajax_info").fadeOut(2000);
-        },
-        error: function(data) {
-          console.info("error: " + data.responseText);
-        }
-      });
+// 特殊处理一次性
+function if_once_alarm(which) {
+  var repeat = $("#select_" + which).val();
+  if (repeat == "一次性") {
+    var date = new Date();
+    var alarm_val = $("#alarm_" + which).val().split(":");
+    var hour = alarm_val[0];
+    var minute = alarm_val[1].split(" ")[0];
+    if (date.getHours() > hour || (date.getHours() == hour && date.getMinutes() > minute)) {
+      $("#spinner2_" + which).attr('disabled', "disabled");
+      toggle_on_off(which);
+    }
+  }
+}
+if_once_alarm("power_on");
+if_once_alarm("power_off");
 
-    });
+// 自定义定时
+$("[id^='custom_power_']").click(function() {
+  $('#myModal').modal('toggle');
+});
+
+// 获得定时值
+function get_data(which) {
+  var alarm_val = $("#alarm_" + which).val().split(":");
+  var hour = alarm_val[0];
+  var minute = alarm_val[1].split(" ")[0];
+  var repeat = $("#select_" + which).val();
+  if (repeat == "一次性") {
+    var date = new Date();
+    hour = hour - date.getHours();
+  }
+  else if (repeat == "自定义") {
+    var arr = new Array();
+    for (var i = 1; i <= $("[id^='week_']")['length']; i++) {
+      if ($("[id='week_{0}']".format(i)).prop("checked") == true) arr.push(i + '');
+    }
+    repeat = arr;
+  }
+  var data = JSON.stringify({
+    "which": which,
+    "status": $("#spinner2_" + which).prop("checked"),
+    "hour": hour,
+    "minute": minute,
+    "repeat": repeat
   });
+  return data;
+}
+
+var old_power_on = JSON.parse(get_data("power_on"));
+var old_power_off = JSON.parse(get_data("power_off"));
+
+function get_url(_new, old) {
+  var url = null;
+  if (_new.status != old.status) {
+    if (_new.status == false) url = "/crontabs/delete";
+    else url = "/crontabs/add";
+  } else {
+    if (_new.hour != old.hour || _new.minute != old.minute || _new.repeat != old.repeat) url = "/crontabs/replace";
+  }
+  return url;
+}
+
+function ajax_request(type, url, data) {
+  $.ajax({
+    type: type,
+    url: url,
+    async: false,
+    // 1 需要使用JSON.stringify 否则格式为 a=2&b=3&now=14...
+    // 2 需要强制类型转换，格式为 {"a":"2","b":"3"}
+    data: JSON.stringify(data),
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    beforeSend: function() {
+      // loading
+      $("[id=submit]").append("<div class='spinner'></div>");
+      // 禁用按钮防止重复提交
+      $("#submit").attr('disabled', "disabled");
+    },
+    success: function(data) {
+      if (data.msg == "ok") {
+        $("[id=submit]").append("<p class='ajax_info' style='color: #FFFFFF'>成功</p>");
+      } else {
+        $("[id=submit]").append("<p class='ajax_info' style='color: #FFFFFF'>" + data.error + "</p>");
+      }
+    },
+    complete: function() {
+      $("#submit").removeAttr("disabled");
+      $(".ajax_info").fadeOut(3000);
+      $(".spinner").fadeOut(3000);
+      window.location.reload();
+    },
+    error: function(data) {
+      console.info("error: " + data.responseText);
+    }
+  });
+}
+
+// 确认
+$("#submit").click(function() {
+  var arr = new Array("power_on", "power_off");
+  for (var i in arr) {
+    var url = null;
+    var data = JSON.parse(get_data(arr[i]));
+    if (arr[i] == "power_on") old = old_power_on;
+    else old = old_power_off;
+    url = get_url(data, old);
+    if (url != null) {
+      ajax_request("post", url, data);
+      if (arr[i] == "power_on") old_power_on = JSON.parse(get_data("power_on"));
+      else old_power_off = JSON.parse(get_data("power_off"));
+    }
+  }
+});
+
+});
 {% endblock %}
