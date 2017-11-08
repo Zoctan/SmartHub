@@ -6,8 +6,8 @@ from . import smart
 import time
 import subprocess
 
-# crontab = '/etc/crontab'
-crontab = '/tmp/crontab'
+crontab = '/etc/crontab'
+# crontab = '/tmp/crontab'
 
 
 def get_once():
