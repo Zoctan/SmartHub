@@ -11,7 +11,7 @@ def index():
     return render_template('index.html', id='status')
 
 
-@smart.route('/app/init', methods=['GET'])
+@smart.route('/app/db_init', methods=['GET'])
 def init():
     db.drop_all()
     db.create_all()

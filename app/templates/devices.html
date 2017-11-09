@@ -139,23 +139,22 @@ $("#submit_name").click(function() {
     dataType: "json",
     beforeSend: function() {
       // loading
-      $("div[class=modal-footer]").append("<div class='spinner'></div>");
+      $("body").append("<div class='mask'><div class='spinner' style='margin-top: 50%'></div></div>");
       // 禁用按钮防止重复提交
       $("#submit_name").attr('disabled', "disabled");
     },
     success: function(data) {
       if (data.msg == "ok") {
-        $("div[class=modal-footer]").append("<h4 class='ajax_info'>修改成功</h4>");
+        $("body").append("<div class='mask'><h4 style='color: #FFFFFF;margin-top: 60%'>修改成功</h4><div>");
         $('#name' + data.result.id).text(data.result.name);
         $('#' + old_name).attr('id', data.result.name);
       } else {
-        $("div[class=modal-footer]").append("<h4 class='ajax_info'>" + data.error + "</h4>");
+        $("body").append("<div class='mask'><h4 style='color: #FFFFFF;margin-top: 60%'>" + data.error + "</h4><div>");
       }
     },
     complete: function() {
       $("#submit_name").removeAttr("disabled");
-      $(".ajax_info").fadeOut(3000);
-      $(".spinner").fadeOut(3000);
+      $(".mask").fadeOut(3000);
       $('#myModal').modal('toggle');
     },
     error: function(data) {

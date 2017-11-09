@@ -6730,10 +6730,10 @@ button.close {
 }
 /*# sourceMappingURL=bootstrap.css.map */
 .spinner {
-  width: 45px;
-  height: 45px;
+  width: 95px;
+  height: 95px;
   margin: auto;
-  background-color: #00A0FA;
+  background-color: #00F0FA;
 
   border-radius: 100%;
   -webkit-animation: scaleout 1.0s infinite ease-in-out;
@@ -6814,4 +6814,20 @@ button.close {
   transition: all 0.4s, width 0.2s linear 0.4s, text-indent 0.3s linear 0.4s;
   width: 60px;
   text-indent: 0;
+}
+
+.mask {
+  position: absolute;
+  z-index: 9999;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  filter: alpha(opacity=30);
+  opacity: 0.5;
+  text-align: center;
+  margin: auto;
 }

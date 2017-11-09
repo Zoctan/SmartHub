@@ -3,21 +3,20 @@
 
 from flask import render_template, request, jsonify
 from . import smart
-import time
-import subprocess
+from time import sleep
+from subprocess import run, PIPE, STDOUT
 
 crontab = '/etc/crontab'
 # crontab = '/tmp/crontab'
 
 
 def get_once():
-    p = subprocess.run("""atq | awk '{print $1" "$5}' | awk -F: '{print $1" "$2}'""",
-            shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    p = run("""atq | awk '{print $1" "$5}' | awk -F: '{print $1" "$2}'""", shell=True, stdout=PIPE, stderr=STDOUT)
     id_hour_minute = p.stdout.decode().split('\n')
     crontabs = []
     for i in id_hour_minute[0:-1]:
         _id, hour, minute = i.split(' ')[0], i.split(' ')[1], i.split(' ')[2]
-        p = subprocess.run(['at', '-c', _id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        p = run(['at', '-c', _id], stdout=PIPE, stderr=STDOUT)
         am_pm = 'AM' if int(hour) < 12 else 'PM'
         _time = '{}:{} {}'.format(hour, minute, am_pm)
         if '/hub/on' in p.stdout.decode():
@@ -30,18 +29,16 @@ def get_once():
 
 
 def set_once(hour, minute, command):
-    subprocess.run(['at', 'now', '+{}minutes'.format(hour * 3600 + minute)],
-            input=command.encode(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    run(['at', 'now', '+{}minutes'.format(hour * 3600 + minute)], input=command.encode(), stdout=PIPE, stderr=STDOUT)
 
 
 def rm_once(key_word):
-    p = subprocess.run("""atq | awk '{print $1}'""",
-            shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    p = run("""atq | awk '{print $1}'""", shell=True, stdout=PIPE, stderr=STDOUT)
     _id = p.stdout.decode().split('\n')
     for i in _id[0:-1]:
-        p = subprocess.run(['at', '-c', i], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        p = run(['at', '-c', i], stdout=PIPE, stderr=STDOUT)
         if key_word in p.stdout.decode():
-            subprocess.run(['atrm', i])
+            run(['atrm', i])
 
 
 @smart.route('/crontabs', methods=['GET'])
@@ -57,17 +54,16 @@ def get_all_crontabs():
             crontabs.append({'id': i[0], 'name': i[1], 'status': '', 'time': ''})
     else:
         for i in task:
-            i = i.split(' ')
-            hour = i[1]
-            minute = i[0]
-            am_pm = 'AM' if int(hour) < 12 else 'PM'
-            _time = '{}:{} {}'.format(hour, minute, am_pm)
-            if '/hub/on' in i[-1]:
+            if '/hub/on' in i:
                 _id = 'power_on'
                 name = '定时开机'
             else:
                 _id = 'power_off'
                 name = '定时关机'
+            i = i.split(' ')
+            hour, minute = i[1], i[0]
+            am_pm = 'AM' if int(hour) < 12 else 'PM'
+            _time = '{}:{} {}'.format(hour, minute, am_pm)
             if i[2] == i[3] == i[4] == '*':
                 repeat = '每天'
             else:
@@ -103,6 +99,7 @@ def operation_crontab(op, key_word, task):
 @smart.route('/crontabs/<operation>', methods=['POST'])
 def set_crontabs(operation):
     task = request.json
+    print(task)
     minute, hour = task['minute'], task['hour']
     if task['repeat'] == '每天':
         day, month, week = '*', '*', '*'
@@ -110,12 +107,11 @@ def set_crontabs(operation):
         day, month, week = '*', '*', '1-5'
     else:
         day, month, week = '*', '*', ','.join(task['repeat'])
-    time.sleep(0.5)
     if task['which'] == 'power_on':
         key_word = '/hub/on'
     else:
         key_word = '/hub/off'
-    command = 'curl smart.txdna.cn' + key_word
+    command = 'curl smart.txdna.cn' + key_word + ' > /tmp/curl_hub'
     user = 'root'
     if task['repeat'] != '一次性':
         task = '{} {} {} {} {} {} {}'.format(
@@ -130,4 +126,6 @@ def set_crontabs(operation):
         else:
             rm_once(key_word)
             set_once(hour, minute, command)
+    print(task)
+    sleep(1)
     return jsonify({'msg': 'ok'})

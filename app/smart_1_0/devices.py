@@ -4,6 +4,7 @@
 from flask import render_template, request, jsonify
 from . import smart
 from ..models import *
+from time import sleep
 
 
 @smart.route('/devices', methods=['GET'])
@@ -23,6 +24,7 @@ def modify_device_name(old_name):
     name = request.json.get('name')
     device = Device.query.filter_by(name=old_name).first()
     device.name = name
+    sleep(1)
     try:
         db.session.commit()
         return jsonify({'msg': 'ok', 'result': device.to_json()})

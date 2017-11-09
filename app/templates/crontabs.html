@@ -252,23 +252,6 @@ $("[id^='spinner2_power_']").click(function() {
   toggle_on_off(which);
 });
 
-// 特殊处理一次性
-function if_once_alarm(which) {
-  var repeat = $("#select_" + which).val();
-  if (repeat == "一次性") {
-    var date = new Date();
-    var alarm_val = $("#alarm_" + which).val().split(":");
-    var hour = alarm_val[0];
-    var minute = alarm_val[1].split(" ")[0];
-    if (date.getHours() > hour || (date.getHours() == hour && date.getMinutes() > minute)) {
-      $("#spinner2_" + which).attr('disabled', "disabled");
-      toggle_on_off(which);
-    }
-  }
-}
-if_once_alarm("power_on");
-if_once_alarm("power_off");
-
 // 自定义定时
 $("[id^='custom_power_']").click(function() {
   $('#myModal').modal('toggle');
@@ -283,6 +266,7 @@ function get_data(which) {
   if (repeat == "一次性") {
     var date = new Date();
     hour = hour - date.getHours();
+    if (hour < 0) hour += 24;
   }
   else if (repeat == "自定义") {
     var arr = new Array();
@@ -327,21 +311,18 @@ function ajax_request(type, url, data) {
     dataType: "json",
     beforeSend: function() {
       // loading
-      $("[id=submit]").append("<div class='spinner'></div>");
+      $("body").append("<div class='mask'><div class='spinner' style='margin-top: 50%'></div></div>");
       // 禁用按钮防止重复提交
       $("#submit").attr('disabled', "disabled");
     },
     success: function(data) {
       if (data.msg == "ok") {
-        $("[id=submit]").append("<p class='ajax_info' style='color: #FFFFFF'>成功</p>");
-      } else {
-        $("[id=submit]").append("<p class='ajax_info' style='color: #FFFFFF'>" + data.error + "</p>");
+        $("body").append("<div class='mask'><h4 style='color: #FFFFFF;margin-top: 60%'>成功</h4><div>");
       }
     },
     complete: function() {
       $("#submit").removeAttr("disabled");
-      $(".ajax_info").fadeOut(3000);
-      $(".spinner").fadeOut(3000);
+      $(".mask").fadeOut(3000);
       window.location.reload();
     },
     error: function(data) {
@@ -360,7 +341,7 @@ $("#submit").click(function() {
     else old = old_power_off;
     url = get_url(data, old);
     if (url != null) {
-      ajax_request("post", url, data);
+      ajax_request("POST", url, data);
       if (arr[i] == "power_on") old_power_on = JSON.parse(get_data("power_on"));
       else old_power_off = JSON.parse(get_data("power_off"));
     }

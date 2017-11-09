@@ -5,7 +5,7 @@ from flask import jsonify
 from . import smart
 import pickle
 import requests
-import time
+from time import sleep
 
 
 @smart.route('/api/va/<which>', methods=['GET'])
@@ -42,10 +42,10 @@ def hub_turn_on_or_off(status):
     response = requests.post(cmd_url, data=data, headers=headers)
 
     query_url = url + '/' + response.json()['data']['cmd_uuid']
-    time.sleep(0.5)
     query_response = requests.get(query_url, headers=headers)
 
     cmd_res_url = query_url + '/resp'
     cmd_response = requests.get(cmd_res_url, headers=headers)
+    sleep(1)
     return jsonify({'cmd_status': query_response.json()['data']['desc'],
                     'text': cmd_response.text})
