@@ -190,15 +190,17 @@
   <div class="modal-dialog">
     <div class="modal-content" style="background-color: transparent; margin-top: 10%; border: 0;-webkit-box-shadow: 0 0 0;box-shadow: 0 0 0;">
       <form autocomplete="off">
-        <ul class="list-group">
-          {% for i in "一二三四五六日" %}
-            <li class="list-group-item" style="width: 50%">
-                <div class="checkbox">
-                    <label><input id="week_{{ crontab.id }}_{{ loop.index }}" type="checkbox" value="{{ loop.index }}">星期{{ i }}</label>
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
+          <div class="modal-body">
+            <ul class="list-group">
+              {% for i in "一二三四五六日" %}
+                <li class="list-group-item" style="width: 50%">
+                    <div class="checkbox">
+                        <label><input id="week_{{ crontab.id }}_{{ loop.index }}" type="checkbox" value="{{ loop.index }}">星期{{ i }}</label>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
       </form>
     </div>
   </div>
