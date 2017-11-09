@@ -100,7 +100,7 @@ def operation_crontab(op, key_word, task):
 @smart.route('/crontabs/<operation>', methods=['POST'])
 def set_crontabs(operation):
     task = request.json
-    print(task)
+    #print(task)
     minute, hour = task['minute'], task['hour']
     if task['repeat'] == '每天':
         day, month, week = '*', '*', '*'
@@ -127,6 +127,6 @@ def set_crontabs(operation):
         else:
             rm_once(key_word)
             set_once(hour, minute, command)
-    print(task)
+    #print(task)
     sleep(1)
     return jsonify({'msg': 'ok'})
