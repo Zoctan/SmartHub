@@ -169,7 +169,7 @@
                                       <option>{{ i }}</option>
                                   {% endif %}
                               {% endfor %}
-                              <option id="custom_{{ crontab.id }}">自定义</option>
+                              <option data-toggle="modal" data-target="#custom_{{ crontab.id }}">自定义</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -182,6 +182,27 @@
               </div>
             </div>
           </div>
+
+
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="custom_{{ crontab.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" style="background-color: transparent; top: 30px; border: 0;-webkit-box-shadow: 0 0 0;box-shadow: 0 0 0;">
+      <form autocomplete="off">
+        <ul class="list-group">
+          {% for i in "一二三四五六日" %}
+            <li class="list-group-item" style="width: 50%">
+                <div class="checkbox">
+                    <label><input id="week_{{ crontab.id }}_{{ loop.index }}" type="checkbox" value="{{ loop.index }}">星期{{ i }}</label>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+      </form>
+    </div>
+  </div>
+</div>
           {% endfor %}
 
         </div>
@@ -189,27 +210,6 @@
           <button id="submit" class="btn btn-success form-control" type="submit">确认</button>
         </div>
       </form>
-    </div>
-  </div>
-</div>
-
-<!-- 模态框（Modal） -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content" style="background-color: transparent; top: 30px; border: 0;-webkit-box-shadow: 0 0 0;box-shadow: 0 0 0;">
-
-      <form autocomplete="off">
-        <ul class="list-group">
-          {% for i in "一二三四五六日" %}
-            <li class="list-group-item" style="width: 50%">
-                <div class="checkbox">
-                    <label><input id="week_{{ loop.index }}" type="checkbox" value="{{ loop.index }}">星期{{ i }}</label>
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
-      </form>
-
     </div>
   </div>
 </div>
@@ -252,11 +252,6 @@ $("[id^='spinner2_power_']").click(function() {
   toggle_on_off(which);
 });
 
-// 自定义定时
-$("[id^='custom_power_']").click(function() {
-  $('#myModal').modal('toggle');
-});
-
 // 获得定时值
 function get_data(which) {
   var alarm_val = $("#alarm_" + which).val().split(":");
@@ -270,8 +265,8 @@ function get_data(which) {
   }
   else if (repeat == "自定义") {
     var arr = new Array();
-    for (var i = 1; i <= $("[id^='week_']")['length']; i++) {
-      if ($("[id='week_{0}']".format(i)).prop("checked") == true) arr.push(i + '');
+    for (var i = 1; i <= $("[id^='week_{0}_']".format(which))['length']; i++) {
+      if ($("[id='week_{0}_{1}']".format(which, i)).prop("checked") == true) arr.push(i + '');
     }
     repeat = arr;
   }
@@ -313,7 +308,7 @@ function ajax_request(type, url, data) {
       // loading
       $("body").append("<div class='mask'><div class='spinner' style='margin-top: 50%'></div></div>");
       // 禁用按钮防止重复提交
-      $("#submit").attr('disabled', "disabled");
+      $("#submit").attr("disabled", "false");
     },
     success: function(data) {
       if (data.msg == "ok") {
@@ -323,7 +318,7 @@ function ajax_request(type, url, data) {
     complete: function() {
       $("#submit").removeAttr("disabled");
       $(".mask").fadeOut(3000);
-      window.location.reload();
+      window.location.reload(true);
     },
     error: function(data) {
       console.info("error: " + data.responseText);
@@ -332,7 +327,8 @@ function ajax_request(type, url, data) {
 }
 
 // 确认
-$("#submit").click(function() {
+$("#submit").click(function(e) {
+  e.preventDefault();
   var arr = new Array("power_on", "power_off");
   for (var i in arr) {
     var url = null;

@@ -258,9 +258,8 @@ $.ajax({
 
 // 排插开关
 $(".toggle").click(function(e) {
-  var toggle = this;
-
   e.preventDefault();
+  var toggle = this;
 
   $.ajax({
     url: "/hub/online",
