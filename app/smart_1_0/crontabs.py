@@ -28,8 +28,8 @@ def get_once():
     return crontabs
 
 
-def set_once(hour, minute, command):
-    run(['at', 'now', '+{}minutes'.format(hour * 3600 + minute)], input=command.encode(), stdout=PIPE, stderr=STDOUT)
+def set_once(minute, command):
+    run(['at', 'now', '+{}minutes'.format(minute)], input=command.encode(), stdout=PIPE, stderr=STDOUT)
 
 
 def rm_once(key_word):
@@ -121,12 +121,12 @@ def set_crontabs(operation):
     else:
         hour, minute = int(hour), int(minute)
         if operation == 'add':
-            set_once(hour, minute, command)
+            set_once(minute, command)
         if operation == 'delete':
             rm_once(key_word)
         else:
             rm_once(key_word)
-            set_once(hour, minute, command)
+            set_once(minute, command)
     #print(task)
     sleep(1)
     return jsonify({'msg': 'ok'})

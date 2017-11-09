@@ -267,8 +267,13 @@ function get_data(which) {
   var repeat = $("#select_" + which).val();
   if (repeat == "一次性") {
     var date = new Date();
-    hour = hour - date.getHours();
-    if (hour < 0) hour += 24;
+    var now_hours = date.getHours();
+    var now_minutes = date.getMinutes();
+    var total_now_minutes = now_hours * 60 + now_minutes;
+    var user_set_total_minutes = hour * 60 + minute;
+    if (total_now_minutes < user_set_total_minutes) minute = user_set_total_minutes - total_now_minutes;
+    else if (total_now_minutes > user_set_total_minutes) minute = user_set_total_minutes + 24 * 60;
+    else minute = 0;
   }
   else if (repeat == "自定义") {
     var arr = new Array();
