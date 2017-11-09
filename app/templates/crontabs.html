@@ -169,7 +169,7 @@
                                       <option>{{ i }}</option>
                                   {% endif %}
                               {% endfor %}
-                              <option data-toggle="modal" data-target="#custom_{{ crontab.id }}">自定义</option>
+                              <option id="custom_{{ crontab.id }}">自定义</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -186,7 +186,7 @@
 
 
 <!-- 模态框（Modal） -->
-<div class="modal fade" id="custom_{{ crontab.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="modal_{{ crontab.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content" style="background-color: transparent; margin-top: 10%; border: 0;-webkit-box-shadow: 0 0 0;box-shadow: 0 0 0;">
       <form autocomplete="off">
@@ -250,6 +250,13 @@ $("[id^='spinner2_power_']").click(function() {
   var arr = $(this).attr('id').split("_");
   var which = arr[1] + "_" + arr[2];
   toggle_on_off(which);
+});
+
+$("[id^='custom_']").click(function(e) {
+  e.preventDefault();
+  var arr = $(this).attr('id').split("_");
+  var which = arr[1] + "_" + arr[2];
+  $("[id^='modal_{0}'".format(which)).modal('toggle');
 });
 
 // 获得定时值
