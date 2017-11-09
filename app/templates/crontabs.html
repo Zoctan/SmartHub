@@ -110,7 +110,7 @@
 
 {% block content %}
 <div class="container">
-  <div id="main_row" class="row">
+  <div class="row">
     <div class="col-md-12">
       <form role="form" action="#" autocomplete="off">
         <div class="row form-group">
@@ -188,7 +188,7 @@
 <!-- 模态框（Modal） -->
 <div class="modal fade" id="custom_{{ crontab.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content" style="background-color: transparent; top: 30px; border: 0;-webkit-box-shadow: 0 0 0;box-shadow: 0 0 0;">
+    <div class="modal-content" style="background-color: transparent; margin-top: 10%; border: 0;-webkit-box-shadow: 0 0 0;box-shadow: 0 0 0;">
       <form autocomplete="off">
         <ul class="list-group">
           {% for i in "一二三四五六日" %}
@@ -308,7 +308,7 @@ function ajax_request(type, url, data) {
       // loading
       $("body").append("<div class='mask'><div class='spinner' style='margin-top: 50%'></div></div>");
       // 禁用按钮防止重复提交
-      $("#submit").attr("disabled", "false");
+      $("#submit").attr("disabled", "true");
     },
     success: function(data) {
       if (data.msg == "ok") {
@@ -316,8 +316,6 @@ function ajax_request(type, url, data) {
       }
     },
     complete: function() {
-      $("#submit").removeAttr("disabled");
-      $(".mask").fadeOut(3000);
       window.location.reload(true);
     },
     error: function(data) {

@@ -127,7 +127,7 @@ $('#myModal').on('hide.bs.modal', function() {
 // 修改
 $("#submit_name").click(function() {
   $.ajax({
-    type: "post",
+    type: "POST",
     url: '/devices/name/' + old_name,
     async: false,
     // 1 需要使用JSON.stringify 否则格式为 a=2&b=3&now=14...
@@ -141,7 +141,7 @@ $("#submit_name").click(function() {
       // loading
       $("body").append("<div class='mask'><div class='spinner' style='margin-top: 50%'></div></div>");
       // 禁用按钮防止重复提交
-      $("#submit_name").attr('disabled', "disabled");
+      $("#submit_name").attr("disabled", "true");
     },
     success: function(data) {
       if (data.msg == "ok") {
@@ -153,7 +153,7 @@ $("#submit_name").click(function() {
       }
     },
     complete: function() {
-      $("#submit_name").removeAttr("disabled");
+      $("#submit_name").attr("disabled", "false");
       $(".mask").fadeOut(3000);
       $('#myModal').modal('toggle');
     },

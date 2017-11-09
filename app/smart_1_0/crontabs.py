@@ -74,6 +74,7 @@ def get_all_crontabs():
         for i in zip(['power_on', 'power_off'], ['定时开机', '定时关机']):
             if crontabs[0]['id'] != i[0]:
                 crontabs.append({'id': i[0], 'name': i[1], 'status': '', 'time': ''})
+    print(crontabs)
     return render_template('crontabs.html', id='crontabs', crontabs=crontabs)
 
 
