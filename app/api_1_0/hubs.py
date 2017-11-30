@@ -12,7 +12,8 @@ from time import sleep
 def test_init():
     db.drop_all()
     db.create_all()
-    user = User(username='test')
+    user = User()
+    user.username = 'test'
     user.password = 'test'
     db.session.add(user)
     spare = Spare()
@@ -20,8 +21,10 @@ def test_init():
     spare.hours = "00:00 220 11|01:00 220 14|02:00 220 16"
     spare.days = "12.01 220 11|12.02 220 13|12.03 220 14"
     db.session.add(spare)
-    hub = Hub(name='test', mac='AB:CD:EF:GH:IJ:KL')
-    hub.user = user
+    hub = Hub()
+    hub.name = 'test'
+    hub.mac = 'AB:CD:EF:GH:IJ:KL'
+    hub.user_id = 1
     hub.spare = spare
     db.session.add(hub)
     db.session.commit()

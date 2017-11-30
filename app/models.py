@@ -4,8 +4,7 @@
 from flask import current_app
 from app import db
 from passlib.apps import custom_app_context as pwd_context
-from itsdangerous import (
-    TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired)
+from itsdangerous import (TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired)
 
 
 class User(db.Model):
@@ -55,11 +54,11 @@ class User(db.Model):
 class Hub(db.Model):
     __tablename__ = 'smart_hubs'
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('smart_users.id'))
     name = db.Column(db.Unicode(32, collation='utf8_bin'), default='排插')
     mac = db.Column(db.Unicode(64, collation='utf8_bin'), nullable=False)
     onenet_id = db.Column(db.Integer)
     eigenvalue = db.Column(db.Text)
-    user = db.relationship('User', backref='Hub', uselist=False, lazy='select')
     timers = db.relationship('Timer', backref='Hub', lazy='dynamic', cascade='all, delete-orphan')
     spare = db.relationship('Spare', backref='Hub', uselist=False, lazy='select')
 
