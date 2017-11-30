@@ -32,6 +32,12 @@ def verify_password(token_or_username, password):
     return flag
 
 
+@api.before_request
+@auth.login_required
+def before_request():
+    pass
+
+
 def get_token(duration=18000):
     token = g.current_user.generate_auth_token(duration)
     return jsonify({'msg': 'ok', 'result': [{'id': g.current_user.id,
