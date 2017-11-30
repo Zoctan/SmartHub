@@ -9,11 +9,3 @@ from ..models import *
 @smart.route('/', methods=['GET'])
 def index():
     return render_template('index.html', id='status')
-
-
-@smart.route('/app/db_init', methods=['GET'])
-def init():
-    db.drop_all()
-    db.create_all()
-    Device().insert_default_data()
-    return 'well'

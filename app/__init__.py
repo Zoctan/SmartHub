@@ -19,4 +19,6 @@ def create_app(config_name):
     db.init_app(app)
     from .smart_1_0 import smart as smart_blueprint
     app.register_blueprint(smart_blueprint)
+    from .api_1_0 import api as api_blueprint
+    app.register_blueprint(api_blueprint)
     return app

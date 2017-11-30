@@ -262,7 +262,7 @@ $(".toggle").click(function(e) {
   var toggle = this;
 
   $.ajax({
-    url: "/hub/online",
+    url: "/api/hub/online",
     type: "GET",
     beforeSend: function() {
       // loading

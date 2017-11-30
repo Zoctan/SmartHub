@@ -1,13 +1,25 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from flask import request
+from flask import request, jsonify
 from . import smart
 import base64
 import hashlib
 import requests
 import pickle
 import time
+
+
+@smart.route('/api/va/<which>', methods=['GET'])
+def v_a(which):
+    if which == 'v':
+        with open('/tmp/onenet_v', 'rb') as f:
+            now_data_dict = pickle.load(f)
+    else:
+        with open('/tmp/onenet_a', 'rb') as f:
+            now_data_dict = pickle.load(f)
+    return jsonify({'key': now_data_dict['msg']['ds_id'],
+                    'value': now_data_dict['msg']['value']})
 
 
 @smart.route('/onenet', methods=['GET', 'POST'])
@@ -20,8 +32,9 @@ def onenet():
             tmp = hashlib.md5(('752481828' + nonce + msg).encode())
             if base64.b64encode(tmp.digest()).decode() == signature:
                 return msg
+    # calculate eigenvalue by python and get current device image and name
     if request.method == 'POST':
-        if request.json['msg']['ds_id'] == 'Humidity':  # !
+        if request.json['msg']['ds_id'] == 'Humidity':  # !every 24 hour to -> day
             with open('/tmp/onenet_v', 'wb') as f:
                 pickle.dump(request.json, f)
         elif request.json['msg']['ds_id'] == 'Temperature':

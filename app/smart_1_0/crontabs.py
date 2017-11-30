@@ -106,7 +106,7 @@ def set_crontabs(operation):
         day, month, week = '*', '*', '*'
     elif task['repeat'] == '每周1-5':
         day, month, week = '*', '*', '1-5'
-    else:
+    else:  # custom
         day, month, week = '*', '*', ','.join(task['repeat'])
     if task['which'] == 'power_on':
         key_word = '/hub/on'
