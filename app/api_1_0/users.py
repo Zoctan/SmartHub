@@ -21,9 +21,9 @@ def logout():
     return jsonify({'msg': 'ok'})
 
 
-@decorators.route('/api/users/<id>', methods=['GET'])
-def get_user_info(id):
-    user = User.query.filter_by(id=id).first()
+@decorators.route('/api/users', methods=['GET'])
+def get_user_info():
+    user = User.query.filter_by(id=g.current_user.id).first()
     if not user:
         return jsonify({'msg': 'no', 'error': 'user doesn\'t exist'})
     return jsonify({'msg': 'ok', 'result': [user.to_json()]})

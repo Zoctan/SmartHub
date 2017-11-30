@@ -89,13 +89,33 @@ class Spare(db.Model):
     def to_json(self):
         # 00:00 v a|...|23:00 v a
         # 7.1 v a|...|7.2 v a
+        hours = self.hours
+        if hours:
+            hours = self.hours.split('|')
+
+        days = self.days
+        if days:
+            days = self.days.split('|')
+
+        weeks = self.weeks
+        if weeks:
+            weeks = self.weeks.split('|')
+
+        months = self.months
+        if months:
+            months = self.months.split('|')
+
+        years = self.years
+        if years:
+            years = self.years.split('|')
+
         json = {
             'id': self.id,
-            'hours': self.hours.split('|'),
-            'days': self.days.split('|'),
-            'weeks': self.weeks.split('|'),
-            'months': self.months.split('|'),
-            'years': self.years.split('|')
+            'hours': hours,
+            'days': days,
+            'weeks': weeks,
+            'months': months,
+            'years': years
         }
         return json
 

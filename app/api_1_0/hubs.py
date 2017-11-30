@@ -26,23 +26,25 @@ def get_hubs():
     user = User.query.filter_by(id=g.current_user.id).first()
     if not user:
         return jsonify({'msg': 'no', 'error': 'need login'})
-    hubs = []
+    hub_list = []
     for hub in user.hubs:
-        status = hub_online(hub.onenet_id)['online']
-        hubs.append({'status': status}.update(hub.to_json()))
-    return jsonify({'msg': 'ok', 'result': hubs})
+        online = hub_online(hub.onenet_id)['online']
+        tmp = {'online': online}
+        tmp.update(hub.to_json())
+        hub_list.append(tmp)
+    return jsonify({'msg': 'ok', 'result': hub_list})
 
 
-@decorators.route('/api/hubs/spare/<id>', methods=['GET'])
-def get_hub_spare(id):
+@decorators.route('/api/hubs/spares/<id>', methods=['GET'])
+def get_hub_spares(id):
     hub = Hub.query.filter_by(id=id).first()
     if not hub:
         return jsonify({'msg': 'no', 'error': 'hub not existed'})
     return jsonify({'msg': 'ok', 'result': hub.spare.to_json()})
 
 
-@decorators.route('/api/hubs/timer/<id>', methods=['GET'])
-def get_hub_timer(id):
+@decorators.route('/api/hubs/timers/<id>', methods=['GET'])
+def get_hub_timers(id):
     hub = Hub.query.filter_by(id=id).first()
     if not hub:
         return jsonify({'msg': 'no', 'error': 'hub not existed'})
@@ -52,7 +54,8 @@ def get_hub_timer(id):
 
 @decorators.route('/api/hub/online', methods=['GET'])
 def hub_online_():
-    response = hub_online()
+    # !!
+    response = hub_online(None)
     return jsonify({'id': response['id'],
                     'protocol': response['protocol'],
                     'online': response['online']})
