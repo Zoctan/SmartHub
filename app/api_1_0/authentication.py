@@ -18,18 +18,15 @@ def unauthorized(error='unauthorized'):
 
 @auth.verify_password
 def verify_password(token_or_username, password):
-    flag = True
     # first try to authenticate by token
     user = User.verify_auth_token(token_or_username)
     if not user:
         # try to authenticate with username/password
-        user = User.query.filter_by(
-            username=token_or_username).first()
+        user = User.query.filter_by(username=token_or_username).first()
         if not user:
             return False
-        flag = user.verify_password(password)
     g.current_user = user
-    return flag
+    return user.verify_password(password)
 
 
 @api.before_request
