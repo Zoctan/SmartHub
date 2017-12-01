@@ -7,7 +7,7 @@ from ..models import User, AnonymousUser
 from . import api
 
 basic_auth = HTTPBasicAuth()
-token_auth = HTTPTokenAuth(scheme='Bearer')
+token_auth = HTTPTokenAuth(scheme='Smart')
 multi_auth = MultiAuth(basic_auth, token_auth)
 
 
