@@ -28,8 +28,9 @@ def verify_password(token_or_username, password):
         user = User.query.filter_by(username=token_or_username).first()
         if not user:
             return False
+        return user.verify_password(password)
     g.current_user = user
-    return user.verify_password(password)
+    return True
 
 
 @api.before_request
