@@ -3,7 +3,7 @@
 from flask import request, jsonify, g
 from . import decorators
 from ..models import User, db
-from .authentication import verify_password, unauthorized, get_token
+from .authentication import verify_password, basic_auth_unauthorized, get_token
 
 
 @decorators.composed(decorators.route('/api/tokens', methods=['POST']), decorators.json_required)
@@ -12,7 +12,7 @@ def login():
     password = request.json.get('password')
     if username and password and verify_password(username, password):
         return get_token()
-    return unauthorized('login error')
+    return basic_auth_unauthorized('login error')
 
 
 @decorators.route('/api/users', methods=['GET'])
