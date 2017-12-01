@@ -35,7 +35,7 @@ def before_request():
     pass
 
 
-def get_token(duration=18000):
+def get_token(duration=31536000):
     token = g.current_user.generate_auth_token(duration)
     return jsonify({'msg': 'ok', 'result': [{'id': g.current_user.id,
                                              'token': token.decode('ascii'),

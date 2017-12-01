@@ -10,9 +10,8 @@ from .authentication import verify_password, unauthorized, get_token
 def login():
     username = request.json.get('username')
     password = request.json.get('password')
-    duration = request.json.get('duration')
     if username and password and verify_password(username, password):
-        return get_token(duration)
+        return get_token()
     return unauthorized('login error')
 
 
@@ -33,7 +32,6 @@ def get_user_info():
 def create_user():
     username = request.json.get('username')
     password = request.json.get('password')
-    duration = request.json.get('duration')
     # require these value
     if not username or not password:
         return jsonify({'msg': 'no', 'error': 'missing arguments, require: username, password'})
@@ -41,7 +39,7 @@ def create_user():
         return jsonify({'msg': 'no', 'error': 'username: {} is already existed'.format(username)})
     g.current_user.password = password
     db.session.add(g.current_user)
-    return get_token(duration)
+    return get_token()
 
 
 @decorators.composed(decorators.route('/api/users/avatar', methods=['PUT']), decorators.json_required)
