@@ -2,39 +2,52 @@
 # -*- coding: utf-8 -*-
 
 from flask import g, jsonify
-from flask_httpauth import HTTPBasicAuth
+from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
 from ..models import User, AnonymousUser
 from . import api
 
-auth = HTTPBasicAuth()
+basic_auth = HTTPBasicAuth()
+token_auth = HTTPTokenAuth(scheme='Bearer')
+multi_auth = MultiAuth(basic_auth, token_auth)
 
 
-@auth.error_handler
-def unauthorized(error='unauthorized'):
+@basic_auth.error_handler
+def basic_auth_unauthorized(error='unauthorized'):
     # request need login, return 403
     # 401: unauthorized, but it will alert a login window, so 403 instead of 401
     return jsonify({'msg': 'no', 'error': error}), 403
 
 
-@auth.verify_password
-def verify_password(token_or_username, password):
-    if not token_or_username:
+@token_auth.error_handler
+def token_auth_unauthorized(error='unauthorized'):
+    # request need login, return 403
+    # 401: unauthorized, but it will alert a login window, so 403 instead of 401
+    return jsonify({'msg': 'no', 'error': error}), 403
+
+
+@basic_auth.verify_password
+def verify_password(username, password):
+    if not username:
         g.current_user = AnonymousUser()
         return True
-    # first try to authenticate by token
-    user = User.verify_auth_token(token_or_username)
-    if not user:
-        # try to authenticate with username/password
-        user = User.query.filter_by(username=token_or_username).first()
-        if not user:
-            return False
-        return user.verify_password(password)
+    # try to authenticate with username/password
+    user = User.query.filter_by(username=username).first()
     g.current_user = user
-    return True
+    return False if not user else user.verify_password(password)
+
+
+@token_auth.verify_token
+def verify_token(token):
+    if not token:
+        g.current_user = AnonymousUser()
+        return True
+    user = User.verify_auth_token(token)
+    g.current_user = user
+    return False if not user else True
 
 
 @api.before_request
-@auth.login_required
+@multi_auth.login_required
 def before_request():
     pass
 
