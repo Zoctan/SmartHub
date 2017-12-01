@@ -17,8 +17,8 @@ def create_app(config_name):
     app.wsgi_app = ProxyFix(app.wsgi_app)
     config[config_name].init_app(app)
     db.init_app(app)
-    from .smart_1_0 import smart as smart_blueprint
-    app.register_blueprint(smart_blueprint)
     from .api_1_0 import api as api_blueprint
     app.register_blueprint(api_blueprint)
+    from .smart_1_0 import smart as smart_blueprint
+    app.register_blueprint(smart_blueprint)
     return app

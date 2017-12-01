@@ -15,11 +15,6 @@ def login():
     return unauthorized('login error')
 
 
-@decorators.route('/api/tokens', methods=['DELETE'])
-def logout():
-    return jsonify({'msg': 'ok'})
-
-
 @decorators.route('/api/users', methods=['GET'])
 def get_user_info():
     user = User.query.filter_by(id=g.current_user.id).first()

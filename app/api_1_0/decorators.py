@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from functools import wraps
-from flask import request, jsonify, g
+from flask import request, jsonify
 from ..models import db
 from . import api
 
