@@ -10,6 +10,8 @@ from .authentication import verify_password, unauthorized, get_token
 def login():
     username = request.json.get('username')
     password = request.json.get('password')
+    print("username", username)
+    print("password", password)
     if username and password and verify_password(username, password):
         return get_token()
     return unauthorized('login error')
