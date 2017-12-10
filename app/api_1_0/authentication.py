@@ -55,4 +55,5 @@ def before_request():
 def get_token():
     token = g.current_user.generate_auth_token(31536000)
     return jsonify({'msg': 'ok', 'result': [{'id': g.current_user.id,
-                                             'token': token.decode('ascii')}]})
+                                             'token': token.decode('ascii'),
+                                             'avatar': g.current_user.avatar}]})
