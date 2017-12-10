@@ -12,7 +12,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.Unicode(32, collation='utf8_bin'), nullable=False, unique=True, index=True)
     password_hash = db.Column(db.Unicode(256, collation='utf8_bin'), nullable=False)
-    avatar = db.Column(db.Text)
+    avatar = db.Column(db.Unicode(256, collation='utf8_bin'), default="http://p0qgwnuel.bkt.clouddn.com/default.png")
     hubs = db.relationship('Hub', backref='User', lazy='dynamic', cascade='all, delete-orphan')
 
     @property

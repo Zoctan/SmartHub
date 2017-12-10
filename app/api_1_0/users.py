@@ -37,23 +37,15 @@ def create_user():
     return get_token()
 
 
-@decorators.composed(decorators.route('/api/users/avatar', methods=['PUT']), decorators.json_required)
+@decorators.composed(decorators.route('/api/users/avatar', methods=['POST']), decorators.json_required)
 def update_user_avatar():
     user = User.query.filter_by(id=g.current_user.id).first()
-    if not request.json.get('avatar'):
-        return jsonify({'msg': 'no', 'error': 'null'})
     user.avatar = request.json.get('avatar')
     return jsonify({'msg': 'ok'})
 
 
-@decorators.composed(decorators.route('/api/users/password', methods=['PUT']), decorators.json_required)
+@decorators.composed(decorators.route('/api/users/password', methods=['POST']), decorators.json_required)
 def update_user_password():
-    old = User.query.get(g.current_user.id)
-    if not set(request.json.keys()) == {'oldpassword', 'newpassword'}:
-        return jsonify({'msg': 'no', 'error': 'can not modify'})
-    # check old password that is correct or not
-    # after modify, must logout!
-    if not verify_password(old.username, request.json.get('oldpassword')):
-        return jsonify({'msg': 'no', 'error': 'old password not correct'})
-    old.password = request.json.get('newpassword')
+    user = User.query.get(g.current_user.id)
+    user.password = request.json.get('password')
     return jsonify({'msg': 'ok'})
