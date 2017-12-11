@@ -61,9 +61,8 @@ class Hub(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('smart_users.id'))
     name = db.Column(db.Unicode(32, collation='utf8_bin'), default='排插')
     mac = db.Column(db.Unicode(64, collation='utf8_bin'), nullable=False)
-    onenet_id = db.Column(db.Integer)
+    onenet_id = db.Column(db.Unicode(64, collation='utf8_bin'))
     eigenvalue = db.Column(db.Text)
-    timers = db.relationship('Timer', backref='Hub', lazy='dynamic', cascade='all, delete-orphan')
     spare = db.relationship('Spare', backref='Hub', uselist=False, lazy='select')
 
     def to_json(self):
@@ -120,22 +119,6 @@ class Spare(db.Model):
             'weeks': weeks,
             'months': months,
             'years': years
-        }
-        return json
-
-
-class Timer(db.Model):
-    __tablename__ = 'smart_timers'
-    id = db.Column(db.Integer, primary_key=True)
-    hub_id = db.Column(db.Integer, db.ForeignKey('smart_hubs.id'))
-    name = db.Column(db.Unicode(32, collation='utf8_bin'))
-    task = db.Column(db.Unicode(256, collation='utf8_bin'))
-
-    def to_json(self):
-        json = {
-            'id': self.id,
-            'name': self.name,
-            'task': self.task
         }
         return json
 
