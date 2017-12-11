@@ -3,7 +3,7 @@
 
 from flask import g, jsonify
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
-from ..models import User, AnonymousUser
+from ..models import User
 from . import api
 
 basic_auth = HTTPBasicAuth()
@@ -27,9 +27,6 @@ def token_auth_unauthorized(error='unauthorized'):
 
 @basic_auth.verify_password
 def verify_password(username, password):
-    if not username:
-        g.current_user = AnonymousUser()
-        return True
     # try to authenticate with username/password
     user = User.query.filter_by(username=username).first()
     g.current_user = user
@@ -38,9 +35,6 @@ def verify_password(username, password):
 
 @token_auth.verify_token
 def verify_token(token):
-    if not token:
-        g.current_user = AnonymousUser()
-        return True
     user = User.verify_auth_token(token)
     g.current_user = user
     return False if not user else True

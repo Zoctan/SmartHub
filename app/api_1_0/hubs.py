@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from flask import request, jsonify, g
+from flask import jsonify, g
 from . import decorators
-from ..models import Hub, db, User, Spare
+from ..models import Hub, User
 import requests
 from time import sleep
 
@@ -22,8 +22,6 @@ def hub_online(onenet_id):
 @decorators.route('/api/hubs', methods=['GET'])
 def get_hubs():
     user = User.query.filter_by(id=g.current_user.id).first()
-    if not user:
-        return jsonify({'msg': 'no', 'error': 'need login'})
     hub_list = []
     for hub in user.hubs:
         online = hub_online(hub.onenet_id)['online']
@@ -39,15 +37,6 @@ def get_hub_spares(id):
     if not hub:
         return jsonify({'msg': 'no', 'error': 'hub not existed'})
     return jsonify({'msg': 'ok', 'result': hub.spare.to_json()})
-
-
-@decorators.route('/api/hubs/online', methods=['GET'])
-def hub_online_():
-    # !!
-    response = hub_online(None)
-    return jsonify({'id': response['id'],
-                    'protocol': response['protocol'],
-                    'online': response['online']})
 
 
 @decorators.route('/api/hubs/<status>/<device_id>', methods=['GET'])
