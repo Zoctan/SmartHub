@@ -22,6 +22,8 @@ def hub_online(onenet_id):
 @decorators.route('/api/hubs', methods=['GET'])
 def get_hubs():
     user = User.query.filter_by(id=g.current_user.id).first()
+    if not user:
+        return jsonify({'msg': 'no', 'error': 'user doesn\'t exist'})
     hub_list = []
     for hub in user.hubs:
         online = hub_online(hub.onenet_id)['online']

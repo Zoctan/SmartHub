@@ -40,6 +40,8 @@ def create_user():
 @decorators.composed(decorators.route('/api/users/avatar', methods=['POST']), decorators.json_required)
 def update_user_avatar():
     user = User.query.filter_by(id=g.current_user.id).first()
+    if not user:
+        return jsonify({'msg': 'no', 'error': 'user doesn\'t exist'})
     user.avatar = request.json.get('avatar')
     return jsonify({'msg': 'ok'})
 
@@ -47,5 +49,7 @@ def update_user_avatar():
 @decorators.composed(decorators.route('/api/users/password', methods=['POST']), decorators.json_required)
 def update_user_password():
     user = User.query.get(g.current_user.id)
+    if not user:
+        return jsonify({'msg': 'no', 'error': 'user doesn\'t exist'})
     user.password = request.json.get('password')
     return jsonify({'msg': 'ok'})

@@ -8,6 +8,7 @@ from time import sleep
 from subprocess import run, PIPE, STDOUT
 
 crontab = '/etc/crontab'
+
 # crontab = '/tmp/crontab'
 
 
@@ -53,7 +54,7 @@ def get_hub_timers(device_id):
 @api.route('/api/hubs/timers/<operation>', methods=['POST'])
 def set_timer(operation):
     task = request.json
-    #print(task)
+    # print(task)
     minute, hour = task['minute'], task['hour']
     if task['which'] == 'power_on':
         key_word = '/hubs/on/{}'.format(task['device_id'])
@@ -79,7 +80,7 @@ def set_timer(operation):
         task = '{} {} {} {} {} {} {}'.format(
                 minute, hour, day, month, week, user, command)
         write_crontab(operation, key_word, task)
-    #print(task)
+    # print(task)
     sleep(1)
     return jsonify({'msg': 'ok'})
 

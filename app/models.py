@@ -51,6 +51,10 @@ class User(db.Model):
         return json
 
 
+class AnonymousUser(User):
+    pass
+
+
 class Hub(db.Model):
     __tablename__ = 'smart_hubs'
     id = db.Column(db.Integer, primary_key=True)
