@@ -1,0 +1,55 @@
+<resources>
+    <string name="app_name">SmartHub</string>
+
+    <string name="exit_message">再按一次退出</string>
+
+    <string name="tabNow">实时</string>
+    <string name="tabSpare">用电</string>
+    <string name="tabTimer">定时</string>
+
+    <string name="drawerOpen">open</string>
+    <string name="drawerClose">close</string>
+    <string name="navHub">排插列表</string>
+    <string name="navUser">用户中心</string>
+    <string name="navOther">Other</string>
+    <string name="navClear">清除缓存</string>
+    <string name="navAbout">关于应用</string>
+    <string name="navDayNight">切换日夜间</string>
+
+    <string name="needLogin">登录才有东西哦~</string>
+    <string name="register">注册</string>
+    <string name="login">登录</string>
+    <string name="logout">登出</string>
+    <string name="userLogin">用户登录</string>
+    <string name="modifyAvatar">修改头像</string>
+    <string name="modifyPwd">修改密码</string>
+    <string name="ensureModifyPwd">确认修改</string>
+    <string name="userRegister">用户注册</string>
+    <string name="oldPassword">请输入原密码</string>
+    <string name="newPassword">新密码</string>
+    <string name="etPassword2">请再次输入密码</string>
+    <string name="etPassword">请输入密码</string>
+    <string name="etName">请输入用户名</string>
+    <string name="etProve">请输入验证码</string>
+
+    <string name="userInfo">用户信息</string>
+    <string name="userName">用户名</string>
+
+    <string name="aboutApp">\n
+        1.遵循 Material Design 风格\n
+        2.兼容 4.X-7.0 及各种分辨率\n
+    </string>
+    <string name="sourceCode">source code</string>
+    <string name="sourceCodeUrl">https://github.com/</string>
+    <string name="about_author">about author</string>
+    <string name="blogUrl">http://blog.csdn.net/</string>
+    <string name="githubUrl">https://github.com/</string>
+    <string name="email"></string>
+    <string name="aboutLibrary">
+        4.com.google.code.gson:gson:2.8.0\n
+        5.com.github.bumptech.glide:glide:4.0.0\n
+        6.pl.droidsonroids.gif:android-gif-drawable:1.2.8\n
+        7.com.squareup.okhttp3:okhttp:3.8.1\n
+        8.com.squareup.okio:okio:1.13.0\n
+    </string>
+</resources>

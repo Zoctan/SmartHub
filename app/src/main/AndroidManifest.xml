@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.zoctan.smarthub">
+
+    <!-- 访问网络 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 访问wifi网络 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- SD卡读取权限 -->
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <!-- 读取扩展卡数据-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- 向扩展卡写入数据 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- 震动权限 -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- 使用照相机权限 -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+    <!-- 自动聚焦权限 -->
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+        <!-- 引导界面 -->
+        <activity
+            android:name="com.zoctan.smarthub.main.widget.SplashActivity"
+            android:autoRemoveFromRecents="true">
+            <intent-filter>
+                <!-- 决定应用程序最先启动的Activity -->
+                <action android:name="android.intent.action.MAIN" />
+                <!-- 决定应用程序是否显示在程序列表里 -->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!-- 启动界面 -->
+        <activity
+            android:name="com.zoctan.smarthub.main.widget.WelcomeGuideActivity"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen" />
+        <!-- 主界面 -->
+        <activity
+            android:name="com.zoctan.smarthub.main.widget.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <!-- hub详情 -->
+        <activity
+            android:name="com.zoctan.smarthub.hub.widget.HubDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar.Translucent">
+            <intent-filter>
+                <action android:name="hubDetail" />
+
+                <category android:name="hub" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <!-- 用户登录 -->
+        <activity
+            android:name="com.zoctan.smarthub.user.widget.UserLoginActivity"
+            android:theme="@style/AppTheme.NoActionBar.Translucent">
+            <intent-filter>
+                <action android:name="toLogin" />
+
+                <category android:name="user" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name="com.zoctan.smarthub.zxing.activity.CaptureActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
+    </application>
+</manifest>

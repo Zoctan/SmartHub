@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navHub"
+            android:icon="@drawable/text"
+            android:title="@string/navHub" />
+        <item
+            android:id="@+id/navUser"
+            android:icon="@drawable/pic"
+            android:title="@string/navUser" />
+
+        <item
+            android:id="@+id/navAbout"
+            android:icon="@drawable/about"
+            android:title="@string/navAbout" />
+    </group>
+
+    <item android:title="@string/navOther">
+        <menu>
+            <item
+                android:id="@+id/navDayNight"
+                android:icon="@drawable/about"
+                android:title="@string/navDayNight" />
+            <item
+                android:id="@+id/navClear"
+                android:icon="@drawable/clear"
+                android:title="@string/navClear" />
+        </menu>
+    </item>
+
+</menu>

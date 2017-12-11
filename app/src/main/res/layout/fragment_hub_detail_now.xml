@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/mLayoutEquipment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/mIVEquipment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            app:srcCompat="@mipmap/user_bg"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/mTVEquipment"
+            android:textColor="@color/tabText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="12dp"
+            android:text="current equipment" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_below="@id/mLayoutEquipment"
+        android:layout_marginTop="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.zoctan.smarthub.utils.DashboardView
+            android:id="@+id/mDashboardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp" />
+
+        <GridLayout
+            android:id="@+id/mLayoutEquipmentData"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_gravity="bottom"
+            android:background="@color/cardview_shadow_start_color"
+            android:columnCount="2">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_columnWeight="1"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:text="12V" />
+
+            <TextView
+                android:id="@+id/textView23"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_columnWeight="1"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:text="12W" />
+        </GridLayout>
+    </FrameLayout>
+
+</RelativeLayout>

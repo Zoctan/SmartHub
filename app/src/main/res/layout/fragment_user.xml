@@ -1,0 +1,230 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:fitsSystemWindows="true">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/mUserCollapsingToolbarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:collapsedTitleTextAppearance="@color/tabText"
+            app:expandedTitleMarginStart="10dp"
+            app:expandedTitleTextAppearance="@color/tabTextSecond"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/mIvUserAvatar"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="25dp"
+                android:src="@mipmap/ic_user"
+                app:civ_border_color="@color/primaryLight"
+                app:civ_border_width="2dp" />
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/mLayoutUserInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_margin="12dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    app:cardCornerRadius="1dp"
+                    app:cardElevation="1dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="12dp"
+                        android:text="@string/userInfo"
+                        android:textSize="14sp" />
+                </android.support.v7.widget.CardView>
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/cardview_light_background"
+                    android:columnCount="2"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:rowCount="2">
+
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_column="0"
+                        android:layout_marginEnd="16dp"
+                        android:layout_row="0"
+                        android:layout_rowSpan="2"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_hub"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:layout_column="1"
+                        android:layout_row="0"
+                        android:text="@string/userName"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/mTvName"
+                        android:layout_column="1"
+                        android:layout_row="1"
+                        android:text="@string/userName"
+                        android:textSize="14sp" />
+                </GridLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:id="@+id/mLayoutPwd"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <ProgressBar
+            android:id="@+id/mProgressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:visibility="invisible" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="30dp"
+            android:visibility="visible">
+
+            <!--密码层-->
+            <FrameLayout
+                android:id="@+id/mLayoutNewPwd"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/mLayoutName"
+                android:layout_marginTop="15dp"
+                android:gravity="center">
+
+                <!--密码图标-->
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical|start"
+                    android:background="@mipmap/ic_password"
+                    tools:ignore="ContentDescription" />
+
+                <!--密码框-->
+                <EditText
+                    android:id="@+id/mEtNewPwd"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/newPassword"
+                    android:inputType="textPassword"
+                    android:maxLength="25"
+                    android:paddingEnd="60dp"
+                    android:paddingStart="30dp"
+                    android:textColorHint="@color/secondaryText"
+                    android:textColorLink="@color/primaryLight" />
+
+                <!--显示密码-->
+                <CheckBox
+                    android:id="@+id/mBtnPwdEye"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|end"
+                    android:layout_marginEnd="5dp"
+                    android:button="@drawable/pwd_eye"
+                    android:checked="false" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/mLayoutSurePwd"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/mLayoutNewPwd"
+                android:layout_marginTop="15dp"
+                android:gravity="center">
+
+                <!--密码图标-->
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@mipmap/ic_password"
+                    tools:ignore="ContentDescription" />
+
+                <!--密码框-->
+                <EditText
+                    android:id="@+id/mEtNewPwd2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/etPassword2"
+                    android:inputType="textPassword"
+                    android:maxLength="25"
+                    android:paddingEnd="60dp"
+                    android:paddingStart="30dp"
+                    android:textColorHint="@color/secondaryText"
+                    android:textColorLink="@color/primaryLight" />
+            </FrameLayout>
+
+            <Button
+                android:id="@+id/mBtnSure"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/mLayoutSurePwd"
+                android:layout_marginTop="40dp"
+                android:background="@color/danger"
+                android:text="@string/ensureModifyPwd"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:visibility="visible" />
+        </RelativeLayout>
+
+    </FrameLayout>
+
+    <io.github.yavski.fabspeeddial.FabSpeedDial
+        android:id="@+id/mFabSpeedDial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        app:fabBackgroundTint="@android:color/holo_orange_light"
+        app:fabGravity="bottom_end"
+        app:fabMenu="@menu/menu_user"
+        app:miniFabBackgroundTint="@android:color/white"
+        app:miniFabDrawableTint="?attr/colorPrimaryDark"
+        app:miniFabTitleTextColor="?attr/colorPrimaryDark" />
+
+</android.support.design.widget.CoordinatorLayout>

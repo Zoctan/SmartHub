@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#0DC5DD</color>
+    <color name="primaryDark">#077695</color>
+    <color name="primaryLight">#a800ddff</color>
+    <color name="tabText">#fff</color>
+    <color name="tabTextSecond">#646464</color>
+    <color name="danger">#BD362F</color>
+    <color name="accent">#CDDC39</color>
+    <color name="primaryText">#96AA96</color>
+    <color name="secondaryText">#969696</color>
+    <color name="divider">#B6B6B6</color>
+</resources>
