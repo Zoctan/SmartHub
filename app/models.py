@@ -69,7 +69,6 @@ class Hub(db.Model):
             'onenet_id': self.onenet_id,
             'name': self.name,
             'mac': self.mac,
-            'eigenvalue': self.eigenvalue
         }
         return json
 
