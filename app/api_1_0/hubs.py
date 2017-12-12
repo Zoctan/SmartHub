@@ -9,7 +9,7 @@ from time import sleep
 
 
 # test_init
-# db.drop_all();db.create_all();user = models.User();user.username = 'test';user.password = 'test';db.session.add(user);spare = models.Spare();spare.hub_id = 1;spare.hours = "00:00 220 0.5 150 1|01:00 220 0.4 150 1|02:00 220 0.3 150 1";spare.days = "12.01 220 0.3 150 1|12.02 220 0.4 160 1|12.03 220 0.3 170 1";db.session.add(spare);hub = models.Hub();hub.name = '智能可识别插座测试样品';hub.mac = 'AB:CD:EF:GH:IJ:KL';hub.user_id = 1;hub.onenet_id='19959358';hub.spare=spare;db.session.commit()
+# db.drop_all();db.create_all();user = models.User();user.username = 'test';user.password = 'test';db.session.add(user);hub = models.Hub();hub.name = '智能可识别插座测试样品';hub.mac = 'AB:CD:EF:GH:IJ:KL';hub.user_id = 1;hub.onenet_id='19959358';db.session.add(hub);db.session.commit()
 def hub_online(onenet_id):
     # https://open.iot.10086.cn/doc/art262.html#68
     url = 'http://api.heclouds.com/devices/'
