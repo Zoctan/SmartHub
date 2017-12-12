@@ -59,11 +59,9 @@ class Hub(db.Model):
     __tablename__ = 'smart_hubs'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('smart_users.id'))
-    name = db.Column(db.Unicode(32, collation='utf8_bin'), default='排插')
+    name = db.Column(db.Unicode(64, collation='utf8_bin'), default='排插')
     mac = db.Column(db.Unicode(64, collation='utf8_bin'), nullable=False)
     onenet_id = db.Column(db.Unicode(64, collation='utf8_bin'))
-    eigenvalue = db.Column(db.Text)
-    spare = db.relationship('Spare', backref='Hub', uselist=False, lazy='select')
 
     def to_json(self):
         json = {
@@ -79,62 +77,19 @@ class Hub(db.Model):
         return '<Hub(name={})>'.format(self.name)
 
 
-class Spare(db.Model):
-    __tablename__ = 'smart_spares'
-    id = db.Column(db.Integer, primary_key=True)
-    hub_id = db.Column(db.Integer, db.ForeignKey('smart_hubs.id'))
-    hours = db.Column(db.Text)
-    days = db.Column(db.Text)
-    weeks = db.Column(db.Text)
-    months = db.Column(db.Text)
-    years = db.Column(db.Text)
-
-    def to_json(self):
-        # 00:00 v a|...|23:00 v a
-        # 7.1 v a|...|7.2 v a
-        hours = self.hours
-        if hours:
-            hours = self.hours.split('|')
-
-        days = self.days
-        if days:
-            days = self.days.split('|')
-
-        weeks = self.weeks
-        if weeks:
-            weeks = self.weeks.split('|')
-
-        months = self.months
-        if months:
-            months = self.months.split('|')
-
-        years = self.years
-        if years:
-            years = self.years.split('|')
-
-        json = {
-            'id': self.id,
-            'hours': hours,
-            'days': days,
-            'weeks': weeks,
-            'months': months,
-            'years': years
-        }
-        return json
-
-
 class Device(db.Model):
     __tablename__ = 'smart_devices'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Unicode(256, collation='utf8_bin'), nullable=False)
-    img = db.Column(db.Text)
-    eigenvalue = db.Column(db.Text)
+    img = db.Column(db.Unicode(256, collation='utf8_bin'), nullable=False)
+    eigenvalue = db.Column(db.Unicode(128, collation='utf8_bin'), nullable=False)
 
     def to_json(self):
         json = {
             'id': self.id,
             'name': self.name,
-            'img': self.img
+            'img': self.img,
+            'eigenvalue': self.eigenvalue
         }
         return json
 

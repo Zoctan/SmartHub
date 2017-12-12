@@ -32,15 +32,24 @@ def onenet():
             tmp = hashlib.md5(('752481828' + nonce + msg).encode())
             if base64.b64encode(tmp.digest()).decode() == signature:
                 return msg
+    """
     # calculate eigenvalue by python and get current device image and name
     if request.method == 'POST':
-        if request.json['msg']['ds_id'] == 'Humidity':  # !every 24 hour to -> day
-            with open('/tmp/onenet_v', 'wb') as f:
-                pickle.dump(request.json, f)
-        elif request.json['msg']['ds_id'] == 'Temperature':
-            with open('/tmp/onenet_a', 'wb') as f:
-                pickle.dump(request.json, f)
-        return 'well'
+        file = None
+        if request.json['msg']['ds_id'] == 'V':  # !every 24 hour to -> day
+            file = '/tmp/onenet_V_{}'.format(request.json['msg']['dev_id'])
+        elif request.json['msg']['ds_id'] == 'A':
+            file = '/tmp/onenet_A_{}'.format(request.json['msg']['dev_id'])
+        elif request.json['msg']['ds_id'] == 'W':
+            file = '/tmp/onenet_W_{}'.format(request.json['msg']['dev_id'])
+        elif request.json['msg']['ds_id'] == 'Q':
+            file = '/tmp/onenet_Q_{}'.format(request.json['msg']['dev_id'])
+        with open(file, 'rb') as f:
+            now_data_dict = pickle.load(f)
+        with open(file, 'wb') as f:
+            pickle.dump(request.json, f)
+        return 'get'
+    """
     return 'error'
 
 
