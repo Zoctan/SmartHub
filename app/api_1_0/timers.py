@@ -27,7 +27,8 @@ def get_hub_timers(device_id):
         crontabs += _once
     if not task and not crontabs:  # empty
         for i in ['定时开机', '定时关机']:
-            crontabs.append({'name': i, 'time': '', 'repeat': ''})
+            crontabs.append({'status': 'false', 'name': i,
+                             'time': '', 'repeat': ''})
     else:
         for i in task:
             if '/hubs/on' in i:
@@ -42,11 +43,13 @@ def get_hub_timers(device_id):
                 repeat = '每天'
             else:
                 repeat = '每周' + i[4]
-            crontabs.append({'name': name, 'time': _time, 'repeat': repeat})
+            crontabs.append({'status': 'true', 'name': name,
+                             'time': _time, 'repeat': repeat})
     if len(crontabs) == 1:  # not enough
         for i in ['定时开机', '定时关机']:
             if crontabs[0]['name'] != i:
-                crontabs.append({'name': i, 'time': '', 'repeat': ''})
+                crontabs.append({'status': 'false', 'name': i,
+                                 'time': '', 'repeat': ''})
     print(crontabs)
     return jsonify({'msg': 'ok', 'result': crontabs})
 
@@ -116,9 +119,11 @@ def get_once(device_id):
         am_pm = 'AM' if int(hour) < 12 else 'PM'
         _time = '{}:{} {}'.format(hour, minute, am_pm)
         if hub_on in p.stdout.decode():
-            crontabs.append({'name': '定时开机', 'time': _time, 'repeat': '一次性'})
+            crontabs.append({'status': 'true', 'name': '定时开机',
+                             'time': _time, 'repeat': '一次性'})
         elif hub_off in p.stdout.decode():
-            crontabs.append({'name': '定时关机', 'time': _time, 'repeat': '一次性'})
+            crontabs.append({'status': 'true', 'name': '定时关机',
+                             'time': _time, 'repeat': '一次性'})
     return crontabs
 
 
