@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from flask import jsonify, g
+from flask import jsonify, g, request
+
+from app import db
 from . import decorators
-from ..models import User
+from ..models import User, Hub
 import requests
 from time import sleep
 
@@ -31,6 +33,38 @@ def get_hubs():
         tmp.update(hub.to_json())
         hub_list.append(tmp)
     return jsonify({'msg': 'ok', 'result': hub_list})
+
+
+@decorators.composed(decorators.route('/api/hubs', methods=['POST']), decorators.json_required)
+def add_hub():
+    onenet_id = request.json.get('onenet_id')
+    mac = request.json.get('mac')
+    # require these value
+    if not onenet_id or not mac:
+        return jsonify({'msg': 'no', 'error': '缺少参数: 设备号 MAC地址'})
+    if Hub.query.filter_by(onenet_id=onenet_id).first():
+        return jsonify({'msg': 'no', 'error': '插座已存在'})
+    hub = Hub(user_id=g.current_user.id, mac=mac, onenet_id=onenet_id)
+    db.session.add(hub)
+    return jsonify({'msg': 'ok'})
+
+
+@decorators.composed(decorators.route('/api/hubs/<device_id>', methods=['DELETE']))
+def delete_hub(device_id):
+    hub = Hub.query.filter_by(onenet_id=device_id).first()
+    if not hub:
+        return jsonify({'msg': 'no', 'error': '插座不存在'})
+    db.session.delete(hub)
+    return jsonify({'msg': 'ok'})
+
+
+@decorators.composed(decorators.route('/api/hubs/<device_id>', methods=['PUT']), decorators.json_required)
+def update_hub(device_id):
+    hub = Hub.query.filter_by(onenet_id=device_id).first()
+    if not hub:
+        return jsonify({'msg': 'no', 'error': '插座不存在'})
+    hub.name = request.json.get('name')
+    return jsonify({'msg': 'ok'})
 
 
 @decorators.route('/api/hubs/<status>/<device_id>', methods=['GET'])

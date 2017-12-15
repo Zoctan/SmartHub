@@ -29,16 +29,17 @@ def create_user():
     password = request.json.get('password')
     # require these value
     if not username or not password:
-        return jsonify({'msg': 'no', 'error': '缺少参数: 需要用户名和密码'})
+        return jsonify({'msg': 'no', 'error': '缺少参数: 用户名 密码'})
     if User.query.filter_by(username=username).first():
         return jsonify({'msg': 'no', 'error': '用户名: {} 已存在'.format(username)})
+    g.current_user = User(username=username)
     g.current_user.password = password
     db.session.add(g.current_user)
     return get_token()
 
 
 @decorators.composed(decorators.route('/api/users/avatar', methods=['PUT']), decorators.json_required)
-def update_user_avatar():
+def update_hub():
     user = User.query.filter_by(id=g.current_user.id).first()
     if not user:
         return jsonify({'msg': 'no', 'error': '用户不存在'})

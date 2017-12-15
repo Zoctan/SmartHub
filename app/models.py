@@ -59,7 +59,7 @@ class Hub(db.Model):
     __tablename__ = 'smart_hubs'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('smart_users.id'))
-    name = db.Column(db.Unicode(64, collation='utf8_bin'), default='排插')
+    name = db.Column(db.Unicode(64, collation='utf8_bin'), default='插座')
     mac = db.Column(db.Unicode(64, collation='utf8_bin'), nullable=False)
     onenet_id = db.Column(db.Unicode(64, collation='utf8_bin'))
 
