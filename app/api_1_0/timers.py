@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from subprocess import run, PIPE, STDOUT
+
 from flask import request, jsonify
+
 from app.models import Hub
 from . import api
-from time import sleep
-from subprocess import run, PIPE, STDOUT
 
 crontab = '/etc/crontab'
 
@@ -97,11 +98,11 @@ def set_timer(device_id):
     return jsonify({'msg': 'ok'})
 
 
-def write_crontab(op, key_word, task):
+def write_crontab(action, key_word, task):
     # 将文件读取到内存中
     with open(crontab, 'r', encoding='utf-8') as f:
         lines = f.readlines()
-    if op == 'add':
+    if action == 'add':
         with open(crontab, 'a', encoding='utf-8') as f_w:
             f_w.write(task + '\n')
             return
@@ -109,9 +110,9 @@ def write_crontab(op, key_word, task):
     with open(crontab, 'w', encoding='utf-8') as f_w:
         for i in range(len(lines)):
             if key_word in lines[i]:
-                if op == 'replace':
+                if action == 'replace':
                     lines[i] = task + '\n'
-                elif op == 'delete':
+                elif action == 'delete':
                     lines[i] = ''
         f_w.writelines(lines)
 
