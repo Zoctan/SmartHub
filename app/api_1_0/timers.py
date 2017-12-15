@@ -27,7 +27,7 @@ def get_hub_timers(device_id):
         crontabs += _once
     if not task and not crontabs:  # empty
         for i in ['定时开机', '定时关机']:
-            crontabs.append({'status': 'false', 'name': i,
+            crontabs.append({'status': False, 'name': i,
                              'time': '', 'repeat': ''})
     else:
         for i in task:
@@ -37,37 +37,46 @@ def get_hub_timers(device_id):
                 name = '定时关机'
             i = i.split(' ')
             hour, minute = i[1], i[0]
-            am_pm = 'AM' if int(hour) < 12 else 'PM'
+            if int(hour) < 6:
+                am_pm = '凌晨'
+            elif 6 <= int(hour) <= 12:
+                am_pm = '上午'
+            elif 12 <= int(hour) <= 18:
+                am_pm = '下午'
+            else:
+                am_pm = '晚上'
+            # 13:00 PM
             _time = '{}:{} {}'.format(hour, minute, am_pm)
             if i[2] == i[3] == i[4] == '*':
                 repeat = '每天'
             else:
                 repeat = '每周' + i[4]
-            crontabs.append({'status': 'true', 'name': name,
+            crontabs.append({'status': True, 'name': name,
                              'time': _time, 'repeat': repeat})
     if len(crontabs) == 1:  # not enough
         for i in ['定时开机', '定时关机']:
             if crontabs[0]['name'] != i:
-                crontabs.append({'status': 'false', 'name': i,
+                crontabs.append({'status': False, 'name': i,
                                  'time': '', 'repeat': ''})
     print(crontabs)
     return jsonify({'msg': 'ok', 'result': crontabs})
 
 
-@api.route('/api/hubs/timers/<operation>', methods=['POST'])
-def set_timer(operation):
+@api.route('/api/hubs/timers/<device_id>', methods=['PUT'])
+def set_timer(device_id):
     task = request.json
+    action = task['action']
     # print(task)
     minute, hour = task['minute'], task['hour']
     if task['which'] == 'power_on':
-        key_word = '/hubs/on/{}'.format(task['device_id'])
+        key_word = '/hubs/on/{}'.format(device_id)
     else:
-        key_word = '/hubs/off/{}'.format(task['device_id'])
+        key_word = '/hubs/off/{}'.format(device_id)
     command = 'curl https://smart.txdna.cn/api' + key_word + ' > /tmp/curl_hub'
     if task['repeat'] == '一次性':
-        if operation == 'add':
+        if action == 'add':
             set_once(minute, command)
-        if operation == 'delete':
+        if action == 'delete':
             rm_once(command)
         else:
             rm_once(command)
@@ -82,9 +91,9 @@ def set_timer(operation):
         user = 'root'
         task = '{} {} {} {} {} {} {}'.format(
                 minute, hour, day, month, week, user, command)
-        write_crontab(operation, key_word, task)
+        write_crontab(action, key_word, task)
     # print(task)
-    sleep(1)
+    # sleep(1)
     return jsonify({'msg': 'ok'})
 
 
@@ -119,10 +128,10 @@ def get_once(device_id):
         am_pm = 'AM' if int(hour) < 12 else 'PM'
         _time = '{}:{} {}'.format(hour, minute, am_pm)
         if hub_on in p.stdout.decode():
-            crontabs.append({'status': 'true', 'name': '定时开机',
+            crontabs.append({'status': True, 'name': '定时开机',
                              'time': _time, 'repeat': '一次性'})
         elif hub_off in p.stdout.decode():
-            crontabs.append({'status': 'true', 'name': '定时关机',
+            crontabs.append({'status': True, 'name': '定时关机',
                              'time': _time, 'repeat': '一次性'})
     return crontabs
 
