@@ -25,7 +25,7 @@ def get_user_info():
 
 
 @decorators.composed(decorators.route('/api/users', methods=['POST']), decorators.json_required)
-def create_user():
+def add_user():
     username = request.json.get('username')
     password = request.json.get('password')
     # require these value
@@ -40,7 +40,7 @@ def create_user():
 
 
 @decorators.composed(decorators.route('/api/users/avatar', methods=['PUT']), decorators.json_required)
-def update_hub():
+def update_user_avatar():
     user = User.query.filter_by(id=g.current_user.id).first()
     if not user:
         return jsonify({'msg': 'no', 'error': '用户不存在'})
