@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from flask import current_app
-from app import db
-from passlib.apps import custom_app_context as pwd_context
 from itsdangerous import (TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired)
+from passlib.apps import custom_app_context as pwd_context
+
+from app import db
 
 
 class User(db.Model):

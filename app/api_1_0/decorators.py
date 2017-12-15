@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from functools import wraps
+
 from flask import request, jsonify
-from ..models import db
+
 from . import api
+from ..models import db
 
 
 def route(rule, **options):
@@ -20,9 +22,11 @@ def route(rule, **options):
                 return jsonify({'msg': 'no', 'error': str(e)})
             finally:
                 db.session.remove()
+
         endpoint = options.pop('endpoint', None)
         api.add_url_rule(rule, endpoint, decorated_function, **options)
         return decorated_function
+
     return decorator
 
 
@@ -32,6 +36,7 @@ def composed(*decorators):
         for dec in reversed(decorators):
             func = dec(func)
         return func
+
     return decorator
 
 
@@ -41,4 +46,5 @@ def json_required(func):
         if not request.json:
             return jsonify({'msg': 'no', 'error': 'required json'})
         return func(*args, **kwargs)
+
     return decorated_function

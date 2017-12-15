@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import jsonify
+
 from . import api
 
 

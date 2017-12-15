@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from flask import request, jsonify, g
+
 from . import decorators
-from ..models import User, db
 from .authentication import verify_password, basic_auth_unauthorized, get_token
+from ..models import User, db
 
 
 @decorators.composed(decorators.route('/api/tokens', methods=['POST']), decorators.json_required)

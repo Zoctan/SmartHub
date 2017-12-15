@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from time import sleep
+
+import requests
 from flask import jsonify, g, request
 
 from app import db
 from . import decorators
 from ..models import User, Hub
-import requests
-from time import sleep
 
 
 # test_init
