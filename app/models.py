@@ -15,6 +15,7 @@ class User(db.Model):
     password_hash = db.Column(db.Unicode(256, collation='utf8_bin'), nullable=False)
     avatar = db.Column(db.Unicode(256, collation='utf8_bin'), default="http://p0qgwnuel.bkt.clouddn.com/default.png")
     hubs = db.relationship('Hub', backref='User', lazy='dynamic', cascade='all, delete-orphan')
+    phone = db.Column(db.Unicode(20, collation='utf8_bin'))
 
     @property
     def password(self):
@@ -47,7 +48,8 @@ class User(db.Model):
         json = {
             'id': self.id,
             'username': self.username,
-            'avatar': self.avatar
+            'avatar': self.avatar,
+            'phone': self.phone
         }
         return json
 
