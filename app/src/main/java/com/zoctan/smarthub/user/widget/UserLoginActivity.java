@@ -1,275 +1,292 @@
 package com.zoctan.smarthub.user.widget;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.Toolbar;
-import android.text.InputType;
+import android.content.res.Configuration;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ProgressBar;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
-import com.orhanobut.logger.Logger;
+import com.blankj.utilcode.util.LogUtils;
+import com.geetest.gt3unbindsdk.Bind.GT3GeetestBindListener;
+import com.geetest.gt3unbindsdk.Bind.GT3GeetestUtilsBind;
+import com.gyf.barlibrary.ImmersionBar;
+import com.wang.avi.AVLoadingIndicatorView;
+import com.zoctan.smarthub.App;
 import com.zoctan.smarthub.R;
+import com.zoctan.smarthub.base.BaseActivity;
 import com.zoctan.smarthub.beans.UserBean;
+import com.zoctan.smarthub.main.MainActivity;
 import com.zoctan.smarthub.user.presenter.UserLoginPresenter;
 import com.zoctan.smarthub.user.view.UserLoginView;
-import com.zoctan.smarthub.utils.ActivityCollector;
-import com.zoctan.smarthub.utils.CodeUtils;
-import com.zoctan.smarthub.utils.SPUtils;
-import com.zoctan.smarthub.utils.SwipeBackActivity;
-import com.zoctan.smarthub.utils.ToastUtils;
+import com.zoctan.smarthub.utils.AlerterUtil;
 
-import java.util.Objects;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import me.imid.swipebacklayout.lib.SwipeBackLayout;
+import java.util.HashMap;
+import java.util.Map;
 
-public class UserLoginActivity extends SwipeBackActivity implements UserLoginView, View.OnClickListener {
+import butterknife.BindView;
+import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
-    private EditText mEtName, mEtPassword, mEtPassword2, mEtProve;
-    private Button mBtnLogin, mBtnRegister;
-    private CheckBox mBtnEye;
-    private Toolbar mToolbar;
-    private ImageButton mBtnProve;
-    private ProgressBar mPbLoading;
-    private UserLoginPresenter mUserLoginPresenter;
-    private SPUtils mSPUtils;
-    private CodeUtils mCodeUtils;
-    private FrameLayout mRegisterLayout;
+public class UserLoginActivity extends BaseActivity implements UserLoginView {
+
+    //设置获取id，challenge，success的URL,俗称api1，需替换成自己的服务器URL
+    private static final String captchaURL = "http://www.geetest.com/demo/gt/register-click";
+    // 设置二次验证的URL,俗称api2，需替换成自己的服务器URL
+    private static final String validateURL = "http://www.geetest.com/demo/gt/validate-click";
+    private final UserLoginPresenter mLoginPresenter = new UserLoginPresenter(this);
+    @BindView(R.id.TextInputLayout_user_name)
+    TextInputLayout mLayoutUserName;
+    @BindView(R.id.TextInputLayout_user_password)
+    TextInputLayout mLayoutUserPassword;
+    @BindView(R.id.TextInputLayout_user_password2)
+    TextInputLayout mLayoutUserPassword2;
+    @BindView(R.id.EditText_user_name)
+    TextInputEditText mEtUserName;
+    @BindView(R.id.EditText_user_password)
+    TextInputEditText mEtPassword;
+    @BindView(R.id.EditText_user_password2)
+    TextInputEditText mEtPassword2;
+    @BindView(R.id.ImageView_app)
+    ImageView mIvApp;
+    @BindView(R.id.TextView_app)
+    TextView mTvApp;
+    @BindView(R.id.Button_user_login)
+    Button mBtnLogin;
+    @BindView(R.id.Button_user_register)
+    Button mBtnRegister;
+    @BindView(R.id.AVLoadingIndicatorView_user_login)
+    AVLoadingIndicatorView mProgressBar;
+    @BindView(R.id.LinearLayout_user_password2)
+    LinearLayout mLayoutRegister;
+    @BindView(R.id.RelativeLayout_user_login)
+    RelativeLayout mLayoutLogin;
+    @BindView(R.id.View_user_register)
+    View mViewRegisterLine;
+    private GT3GeetestUtilsBind mGt3GeetestUtils;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // 如果为日间模式
-        mSPUtils = new SPUtils(this);
-        if (Objects.equals(mSPUtils.getString("toggle"), "day") || !mSPUtils.contains("toggle")) {
-            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        } else {
-            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        }
-
-        // 设置登录要显示的视图
-        setContentView(R.layout.activity_user_login);
-
-        // 初始化控件
-        initView();
-
-        mUserLoginPresenter = new UserLoginPresenter(this);
-
-        // 将该Activity添加到ActivityCollector管理器中
-        ActivityCollector.addActivity(this);
-    }
-
-    // 初始化控件
-    private void initView() {
-        // 设置Toolbar
-        mToolbar = (Toolbar) findViewById(R.id.mToolbar);
-        mToolbar.setTitle(R.string.navUser);
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
-
-        mCodeUtils = CodeUtils.getInstance();
-
-        // 初始化输入框和层
-        mEtName = (EditText) findViewById(R.id.mEtLoginName);
-        mEtPassword = (EditText) findViewById(R.id.mEtLoginPassword);
-        mRegisterLayout = (FrameLayout) findViewById(R.id.mLayoutRegister);
-        mRegisterLayout.setVisibility(View.GONE);
-        mEtPassword2 = (EditText) findViewById(R.id.mEtRegisterPassword);
-        mEtProve = (EditText) findViewById(R.id.mEtProve);
-        mPbLoading = (ProgressBar) findViewById(R.id.mProgressBar);
-
-        // 获得SwipeBackLayout对象
-        SwipeBackLayout mSwipeBackLayout = getSwipeBackLayout();
-        // 设定可从上下左右滑动退出
-        mSwipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_ALL);
-
-        // 初始化按钮
-        mBtnLogin = (Button) findViewById(R.id.mBtnLogin);
-        mBtnRegister = (Button) findViewById(R.id.mBtnRegister);
-        mBtnEye = (CheckBox) findViewById(R.id.mBtnPwdEye);
-        mBtnProve = (ImageButton) findViewById(R.id.mBtnProve);
-
-        // 监听界面上的按钮
-        mBtnLogin.setOnClickListener(this);
-        mBtnRegister.setOnClickListener(this);
-        mBtnEye.setOnClickListener(this);
-        mBtnProve.setOnClickListener(this);
-
-        refresh();
+    protected int bindLayout() {
+        return R.layout.activity_user_login;
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.mBtnLogin:
-                clickButton();
-                break;
-            case R.id.mBtnRegister:
-                switchClick();
-                break;
-            case R.id.mBtnPwdEye:
-                showHidePwd();
-                break;
-            case R.id.mBtnProve:
-                refresh();
-            default:
-                break;
+    protected void initImmersionBar() {
+        mImmersionBar = ImmersionBar.with(this);
+        mImmersionBar.init();
+    }
+
+    @Override
+    protected void initView() {
+        mGt3GeetestUtils = new GT3GeetestUtilsBind(this);
+    }
+
+    @OnTextChanged(value = R.id.EditText_user_name, callback = OnTextChanged.Callback.TEXT_CHANGED)
+    void onUserNameChanged(CharSequence s, int start, int count, int after) {
+        if (s.length() > 12) {
+            mLayoutUserName.setErrorEnabled(true);
+            mLayoutUserName.setError(getString(R.string.all_max_name));
+        } else {
+            mLayoutUserName.setError(null);
         }
     }
 
-    // 显示密码
-    private void showHidePwd() {
-        if (mBtnEye.isChecked()) {
-            //选择状态 显示明文--设置为可见的密码
-            mEtPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            mEtPassword2.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+    @OnTextChanged(value = R.id.EditText_user_password2, callback = OnTextChanged.Callback.TEXT_CHANGED)
+    void onPassword2Changed(CharSequence s, int start, int count, int after) {
+        if (!mEtPassword.getText().toString().equals(mEtPassword2.getText().toString())) {
+            mLayoutUserPassword2.setErrorEnabled(true);
+            mLayoutUserPassword2.setError(getString(R.string.all_different_password));
         } else {
-            //默认状态显示密码--设置文本 要一起写才能起作用 InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD
-            mEtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            mEtPassword2.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mLayoutUserPassword2.setError(null);
         }
-       // 设置光标位置到行尾
-        mEtPassword.setSelection(mEtPassword.getText().length());
-        mEtPassword2.setSelection(mEtPassword2.getText().length());
     }
 
     // 通过交换按钮的text来交换位置
-    private void switchClick() {
-        if(mBtnLogin.getText() == "注册") {
-            initView();
+    @OnClick(R.id.Button_user_register)
+    public void exchangeButton() {
+        if (mBtnLogin.getText() == "注册") {
             mBtnLogin.setText("登录");
             mBtnRegister.setText("注册");
-        }else {
+            mViewRegisterLine.setVisibility(View.GONE);
+            mLayoutRegister.setVisibility(View.GONE);
+            mIvApp.setVisibility(View.VISIBLE);
+            mTvApp.setTextSize(14);
+        } else {
             mBtnLogin.setText("注册");
             mBtnRegister.setText("登录");
-            mRegisterLayout.setVisibility(View.VISIBLE);
+            mViewRegisterLine.setVisibility(View.VISIBLE);
+            mLayoutRegister.setVisibility(View.VISIBLE);
+            mIvApp.setVisibility(View.GONE);
+            mTvApp.setTextSize(18);
         }
+    }
+
+    private Boolean isValidate() {
+        Boolean flag = false;
+        if (mEtUserName.getText().length() > 0
+                && mEtPassword.getText().length() > 0
+                && mLayoutUserName.getError() == null
+                && mLayoutUserPassword.getError() == null) {
+            flag = true;
+        }
+        if (mBtnLogin.getText() == "注册"
+                && mEtPassword2.getText().length() == 0
+                && mLayoutUserPassword2.getError() != null) {
+            flag = false;
+        }
+        return flag;
     }
 
     // 登录或注册点击
-    private void clickButton() {
-        String name = mEtName.getText().toString();
-        String password = mEtPassword.getText().toString();
-        String password2 = mEtPassword2.getText().toString();
-        String codeStr = mEtProve.getText().toString().trim();
-        if(mBtnLogin.getText() == "注册") {
-            if(checkInput(name, password, password2) && checkProve(codeStr)) {
-                mUserLoginPresenter.userAction("register", name, password);
+    @OnClick(R.id.Button_user_login)
+    public void clickButton() {
+        if (!isValidate()) {
+            return;
+        }
+        mGt3GeetestUtils.getGeetest(this, captchaURL, validateURL, "zh", new GT3GeetestBindListener() {
+            /**
+             * 往API1请求中添加参数
+             * 添加数据为Map集合
+             * 添加的数据以get形式提交
+             */
+            @Override
+            public Map<String, String> gt3CaptchaApi1() {
+                return new HashMap<>();
             }
-        }else {
-            if(checkInput(name, password) && checkProve(codeStr)) {
-                mUserLoginPresenter.userAction("login", name, password);
+
+            /**
+             * 往二次验证里面put数据
+             * put类型是map类型
+             * 注意map的键名不能是以下三个：geetest_challenge，geetest_validate，geetest_seccode
+             */
+            @Override
+            public Map<String, String> gt3SecondResult() {
+                Map<String, String> map = new HashMap<>();
+                map.put("testkey", "12315");
+                return map;
             }
-        }
-    }
 
-    public void refresh() {
-        Bitmap bitmap = mCodeUtils.createBitmap();
-        mBtnProve.setImageBitmap(bitmap);
-    }
-
-    // 检查验证码
-    public boolean checkProve(String codeStr) {
-        if (codeStr == null || TextUtils.isEmpty(codeStr)) {
-            ToastUtils.showShort(this, "请输入验证码");
-            return false;
-        }
-        String code = mCodeUtils.getCode();
-        if (code.equalsIgnoreCase(codeStr)) {
-            return true;
-        } else {
-            ToastUtils.showShort(this, "验证码错误");
-            return false;
-        }
-    }
-
-    // 检查输入
-    public boolean checkInput(String name, String password) {
-        if (name == null || TextUtils.isEmpty(name)) {
-            ToastUtils.showShort(this, "用户名不能为空");
-        }else {
-            if (password == null || TextUtils.isEmpty(password)) {
-                ToastUtils.showShort(this, "密码不能为空");
-            } else {
-                return true;
+            /**
+             * 二次验证完成的回调
+             * result为验证后的数据
+             * 根据二次验证返回的数据判断此次验证是否成功
+             * 二次验证成功调用 mGt3GeetestUtils.gt3TestFinish();
+             * 二次验证失败调用 mGt3GeetestUtils.gt3TestClose();
+             */
+            @Override
+            public void gt3DialogSuccessResult(String result) {
+                if (!TextUtils.isEmpty(result)) {
+                    try {
+                        JSONObject jobj = new JSONObject(result);
+                        String sta = jobj.getString("status");
+                        if ("success".equals(sta)) {
+                            mGt3GeetestUtils.gt3TestFinish();
+                            UserBean user = new UserBean(mEtUserName.getText().toString(), mEtPassword.getText().toString());
+                            if (mBtnLogin.getText() == "注册") {
+                                mLoginPresenter.userAction(false, user);
+                            } else {
+                                mLoginPresenter.userAction(true, user);
+                            }
+                        } else {
+                            mGt3GeetestUtils.gt3TestClose();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    mGt3GeetestUtils.gt3TestClose();
+                }
             }
-        }
-        return false;
-    }
 
-    public boolean checkInput(String name, String password, String password2) {
-        if(checkInput(name, password)) {
-            if (!Objects.equals(password, password2)) {
-                ToastUtils.showShort(this, "两次密码不一致");
-            } else {
-                return true;
+            /**
+             * 验证过程错误
+             * 返回的错误码为判断错误类型的依据
+             */
+            @Override
+            public void gt3DialogOnError(String error) {
+                LogUtils.i("gt3DialogOnError");
             }
-        }
-        return false;
-    }
-
-    @Override
-    public void showLoading() {
-        mPbLoading.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideLoading() {
-        mPbLoading.setVisibility(View.GONE);
+        });
+        // 设置是否可以点击屏幕边缘关闭验证码
+        mGt3GeetestUtils.setDialogTouch(true);
     }
 
     @Override
     public void showSuccessMsg(UserBean userBean) {
-        if(mBtnLogin.getText() == "注册") {
-            ToastUtils.showShort(this, "注册成功");
-        }else {
-            ToastUtils.showShort(this, "登录成功");
-        }
-        // 将login置为true
-        mSPUtils.putBoolean("Login", true);
+        App.mSPUtil.put("login", true);
         // 将用户信息存在本地
-        mSPUtils.putString("userID", userBean.getId());
-        mSPUtils.putString("userAvatar", userBean.getAvatar());
-        mSPUtils.putString("userName", userBean.getUsername());
-        mSPUtils.putString("userPassword", userBean.getPassword());
-        Logger.d(userBean);
-        // 更新主界面侧滑栏的用户UI
-        Intent intent = new Intent("userLogin");
-        Bundle user = new Bundle();
-        user.putString("name", userBean.getUsername());
-        user.putString("image", userBean.getAvatar());
-        intent.putExtras(user);
-        sendBroadcast(intent);
+        App.mSPUtil.put("user_id", userBean.getId());
+        App.mSPUtil.put("user_avatar", userBean.getAvatar());
+        App.mSPUtil.put("user_phone", userBean.getPhone());
+        App.mSPUtil.put("user_name", userBean.getUsername());
+        App.mSPUtil.put("user_password", userBean.getPassword());
+        if (mBtnLogin.getText() == "注册") {
+            AlerterUtil.showInfo(this, R.string.user_register_success);
+        } else {
+            AlerterUtil.showInfo(this, R.string.user_login_success);
+        }
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        mGt3GeetestUtils.cancelUtils();
         finish();
     }
 
     @Override
-    public void showFailedMsg() {
-        if(mBtnLogin.getText() == "注册") {
-            ToastUtils.showLong(this, "注册失败, 用户名已存在");
-        }else {
-            ToastUtils.showShort(this, "登录失败");
-        }
+    public void showLoading() {
+        mProgressBar.smoothToShow();
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        // 从管理器中移除该Activity
-        ActivityCollector.removeActivity(this);
+    public void hideLoading() {
+        mProgressBar.smoothToHide();
+    }
+
+    @Override
+    public void showFailedMsg(String msg) {
+        AlerterUtil.showDanger(this, msg);
+    }
+
+    /**
+     * 以下代码是模拟自定义api1的异步请求
+     * 需要自定义api1的可以参考这边的写法
+     */
+//    GtApi1json mGtApi1json;
+//    GT3Geetest captcha= new GT3Geetest(
+//            captchaURL, validateURL,null
+//    );
+//
+//    class GtApi1json extends AsyncTask<Void, Void, JSONObject> {
+//
+//        @Override
+//        protected JSONObject doInBackground(Void... params) {
+//            String map_st = "";
+//            return captcha.check2Server(map_st);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(JSONObject parmas) {
+//            //parmas格式"{\"success\":1,\"challenge\":\"4a5cef77243baa51b2090f7258bf1368\",\"gt\":\"019924a82c70bb123aae90d483087f94\",\"new_captcha\":true}"
+//
+//            /**
+//             * 如果api1也想自己自定,那么访问您的服务器后将JSON数据以如下格式传给我
+//             *  mGt3GeetestUtils.gtSetApi1Json(jsonObject);
+//             */
+//            mGt3GeetestUtils.gtSetApi1Json(parmas);
+//            mGt3GeetestUtils.getGeetest(MainBindActivity.this,captchaURL, validateURL,null);
+//            mGt3GeetestUtils.setDialogTouch(true);
+//        }
+//    }
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mGt3GeetestUtils.changeDialogLayout();
     }
 }

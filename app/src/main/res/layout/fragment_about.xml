@@ -6,18 +6,15 @@
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="226dp"
-        android:fitsSystemWindows="true">
+        android:layout_height="256dp">
 
         <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/mCollapsingToolbarLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:collapsedTitleTextAppearance="@color/tabText"
+            app:collapsedTitleTextAppearance="@color/third_text"
             app:expandedTitleMarginStart="10dp"
-            app:expandedTitleTextAppearance="@color/tabTextSecond"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:title="For new life">
+            app:expandedTitleTextAppearance="@color/secondary_text"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -25,28 +22,29 @@
                 android:layout_gravity="center"
                 android:orientation="vertical">
 
-                <android.support.v7.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@color/cardview_light_background"
-                    app:cardCornerRadius="@dimen/iconCardCornerRadius"
-                    app:elevation="5dp">
-
-                    <ImageView
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:src="@mipmap/ic_launcher"
-                        tools:ignore="ContentDescription" />
-                </android.support.v7.widget.CardView>
+                <ImageView
+                    android:id="@+id/ImageView_about_app"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@mipmap/ic_launcher"
+                    tools:ignore="ContentDescription" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_gravity="center"
                     android:layout_marginTop="5dp"
-                    android:text="1.0"
-                    android:textColor="@color/tabTextSecond" />
+                    android:text="@string/app"
+                    android:textColor="@color/third_text" />
 
+                <TextView
+                    android:id="@+id/TextView_about_version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/all_zero"
+                    android:textColor="@color/third_text" />
             </LinearLayout>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
@@ -84,8 +82,8 @@
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp"
                         android:paddingTop="16dp"
-                        android:text="@string/about_app"
-                        android:textColor="@color/secondaryText"
+                        android:text="@string/about_app_function"
+                        android:textColor="@color/secondary_text"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
@@ -93,11 +91,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingBottom="10dp"
-                        android:paddingLeft="20dp"
                         android:paddingStart="20dp"
                         android:paddingTop="5dp"
-                        android:text="@string/about_app_text"
-                        android:textColor="@color/secondaryText"
+                        android:text="@string/about_app_function_introduction"
+                        android:textColor="@color/secondary_text"
                         android:textSize="14sp"
                         tools:ignore="RtlSymmetry" />
 
@@ -127,8 +124,8 @@
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp"
                         android:paddingTop="16dp"
-                        android:text="@string/sourceCode"
-                        android:textColor="@color/secondaryText"
+                        android:text="@string/about_source_code"
+                        android:textColor="@color/secondary_text"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
@@ -137,52 +134,11 @@
                         android:layout_height="wrap_content"
                         android:autoLink="web"
                         android:paddingBottom="10dp"
-                        android:paddingLeft="20dp"
+                        android:paddingEnd="0dp"
+                        android:paddingStart="20dp"
                         android:paddingTop="10dp"
-                        android:text="@string/sourceCodeUrl"
-                        android:textColor="@color/secondaryText"
-                        android:textColorLink="@color/primary"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginTop="15dp"
-                app:cardCornerRadius="1dp"
-                app:cardElevation="0.5dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:maxLines="1"
-                        android:paddingBottom="0dp"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:paddingTop="16dp"
-                        android:text="@string/appIntroduce"
-                        android:textColor="@color/secondaryText"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:autoLink="web"
-                        android:paddingBottom="10dp"
-                        android:paddingLeft="20dp"
-                        android:paddingTop="10dp"
-                        android:text="@string/appIntroduceUrl"
-                        android:textColor="@color/secondaryText"
+                        android:text="@string/about_source_code_url"
+                        android:textColor="@color/secondary_text"
                         android:textColorLink="@color/primary"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -212,7 +168,7 @@
                         android:paddingRight="5dp"
                         android:paddingTop="16dp"
                         android:text="@string/about_author"
-                        android:textColor="@color/secondaryText"
+                        android:textColor="@color/secondary_text"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
@@ -225,10 +181,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:paddingBottom="10dp"
-                            android:paddingLeft="20dp"
+                            android:paddingEnd="0dp"
+                            android:paddingStart="20dp"
                             android:paddingTop="10dp"
-                            android:text="blog: "
-                            android:textColor="@color/secondaryText"
+                            android:text="@string/about_blog"
+                            android:textColor="@color/secondary_text"
                             android:textSize="14sp" />
 
                         <TextView
@@ -236,10 +193,11 @@
                             android:layout_height="wrap_content"
                             android:autoLink="web"
                             android:paddingBottom="10dp"
-                            android:paddingLeft="5dp"
+                            android:paddingEnd="0dp"
+                            android:paddingStart="5dp"
                             android:paddingTop="10dp"
-                            android:text="@string/blogUrl"
-                            android:textColor="@color/secondaryText"
+                            android:text="@string/about_blog_url"
+                            android:textColor="@color/secondary_text"
                             android:textColorLink="@color/primary"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -253,10 +211,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:paddingBottom="10dp"
-                            android:paddingLeft="20dp"
+                            android:paddingEnd="0dp"
+                            android:paddingStart="20dp"
                             android:paddingTop="5dp"
-                            android:text="github: "
-                            android:textColor="@color/secondaryText"
+                            android:text="@string/about_github"
+                            android:textColor="@color/secondary_text"
                             android:textSize="14sp" />
 
                         <TextView
@@ -264,10 +223,11 @@
                             android:layout_height="wrap_content"
                             android:autoLink="web"
                             android:paddingBottom="10dp"
-                            android:paddingLeft="5dp"
+                            android:paddingEnd="0dp"
+                            android:paddingStart="5dp"
                             android:paddingTop="5dp"
-                            android:text="@string/githubUrl"
-                            android:textColor="@color/secondaryText"
+                            android:text="@string/about_github_url"
+                            android:textColor="@color/secondary_text"
                             android:textColorLink="@color/primary"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -281,10 +241,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:paddingBottom="10dp"
-                            android:paddingLeft="20dp"
+                            android:paddingEnd="0dp"
+                            android:paddingStart="20dp"
                             android:paddingTop="5dp"
-                            android:text="email: "
-                            android:textColor="@color/secondaryText"
+                            android:text="@string/about_email"
+                            android:textColor="@color/secondary_text"
                             android:textSize="14sp" />
 
                         <TextView
@@ -292,10 +253,11 @@
                             android:layout_height="wrap_content"
                             android:autoLink="email"
                             android:paddingBottom="10dp"
-                            android:paddingLeft="5dp"
+                            android:paddingEnd="0dp"
+                            android:paddingStart="5dp"
                             android:paddingTop="5dp"
-                            android:text="@string/email"
-                            android:textColor="@color/secondaryText"
+                            android:text="@string/about_email_url"
+                            android:textColor="@color/secondary_text"
                             android:textColorLink="@color/primary"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -326,8 +288,8 @@
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp"
                         android:paddingTop="16dp"
-                        android:text="about library"
-                        android:textColor="@color/secondaryText"
+                        android:text="@string/about_library"
+                        android:textColor="@color/secondary_text"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
@@ -335,10 +297,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingBottom="10dp"
-                        android:paddingLeft="20dp"
+                        android:paddingEnd="0dp"
+                        android:paddingStart="20dp"
                         android:paddingTop="5dp"
-                        android:text="@string/about_library"
-                        android:textColor="@color/secondaryText"
+                        android:text="@string/about_library_introduction"
+                        android:textColor="@color/secondary_text"
                         android:textSize="14sp" />
                 </LinearLayout>
 

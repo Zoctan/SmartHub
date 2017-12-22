@@ -1,35 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".zxing.activity.CaptureActivity">
 
-    <include layout="@layout/scanner_toolbar" />
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
+        <include layout="@layout/layout_toolbar" />
+
+    </android.support.design.widget.AppBarLayout>
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <SurfaceView
-            android:id="@+id/scanner_view"
+            android:id="@+id/SurfaceView_scanner"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:background="@android:color/transparent" />
 
         <com.zoctan.smarthub.zxing.view.ViewfinderView
-            android:id="@+id/viewfinder_content"
+            android:id="@+id/ViewfinderView_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:corner_color="@color/corner_color"
-            app:frame_color="@color/viewfinder_frame"
-            app:label_text="二维码/条形码扫描"
-            app:label_text_color="@color/accent"
-            app:laser_color="@color/laser_color"
-            app:mask_color="@color/viewfinder_mask"
-            app:result_color="@color/result_view"
-            app:result_point_color="@color/result_point_color" />
-
+            app:corner_color="@color/primary"
+            app:frame_color="@color/divider"
+            app:label_text="@string/qr_code_scan"
+            app:label_text_color="@color/third_text"
+            app:laser_color="@color/yellow"
+            app:mask_color="@color/half_transparent"
+            app:result_color="@color/primary_text"
+            app:result_point_color="@color/yellow" />
     </FrameLayout>
 
 </LinearLayout>

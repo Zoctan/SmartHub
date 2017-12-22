@@ -5,7 +5,10 @@ package com.zoctan.smarthub.user.view;
  */
 public interface UserDetailView {
     void showLoading();
+
     void hideLoading();
+
     void showSuccessMsg(String avatarUrl);
+
     void showFailedMsg(String msg);
 }

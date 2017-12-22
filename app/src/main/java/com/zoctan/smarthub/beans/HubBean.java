@@ -6,7 +6,7 @@ public class HubBean implements Serializable {
     private String id;
     private String name;
     private String mac;
-    private String online;
+    private Boolean online;
     private String onenet_id;
     private String eigenvalue;
 
@@ -14,31 +14,31 @@ public class HubBean implements Serializable {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getMac() {
-        return mac;
-    }
-
-    public String getOnline() {
-        return online;
-    }
-
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
+    public String getMac() {
+        return mac;
+    }
+
     public void setMac(String mac) {
         this.mac = mac;
     }
 
-    public void setOnline(String online) {
+    public Boolean getOnline() {
+        return online;
+    }
+
+    public void setOnline(Boolean online) {
         this.online = online;
     }
 

@@ -3,30 +3,30 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/navHub"
-            android:icon="@drawable/text"
-            android:title="@string/navHub" />
+            android:id="@+id/item_hub_list"
+            android:icon="@drawable/ic_hub_list"
+            android:title="@string/nav_hub" />
         <item
-            android:id="@+id/navUser"
-            android:icon="@drawable/pic"
-            android:title="@string/navUser" />
+            android:id="@+id/item_user_center"
+            android:icon="@drawable/ic_user_center"
+            android:title="@string/nav_user" />
 
         <item
-            android:id="@+id/navAbout"
-            android:icon="@drawable/about"
-            android:title="@string/navAbout" />
+            android:id="@+id/item_about_app"
+            android:icon="@drawable/ic_about"
+            android:title="@string/nav_about" />
     </group>
 
-    <item android:title="@string/navOther">
+    <item android:title="@string/nav_other">
         <menu>
             <item
-                android:id="@+id/navDayNight"
-                android:icon="@drawable/about"
-                android:title="@string/navDayNight" />
+                android:id="@+id/item_switch_day_or_night"
+                android:icon="@drawable/ic_day_night"
+                android:title="@string/nav_day_night" />
             <item
-                android:id="@+id/navClear"
-                android:icon="@drawable/clear"
-                android:title="@string/navClear" />
+                android:id="@+id/item_clear_cache"
+                android:icon="@drawable/ic_clear"
+                android:title="@string/nav_clear" />
         </menu>
     </item>
 

@@ -2,29 +2,28 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/navHeaderHeight"
+    android:layout_height="200dp"
     android:background="@color/primary"
     android:gravity="center">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/mIvUserAvatar"
-        android:src="@mipmap/ic_user"
-        android:layout_marginTop="25dp"
+        android:id="@+id/CircleImageView_user_avatar"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        app:civ_border_width="2dp"
-        app:civ_border_color="@color/primaryLight"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true"
+        android:layout_marginTop="25dp"
+        android:src="@mipmap/ic_launcher"
+        app:civ_border_color="@color/cyan"
+        app:civ_border_width="2dp" />
 
     <TextView
-        android:id="@+id/mTvUserName"
+        android:id="@+id/TextView_user_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/mIvUserAvatar"
+        android:layout_below="@id/CircleImageView_user_avatar"
         android:layout_marginTop="12dp"
+        android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-        android:textColor="#fff"
-        android:textAlignment="center" />
-
+        android:textColor="@color/third_text" />
 
 </RelativeLayout>

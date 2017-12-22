@@ -1,55 +1,128 @@
 <resources>
-    <string name="app_name">SmartHub</string>
+    <string name="app">智能插座</string>
 
-    <string name="exit_message">再按一次退出</string>
+    <string name="guide">立即体验</string>
 
-    <string name="tabNow">实时</string>
-    <string name="tabSpare">用电</string>
-    <string name="tabTimer">定时</string>
+    <string name="tip_add_hub">添加一个「插座」吧~</string>
 
-    <string name="drawerOpen">open</string>
-    <string name="drawerClose">close</string>
-    <string name="navHub">排插列表</string>
-    <string name="navUser">用户中心</string>
-    <string name="navOther">Other</string>
-    <string name="navClear">清除缓存</string>
-    <string name="navAbout">关于应用</string>
-    <string name="navDayNight">切换日夜间</string>
+    <string name="user_register">注 册</string>
+    <string name="user_login">登 录</string>
+    <string name="user_register_success">注册成功</string>
+    <string name="user_login_success">登录成功</string>
+    <string name="user_modify_success">修改成功</string>
+    <string name="all_modify">修 改</string>
+    <string name="all_cancel">取 消</string>
+    <string name="all_ensure">确 定</string>
 
-    <string name="needLogin">登录才有东西哦~</string>
-    <string name="register">注册</string>
-    <string name="login">登录</string>
-    <string name="logout">登出</string>
-    <string name="userLogin">用户登录</string>
-    <string name="modifyAvatar">修改头像</string>
-    <string name="modifyPwd">修改密码</string>
-    <string name="ensureModifyPwd">确认修改</string>
-    <string name="userRegister">用户注册</string>
-    <string name="oldPassword">请输入原密码</string>
-    <string name="newPassword">新密码</string>
-    <string name="etPassword2">请再次输入密码</string>
-    <string name="etPassword">请输入密码</string>
-    <string name="etName">请输入用户名</string>
-    <string name="etProve">请输入验证码</string>
+    <string name="user_detail_info">用户信息</string>
+    <string name="user_detail_name">用户名</string>
+    <string name="user_detail_phone">手机号</string>
+    <string name="user_detail_logout">登出</string>
+    <string name="user_detail_new_avatar">修改头像</string>
+    <string name="user_detail_new_password">修改密码</string>
+    <string name="user_detail_new_info">修改信息</string>
+    <string name="all_different_password">两次密码不一致</string>
+    <string name="all_cannot_crop">设备不支持裁剪行为</string>
 
-    <string name="userInfo">用户信息</string>
-    <string name="userName">用户名</string>
+    <string name="user_hint_input_new_password">新密码</string>
+    <string name="user_hint_input_password">请输入密码</string>
+    <string name="user_hint_input_password_again">请再次输入密码</string>
+    <string name="user_hint_input_username">请输入用户名</string>
+    <string name="user_hint_input_phone">请输入手机号</string>
 
-    <string name="aboutApp">\n
+    <string name="main_drawer_open">open</string>
+    <string name="main_drawer_close">close</string>
+
+    <string name="permission_denied">权限已拒绝</string>
+    <string name="permission_denied_never_ask">权限已拒绝，使用过程若出现问题，请前往「设置」打开APP的权限</string>
+    <string name="permission_why">请求权限</string>
+    <string name="permission_camera">扫描需要相机权限</string>
+    <string name="permission_storage">APP运行过程中需要缓存部分信息在本地，需要读写存储卡两个权限</string>
+
+    <string name="nav_hub">插座列表</string>
+    <string name="nav_user">用户中心</string>
+    <string name="nav_about">关于应用</string>
+    <string name="nav_other">其他</string>
+    <string name="nav_day_night">切换日夜间</string>
+    <string name="nav_clear">清除缓存</string>
+
+    <string name="all_exit_app">再按一次退出程序</string>
+    <string name="all_edit">编辑</string>
+    <string name="all_delete">删除</string>
+    <string name="all_zero">0</string>
+    <string name="all_max_name">名字超过最大长度</string>
+
+    <string name="hub_hint_name">插座名字</string>
+
+    <string name="hub_add">添加插座</string>
+    <string name="hub_add_msg">确定添加插座吗？</string>
+    <string name="hub_delete">删除插座</string>
+    <string name="hub_delete_msg">确定删除插座吗？</string>
+
+    <string name="hub_detail_real_time_info">实时信息</string>
+    <string name="hub_detail_energy_used">日用电量</string>
+    <string name="hub_detail_timer">定时</string>
+    <string name="hub_detail_timer_setting">定时设置</string>
+
+    <string name="qr_smart_hub">扫描智能插座</string>
+    <string name="qr_code_scan">二维码/条形码扫描</string>
+
+    <string name="hub_detail_now_voltage">电压(V)</string>
+    <string name="hub_detail_now_ampere">电流(A)</string>
+    <string name="hub_detail_now_power_factor">功率因数</string>
+    <string name="hub_detail_now_power">功率(W)</string>
+    <string name="hub_detail_now_current_electrical_appliances">当前电器</string>
+    <string name="none">无</string>
+
+    <string name="hub_detail_spare_electrical_bill">电费(元)</string>
+    <string name="hub_detail_spare_electrical_degree">电度(KWh)</string>
+
+    <string name="about_app_function">功能介绍</string>
+    <string name="about_app_function_introduction">
         1.遵循 Material Design 风格\n
         2.兼容 4.X-7.0 及各种分辨率\n
+        3.支持扫码添加插座\n
+        4.支持对插座的状态、日用电量查看、设置定时开关\n
+        5.支持日夜间模式\n
+        6.目前基本功能已完成\n
+        7.后期仍会继续添加的功能：\n
+        局域网添加\n
+        多场景定时\n
+        多时间段用电量\n
+        等……
     </string>
-    <string name="sourceCode">source code</string>
-    <string name="sourceCodeUrl">https://github.com/</string>
-    <string name="about_author">about author</string>
-    <string name="blogUrl">http://blog.csdn.net/</string>
-    <string name="githubUrl">https://github.com/</string>
-    <string name="email"></string>
-    <string name="aboutLibrary">
-        4.com.google.code.gson:gson:2.8.0\n
-        5.com.github.bumptech.glide:glide:4.0.0\n
-        6.pl.droidsonroids.gif:android-gif-drawable:1.2.8\n
-        7.com.squareup.okhttp3:okhttp:3.8.1\n
-        8.com.squareup.okio:okio:1.13.0\n
+    <string name="about_source_code">源码</string>
+    <string name="about_source_code_url">https://github.com/Zoctan/SmartHub.git</string>
+    <string name="about_author">APP作者</string>
+    <string name="about_blog">博客:</string>
+    <string name="about_blog_url">https://Zoctan.github.io</string>
+    <string name="about_github">Github:</string>
+    <string name="about_github_url">https://github.com/Zoctan</string>
+    <string name="about_email">邮箱:</string>
+    <string name="about_email_url">752481828@qq.com</string>
+    <string name="about_library">用到的开源库</string>
+    <string name="about_library_introduction">
+        gson\n
+        okhttp3\n
+        glide\n
+        circleimageview\n
+        MPAndroidChart\n
+        qiniu-android-sdk\n
+        android-async-http\n
+        happy-dns\n
+        zxing\n
+        butterknife\n
+        permissionsdispatcher-processor\n
+        SwipeDelMenuLayout\n
+        SmartRefreshLayout\n
+        android-gif-drawable\n
+        nice-spinner\n
+        utilcode\n
+        barlibrary\n
+        FlycoRoundView_Lib\n
+        alerter\n
+        fab-speed-dial\n
+        NiftyDialogEffects\n
+        IconHandler\n
     </string>
 </resources>

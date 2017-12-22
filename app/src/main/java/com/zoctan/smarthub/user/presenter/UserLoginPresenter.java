@@ -5,47 +5,37 @@ import com.zoctan.smarthub.user.model.UserModel;
 import com.zoctan.smarthub.user.model.UserModelImpl;
 import com.zoctan.smarthub.user.view.UserLoginView;
 
-/**
- * 用户登录回调实现类
- */
 public class UserLoginPresenter {
 
-    private UserLoginView mUserLoginView;
-    private UserModel mUserModel;
+    private final UserLoginView mUserLoginView;
+    private final UserModel mUserModel;
 
     public UserLoginPresenter(UserLoginView userLoginView) {
         this.mUserLoginView = userLoginView;
         this.mUserModel = new UserModelImpl();
     }
 
-    // 登录
-    public void userAction(final String type, final String name, final String password) {
+    // 登录或注册
+    public void userAction(final Boolean login, final UserBean user) {
         mUserLoginView.showLoading();
-        if (type.equals("login")) {
-            mUserModel.login(name, password, new UserLoginPresenter.LoginUserListener());
-        }
+        mUserModel.loginOrRegister(login, user, new UserLoginPresenter.LoginUserListener());
     }
 
     private class LoginUserListener implements UserModel.LoginUserListener {
         @Override
         public void onSuccess(UserBean userBean) {
-            if (userBean == null) {
-                // 显示失败信息
-                mUserLoginView.showFailedMsg();
-            } else {
-                // 显示失败信息
-                mUserLoginView.showSuccessMsg(userBean);
-            }
-            // 隐藏Loading圈圈
             mUserLoginView.hideLoading();
+            if (userBean != null) {
+                mUserLoginView.showSuccessMsg(userBean);
+            } else {
+                mUserLoginView.showFailedMsg("登录失败");
+            }
         }
 
         @Override
-        public void onFailure(String msg, Exception e) {
-            // 显示失败信息
-            mUserLoginView.showFailedMsg();
-            // 隐藏Loading圈圈
+        public void onFailure(String msg) {
             mUserLoginView.hideLoading();
+            mUserLoginView.showFailedMsg(msg);
         }
     }
 }

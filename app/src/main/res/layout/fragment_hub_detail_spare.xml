@@ -1,10 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:orientation="vertical">
 
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/mLineChart"
+    <GridLayout
+        android:layout_marginTop="5dp"
+        android:id="@+id/GridLayout_hub_detail_spare"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</GridLayout>
+        android:layout_height="wrap_content"
+        android:columnCount="3">
+
+        <GridLayout
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_column="0"
+            android:layout_columnWeight="1"
+            android:columnCount="2"
+            android:padding="12dp"
+            android:rowCount="2">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_marginStart="12dp"
+                android:layout_row="0"
+                android:text="@string/hub_detail_spare_electrical_degree" />
+
+            <TextView
+                android:id="@+id/TextView_hub_detail_spare_electrical_degree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_gravity="center"
+                android:layout_marginStart="12dp"
+                android:layout_row="1"
+                android:text="@string/all_zero"
+                android:textColor="@color/primary_text" />
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_column="1"
+                android:layout_gravity="center|end"
+                android:layout_marginEnd="24dp"
+                android:layout_row="0"
+                android:layout_rowSpan="2"
+                android:src="@drawable/ic_electric"
+                tools:ignore="ContentDescription" />
+        </GridLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="60dp"
+            android:layout_column="1"
+            android:background="@color/primary" />
+
+        <GridLayout
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_column="2"
+            android:layout_columnWeight="1"
+            android:columnCount="2"
+            android:padding="12dp"
+            android:rowCount="2">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_marginStart="12dp"
+                android:layout_row="0"
+                android:text="@string/hub_detail_spare_electrical_bill" />
+
+            <TextView
+                android:id="@+id/TextView_hub_detail_spare_electrical_bill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_gravity="center"
+                android:layout_marginStart="12dp"
+                android:layout_row="1"
+                android:text="@string/all_zero"
+                android:textColor="@color/primary_text" />
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_column="1"
+                android:layout_gravity="center|end"
+                android:layout_marginEnd="24dp"
+                android:layout_row="0"
+                android:layout_rowSpan="2"
+                android:src="@drawable/ic_electricity_bill"
+                tools:ignore="ContentDescription" />
+        </GridLayout>
+    </GridLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_margin="5dp"
+        android:background="@color/primary" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/ProgressBar_hub_detail_spare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="24dp"
+            android:visibility="visible"
+            app:indicatorName="BallPulseIndicator" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/LineChart_hub_detail_spare"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+</LinearLayout>

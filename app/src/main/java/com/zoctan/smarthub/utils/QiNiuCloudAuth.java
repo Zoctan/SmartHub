@@ -7,6 +7,7 @@ import com.qiniu.android.utils.UrlSafeBase64;
 
 import java.net.URI;
 import java.security.GeneralSecurityException;
+import java.util.Locale;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -47,7 +48,7 @@ public final class QiNiuCloudAuth {
     private static final String[] deprecatedPolicyFields = new String[]{
             "asyncOps",
     };
-    public final String accessKey;
+    private final String accessKey;
     private final SecretKeySpec secretKey;
 
     private QiNiuCloudAuth(String accessKey, SecretKeySpec secretKeySpec) {
@@ -124,10 +125,10 @@ public final class QiNiuCloudAuth {
     /**
      * 生成HTTP请求签名字符串
      *
-     * @param urlString
-     * @param body
-     * @param contentType
-     * @return
+     * @param urlString x
+     * @param body x
+     * @param contentType x
+     * @return x
      */
     public String signRequest(String urlString, byte[] body, String contentType) {
         URI uri = URI.create(urlString);
@@ -159,7 +160,7 @@ public final class QiNiuCloudAuth {
      * @param url                 回调地址
      * @param body                回调请求体。原始请求体，不要解析后再封装成新的请求体--可能导致签名不一致。
      * @param contentType         回调ContentType
-     * @return
+     * @return x
      */
     public boolean isValidCallback(String originAuthorization, String url, byte[] body, String contentType) {
         String authorization = "QBox " + signRequest(url, body, contentType);
@@ -171,7 +172,7 @@ public final class QiNiuCloudAuth {
      *
      * @param baseUrl 待签名文件url，如 http://img.domain.com/u/3.jpg 、
      *                http://img.domain.com/u/3.jpg?imageView2/1/w/120
-     * @return
+     * @return x
      */
     public String privateDownloadUrl(String baseUrl) {
         return privateDownloadUrl(baseUrl, 3600);
@@ -183,7 +184,7 @@ public final class QiNiuCloudAuth {
      * @param baseUrl 待签名文件url，如 http://img.domain.com/u/3.jpg 、
      *                http://img.domain.com/u/3.jpg?imageView2/1/w/120
      * @param expires 有效时长，单位秒。默认3600s
-     * @return
+     * @return x
      */
     public String privateDownloadUrl(String baseUrl, long expires) {
         long deadline = System.currentTimeMillis() / 1000 + expires;
@@ -270,12 +271,12 @@ public final class QiNiuCloudAuth {
         x.put("scope", scope);
         x.put("deadline", deadline);
 
-        String s = JsonUtils.serialize(x);
+        String s = JsonUtil.serialize(x);
         return signWithData(StringUtils.utf8Bytes(s));
     }
 
     public String uploadTokenWithPolicy(Object obj) {
-        String s = JsonUtils.serialize(obj);
+        String s = JsonUtil.serialize(obj);
         return signWithData(StringUtils.utf8Bytes(s));
     }
 
@@ -291,10 +292,10 @@ public final class QiNiuCloudAuth {
     /**
      * 生成HTTP请求签名字符串
      *
-     * @param urlString
-     * @param body
-     * @param contentType
-     * @return
+     * @param urlString x
+     * @param body x
+     * @param contentType x
+     * @return x
      */
     public String signRequestV2(String urlString, String method, byte[] body, String contentType) {
         URI uri = URI.create(urlString);
@@ -309,7 +310,7 @@ public final class QiNiuCloudAuth {
 
         sb.append(String.format("\nHost: %s", uri.getHost()));
         if (uri.getPort() > 0) {
-            sb.append(String.format(":%d", uri.getPort()));
+            sb.append(String.format(Locale.CHINA, ":%d", uri.getPort()));
         }
 
         if (contentType != null) {

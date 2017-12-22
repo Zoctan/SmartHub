@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_new_avatar"
+        android:icon="@drawable/ic_new_avatar"
+        android:title="@string/user_detail_new_avatar" />
+    <item
+        android:id="@+id/action_new_info"
+        android:icon="@drawable/ic_modify"
+        android:title="@string/user_detail_new_info"/>
+    <item
+        android:id="@+id/action_new_password"
+        android:icon="@drawable/ic_password"
+        android:title="@string/user_detail_new_password"/>
+    <item
+        android:id="@+id/action_logout"
+        android:icon="@drawable/ic_logout"
+        android:title="@string/user_detail_logout" />
+</menu>

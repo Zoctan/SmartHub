@@ -1,0 +1,134 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/AppBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:fitsSystemWindows="true">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/CircleImageView_user_avatar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="36dp"
+            android:src="@mipmap/ic_launcher"
+            app:civ_border_color="@color/cyan"
+            app:civ_border_width="2dp" />
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/AppBarLayout"
+        android:layout_marginEnd="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="18dp"
+        android:background="@drawable/radius_bg"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="12dp"
+            android:text="@string/user_detail_info"
+            android:textSize="14sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/primary" />
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:rowCount="2">
+
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_column="0"
+                android:layout_marginEnd="16dp"
+                android:layout_row="0"
+                android:layout_rowSpan="2"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_user_name"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:layout_column="1"
+                android:layout_row="0"
+                android:text="@string/user_detail_name"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/TextView_user_name"
+                android:layout_column="1"
+                android:layout_row="1"
+                android:text="@string/none"
+                android:textSize="14sp" />
+        </GridLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/primary" />
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:rowCount="2">
+
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_column="0"
+                android:layout_marginEnd="16dp"
+                android:layout_row="0"
+                android:layout_rowSpan="2"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_phone"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:layout_column="1"
+                android:layout_row="0"
+                android:text="@string/user_detail_phone"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/TextView_user_phone"
+                android:layout_column="1"
+                android:layout_row="1"
+                android:text="@string/none"
+                android:textSize="14sp" />
+        </GridLayout>
+    </LinearLayout>
+
+    <io.github.yavski.fabspeeddial.FabSpeedDial
+        android:id="@+id/FabSpeedDial_user_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="bottom|end"
+        app:fabBackgroundTint="@color/primary"
+        app:fabGravity="bottom_end"
+        app:fabMenu="@menu/menu_user_detail"
+        app:miniFabBackgroundTint="@color/icon"
+        app:miniFabDrawableTint="@color/primary"
+        app:miniFabTitleTextColor="@color/primary_text" />
+
+</RelativeLayout>

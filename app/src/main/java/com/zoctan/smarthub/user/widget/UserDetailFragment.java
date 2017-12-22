@@ -10,192 +10,183 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.internal.NavigationMenu;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
-import android.text.InputType;
-import android.view.LayoutInflater;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.ImageUtils;
 import com.bumptech.glide.Glide;
-import com.orhanobut.logger.Logger;
+import com.zoctan.smarthub.App;
 import com.zoctan.smarthub.R;
+import com.zoctan.smarthub.base.BaseFragment;
+import com.zoctan.smarthub.beans.UserBean;
 import com.zoctan.smarthub.user.presenter.UserDetailPresenter;
 import com.zoctan.smarthub.user.view.UserDetailView;
-import com.zoctan.smarthub.utils.ImageUtils;
-import com.zoctan.smarthub.utils.SPUtils;
+import com.zoctan.smarthub.utils.AlerterUtil;
+import com.zoctan.smarthub.utils.NiftyDialog;
+import com.zoctan.smarthub.utils.NiftyDialogUtil;
 
 import java.io.File;
-import java.util.Objects;
 
+import butterknife.BindView;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
-import static android.support.v4.provider.FontsContractCompat.FontRequestCallback.RESULT_OK;
+import static android.app.Activity.RESULT_OK;
 
-public class UserDetailFragment extends Fragment implements UserDetailView, View.OnClickListener {
 
-    private Button mBtnSure;
-    private CheckBox mBtnEye;
-    private EditText mEtNewPwd, mEtNewPwd2;
-    private UserDetailPresenter mUserDetailPresenter;
-    private SPUtils mSPUtils;
-    private CircleImageView userAvatar;
+public class UserDetailFragment extends BaseFragment implements UserDetailView {
+
+    @BindView(R.id.CircleImageView_user_avatar)
+    CircleImageView mCircleImageView;
+    @BindView(R.id.TextView_user_name)
+    TextView mTvUserName;
+    @BindView(R.id.TextView_user_phone)
+    TextView mTvUserPhone;
+    @BindView(R.id.FabSpeedDial_user_detail)
+    FabSpeedDial mFabSpeedDial;
     protected static final int CHOOSE_PICTURE = 0;
     protected static final int TAKE_PICTURE = 1;
     private static final int CROP_SMALL_PICTURE = 2;
     protected static Uri imageUri;
-    private ProgressBar mPbLoading;
-    private FrameLayout mLayoutPwd;
-    private LinearLayout mLayoutUserInfo;
-    private String userName, userAvatarUrl;
+    private final UserDetailPresenter mUserDetailPresenter = new UserDetailPresenter(this);
+    private String userName, userPhone;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected int bindLayout() {
+        return R.layout.fragment_user_detail;
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mUserDetailPresenter = new UserDetailPresenter(this);
-        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.fragment_user, null);
-        mSPUtils = new SPUtils(getContext());
-
-        userName = mSPUtils.getString("userName");
-        userAvatarUrl = mSPUtils.getString("userAvatar");
-        TextView mTextView = view.findViewById(R.id.mTvName);
-        mTextView.setText(userName);
-        // 头像
-        userAvatar = view.findViewById(R.id.mIvUserAvatar);
-        Glide.with(this)
-                // 加载图片的地址
-                .load(userAvatarUrl)
-                // 填充至view中
-                .into(userAvatar);
-
-        // 初始化密码输入框和层
-        mEtNewPwd = view.findViewById(R.id.mEtNewPwd);
-        mEtNewPwd2 = view.findViewById(R.id.mEtNewPwd2);
-        mLayoutUserInfo = view.findViewById(R.id.mLayoutUserInfo);
-        mLayoutPwd = view.findViewById(R.id.mLayoutPwd);
-        mPbLoading = view.findViewById(R.id.mProgressBar);
-
-        // 初始化按钮
-        mBtnSure = view.findViewById(R.id.mBtnSure);
-        mBtnEye = view.findViewById(R.id.mBtnPwdEye);
-
-        // 监听界面上的按钮
-        mBtnSure.setOnClickListener(this);
-        mBtnEye.setOnClickListener(this);
-
-        // 浮动按钮
-        FabSpeedDial mFabSpeedDial = view.findViewById(R.id.mFabSpeedDial);
-        mFabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
-            @Override
-            public boolean onPrepareMenu(NavigationMenu navigationMenu) {
-                getActivity().getMenuInflater().inflate(R.menu.menu_user, navigationMenu);
-                // 对菜单项目初始化
-                // 如果不初始化就返回false
-                return true;
-            }
-        });
+    protected void initView(View view, Bundle savedInstanceState) {
+        userName = App.mSPUtil.getString("user_name");
+        userPhone = App.mSPUtil.getString("user_phone");
+        String userAvatarUrl = App.mSPUtil.getString("user_avatar");
+        mTvUserName.setText(userName);
+        mTvUserPhone.setText(userPhone);
+        Glide.with(this).load(userAvatarUrl).into(mCircleImageView);
 
         mFabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
-            public boolean onMenuItemSelected(MenuItem item) {
-                switch (item.getItemId()) {
-                    // 修改头像
-                    case R.id.modifyAvatar:
+            public boolean onMenuItemSelected(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.action_new_avatar:
                         modifyImg();
                         break;
-                    // 修改密码
-                    case R.id.modifyPwd:
-                        modifyPwd();
+                    case R.id.action_new_info:
+                        modifyInfo();
                         break;
-                    // 退出
-                    case R.id.logout:
+                    case R.id.action_new_password:
+                        modifyPassword();
+                        break;
+                    case R.id.action_logout:
                         userLogout();
                         break;
                 }
                 return false;
             }
         });
+
         // android 7.0系统解决拍照的问题
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         builder.detectFileUriExposure();
-        return view;
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.mBtnSure:
-                clickSure();
-                break;
-            case R.id.mBtnPwdEye:
-                showHidePwd();
-                break;
-        }
+    private final TextInputEditText[] mEtPassword = new TextInputEditText[2];
+    private TextInputLayout mLayoutUserPassword2;
+
+    public void modifyPassword() {
+        @SuppressLint("InflateParams") final View view = this.getLayoutInflater().inflate(R.layout.dialog_new_password, null);
+        mLayoutUserPassword2 = view.findViewById(R.id.TextInputLayout_user_password2);
+        mEtPassword[0] = view.findViewById(R.id.EditText_user_password);
+        mEtPassword[1] = view.findViewById(R.id.EditText_user_password2);
+        mEtPassword[1].addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!mEtPassword[0].getText().toString().equals(mEtPassword[1].getText().toString())) {
+                    mLayoutUserPassword2.setErrorEnabled(true);
+                    mLayoutUserPassword2.setError(getString(R.string.all_different_password));
+                } else {
+                    mLayoutUserPassword2.setError(null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+        final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
+                .init(R.string.user_detail_new_password,
+                        null,
+                        R.drawable.ic_modify,
+                        R.string.all_modify);
+        dialog
+                .setCustomView(view, getHoldingActivity())
+                .setButton1Click(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mEtPassword[0].getText().length() > 0
+                                && mEtPassword[1].getText().length() > 0
+                                && mEtPassword[0].getError() == null
+                                && mEtPassword[1].getError() == null) {
+                            String password = mEtPassword[0].getText().toString();
+                            // fixme
+                            mUserDetailPresenter.modify("password", new UserBean(userName, password));
+                        }
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 
-    // 修改密码操作
-    public void modifyPwd() {
-        if (mLayoutPwd.getVisibility() == View.GONE) {
-            mLayoutUserInfo.setVisibility(View.GONE);
-            mLayoutPwd.setVisibility(View.VISIBLE);
-        } else {
-            mLayoutUserInfo.setVisibility(View.VISIBLE);
-            mLayoutPwd.setVisibility(View.GONE);
-        }
-    }
+    private final TextInputEditText[] mEtUserInfo = new TextInputEditText[2];
 
-    // 修改密码确认点击
-    private void clickSure() {
-        String EtNewPwd = mEtNewPwd.getText().toString();
-        String EtNewPwd2 = mEtNewPwd2.getText().toString();
-        // 确认密码一致
-        if (Objects.equals(EtNewPwd, EtNewPwd2)) {
-            mUserDetailPresenter.modifyPwd(userName, EtNewPwd);
-        } else {
-            View view = getActivity().findViewById(R.id.mDrawerLayout);
-            Snackbar.make(view, "两次密码不一致", Snackbar.LENGTH_SHORT).show();
-        }
-    }
+    public void modifyInfo() {
+        @SuppressLint("InflateParams") final View view = this.getLayoutInflater().inflate(R.layout.dialog_new_info, null);
+        mEtUserInfo[0] = view.findViewById(R.id.EditText_user_username);
+        mEtUserInfo[1] = view.findViewById(R.id.EditText_user_phone);
 
-
-    // 显示密码
-    private void showHidePwd() {
-        if (mBtnEye.isChecked()) {
-            //选择状态 显示明文--设置为可见的密码
-            mEtNewPwd.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            mEtNewPwd2.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-        } else {
-            //默认状态显示密码--设置文本 要一起写才能起作用 InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD
-            mEtNewPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            mEtNewPwd2.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        }
-        // 设置光标位置到行尾
-        mEtNewPwd.setSelection(mEtNewPwd.getText().length());
-        mEtNewPwd2.setSelection(mEtNewPwd2.getText().length());
+        mEtUserInfo[0].setText(userName);
+        mEtUserInfo[1].setText(userPhone);
+        mEtUserInfo[0].setSelection(mEtUserInfo[0].getText().length());
+        final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
+                .init(R.string.user_detail_new_info,
+                        null,
+                        R.drawable.ic_modify,
+                        R.string.all_modify);
+        dialog
+                .setCustomView(view, getHoldingActivity())
+                .setButton1Click(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mEtUserInfo[0].getText().length() > 0
+                                && mEtUserInfo[1].getText().length() > 0) {
+                            userName = mEtUserInfo[0].getText().toString();
+                            userPhone = mEtUserInfo[1].getText().toString();
+                            UserBean user = new UserBean(userName, App.mSPUtil.getString("user_password"));
+                            user.setPhone(userPhone);
+                            mUserDetailPresenter.modify("info", user);
+                        }
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 
     // 显示修改头像的对话框
-    public void modifyImg() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+    private void modifyImg() {
+        @SuppressWarnings("ConstantConditions") AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("设置头像");
         String[] items = {"选择本地照片", "拍照"};
         builder.setNegativeButton("取消", null);
@@ -227,19 +218,16 @@ public class UserDetailFragment extends Fragment implements UserDetailView, View
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Logger.d(resultCode + " " + RESULT_OK);
         if (resultCode == RESULT_OK) {
             // 如果返回码是可以的
             switch (requestCode) {
                 // 选择本地照片
                 case CHOOSE_PICTURE:
                     // 开始对图片进行裁剪处理
-                    Logger.d("crop");
                     startPhotoZoom(data.getData());
                     break;
                 // 拍照
                 case TAKE_PICTURE:
-                    Logger.d("care crop");
                     startPhotoZoom(imageUri);
                     break;
                 case CROP_SMALL_PICTURE:
@@ -249,8 +237,8 @@ public class UserDetailFragment extends Fragment implements UserDetailView, View
                         if (extras != null) {
                             Bitmap photo = extras.getParcelable("data");
                             // 图片处理成圆形
-                            photo = ImageUtils.toRoundBitmap(photo, imageUri);
-                            ImageUtils.savePhoto(photo, imageUri.getPath(), "user.jpg");
+                            photo = ImageUtils.toRound(photo);
+                            ImageUtils.save(photo, imageUri.getPath(), Bitmap.CompressFormat.JPEG);
                             // 上传图片
                             mUserDetailPresenter.uploadAvatar(userName, imageUri.getPath());
                         }
@@ -261,9 +249,9 @@ public class UserDetailFragment extends Fragment implements UserDetailView, View
     }
 
     // 裁剪图片方法实现
-    protected void startPhotoZoom(Uri uri) {
+    private void startPhotoZoom(Uri uri) {
         if (uri == null) {
-            Logger.e("图片路径不存在");
+            AlerterUtil.showDanger(getHoldingActivity(), "图片路径不存在");
             return;
         }
         try {
@@ -283,54 +271,42 @@ public class UserDetailFragment extends Fragment implements UserDetailView, View
             startActivityForResult(intent, CROP_SMALL_PICTURE);
         } catch (ActivityNotFoundException e) {
             e.printStackTrace();
-            View view = getActivity().findViewById(R.id.mDrawerLayout);
-            Snackbar.make(view, "你的设备不支持裁剪行为！", Snackbar.LENGTH_SHORT).show();
+            AlerterUtil.showDanger(getHoldingActivity(), R.string.all_cannot_crop);
         }
     }
 
     // 用户退出操作
-    public void userLogout() {
-        mSPUtils.clear();
-        // 将login置为false
-        mSPUtils.putBoolean("Login", false);
-        View view = getActivity().findViewById(R.id.mDrawerLayout);
-        Snackbar.make(view, "已退出", Snackbar.LENGTH_SHORT).show();
-
-        //ToastUtils.showShort(getContext(), "已退出");
-        getActivity().sendBroadcast(new Intent("userLogout"));
+    private void userLogout() {
+        App.mSPUtil.put("login", false);
+        //noinspection ConstantConditions
+        getHoldingActivity().sendBroadcast(new Intent("user_login"));
     }
 
     @Override
     public void showSuccessMsg(String avatarUrl) {
         if (avatarUrl != null) {
             // 更新头像链接
-            mSPUtils.putString("userAvatar", avatarUrl);
+            App.mSPUtil.put("user_avatar", avatarUrl);
             // 更新头像显示
-            Glide.with(this)
-                    // 加载图片的地址
-                    .load(avatarUrl)
-                    // 填充至view中
-                    .into(userAvatar);
+            Glide.with(this).load(avatarUrl).into(mCircleImageView);
         }
-        View view = getActivity().findViewById(R.id.mDrawerLayout);
-        Snackbar.make(view, "修改成功", Snackbar.LENGTH_SHORT).show();
-        //ToastUtils.showShort(getContext(), "修改成功");
+        //noinspection ConstantConditions
+        getActivity().sendBroadcast(new Intent("modify"));
+        AlerterUtil.showInfo(getHoldingActivity(), R.string.user_modify_success);
     }
 
     @Override
     public void showFailedMsg(String msg) {
-        View view = getActivity().findViewById(R.id.mDrawerLayout);
-        Snackbar.make(view, msg, Snackbar.LENGTH_SHORT).show();
-        //ToastUtils.showShort(getContext(), "修改失败");
+        AlerterUtil.showDanger(getHoldingActivity(), msg);
     }
 
     @Override
     public void showLoading() {
-        mPbLoading.setVisibility(View.VISIBLE);
+
     }
 
     @Override
     public void hideLoading() {
-        mPbLoading.setVisibility(View.INVISIBLE);
+
     }
 }

@@ -21,16 +21,24 @@
     <!-- 自动聚焦权限 -->
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <application
+        android:name=".App"
         android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="@string/app"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+        android:windowSoftInputMode="adjustPan"
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning"
+        tools:replace="android:label">
         <!-- 引导界面 -->
         <activity
-            android:name="com.zoctan.smarthub.main.widget.SplashActivity"
+            android:name="com.zoctan.smarthub.main.SplashActivity"
             android:autoRemoveFromRecents="true">
             <intent-filter>
                 <!-- 决定应用程序最先启动的Activity -->
@@ -41,18 +49,18 @@
         </activity>
         <!-- 启动界面 -->
         <activity
-            android:name="com.zoctan.smarthub.main.widget.WelcomeGuideActivity"
+            android:name="com.zoctan.smarthub.main.GuideActivity"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen" />
         <!-- 主界面 -->
         <activity
-            android:name="com.zoctan.smarthub.main.widget.MainActivity"
+            android:name="com.zoctan.smarthub.main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <!-- hub详情 -->
         <activity
-            android:name="com.zoctan.smarthub.hub.widget.HubDetailActivity"
+            android:name="com.zoctan.smarthub.hubDetail.widget.HubDetailActivity"
             android:theme="@style/AppTheme.NoActionBar.Translucent">
             <intent-filter>
-                <action android:name="hubDetail" />
+                <action android:name="hub_detail" />
 
                 <category android:name="hub" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -63,14 +71,14 @@
             android:name="com.zoctan.smarthub.user.widget.UserLoginActivity"
             android:theme="@style/AppTheme.NoActionBar.Translucent">
             <intent-filter>
-                <action android:name="toLogin" />
+                <action android:name="user_login" />
 
                 <category android:name="user" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
-        <activity android:name="com.zoctan.smarthub.zxing.activity.CaptureActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
+        <activity
+            android:name="com.zoctan.smarthub.zxing.activity.CaptureActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
     </application>
 </manifest>

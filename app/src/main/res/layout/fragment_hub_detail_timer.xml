@@ -1,12 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<com.scwang.smartrefresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/SmartRefreshLayout_timer_list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+    <!--
+    <com.scwang.smartrefresh.layout.header.ClassicsHeader xmlns:app="http://schemas.android.com/apk/res-auto"
+        app:srlDragRate="0.7"
+        app:srlHeaderMaxDragRate="1.3"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
-        android:text="time" />
-</GridLayout>
+        android:layout_width="wrap_content">
+        <pl.droidsonroids.gif.GifImageView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/gif_header_repast"
+            app:layout_srlSpinnerStyle="Scale"
+            app:layout_srlBackgroundColor="@android:color/transparent"/>
+    </com.scwang.smartrefresh.layout.header.ClassicsHeader>
+    -->
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/RecyclerView_hub_detail_timer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/cardMargin"
+        android:scrollbars="vertical">
+
+    </android.support.v7.widget.RecyclerView>
+</com.scwang.smartrefresh.layout.SmartRefreshLayout>

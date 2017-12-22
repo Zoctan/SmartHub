@@ -1,12 +1,14 @@
 package com.zoctan.smarthub.user.presenter;
 
+import com.zoctan.smarthub.api.UserUrls;
+import com.zoctan.smarthub.beans.UserBean;
 import com.zoctan.smarthub.user.model.UserModel;
 import com.zoctan.smarthub.user.model.UserModelImpl;
 import com.zoctan.smarthub.user.view.UserDetailView;
 
 public class UserDetailPresenter {
-    private UserDetailView mUserDetailView;
-    private UserModel mUserModel;
+    private final UserDetailView mUserDetailView;
+    private final UserModel mUserModel;
 
     public UserDetailPresenter(UserDetailView userDetailView) {
         this.mUserDetailView = userDetailView;
@@ -14,16 +16,22 @@ public class UserDetailPresenter {
     }
 
     // 修改密码
-    public void modifyPwd(final String username, final String password) {
+    public void modify(final String action, final UserBean user) {
         mUserDetailView.showLoading();
-        mUserModel.modifyPwd(username, password, new UserModel.ModifyUserListener() {
+        String url = null;
+        if(action.equals("info")){
+            url = UserUrls.USERS;
+        }else if(action.equals("password")){
+            url = UserUrls.PASSWORD;
+        }
+        mUserModel.modify(url, user, new UserModel.ModifyUserListener() {
             @Override
             public void onSuccess() {
                 mUserDetailView.showSuccessMsg(null);
             }
 
             @Override
-            public void onFailure(String msg, Exception e) {
+            public void onFailure(String msg) {
                 mUserDetailView.showFailedMsg(msg);
             }
         });

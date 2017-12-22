@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/icon"
+    android:columnCount="2"
+    android:orientation="vertical"
+    android:padding="2dp"
+    android:rowCount="2">
+
+    <TimePicker
+        android:id="@+id/TimePicker_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_column="0"
+        android:layout_columnWeight="1"
+        android:layout_row="0"
+        android:layout_rowSpan="2"
+        android:timePickerMode="spinner" />
+
+    <org.angmarch.views.NiceSpinner
+        android:id="@+id/NiceSpinner_timer_open_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_column="1"
+        android:layout_columnWeight="1"
+        android:layout_row="0"
+        android:layout_rowWeight="1"
+        app:arrowTint="@color/primary"
+        app:textTint="@color/primary_text" />
+
+    <org.angmarch.views.NiceSpinner
+        android:id="@+id/NiceSpinner_timer_repeat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_column="1"
+        android:layout_columnWeight="1"
+        android:layout_row="1"
+        android:layout_rowWeight="1"
+        app:arrowTint="@color/primary"
+        app:textTint="@color/primary_text" />
+
+</GridLayout>

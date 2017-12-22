@@ -2,28 +2,28 @@ package com.zoctan.smarthub.user.model;
 
 import com.zoctan.smarthub.beans.UserBean;
 
-/**
- * 用户接口
- */
 public interface UserModel {
-    void login(String name, String password, LoginUserListener listener);
+    void loginOrRegister(Boolean login, UserBean user, LoginUserListener listener);
 
-    void modifyPwd(String username, String password, ModifyUserListener listener);
+    void modify(String url, UserBean user, ModifyUserListener listener);
 
     void uploadAvatar(String userName, String photoPath, UploadAvatarListener listener);
 
     interface LoginUserListener {
         void onSuccess(UserBean userBean);
-        void onFailure(String msg, Exception e);
+
+        void onFailure(String msg);
     }
 
     interface ModifyUserListener {
         void onSuccess();
-        void onFailure(String msg, Exception e);
+
+        void onFailure(String msg);
     }
 
     interface UploadAvatarListener {
         void onSuccess(String avatarUrl);
+
         void onFailure(String msg);
     }
 }
