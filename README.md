@@ -35,7 +35,7 @@
 <div>
 <img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/blob/app/screenshot/timer_list.png"/>
 
-<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/blob/app/screenshot/time_setting.png"/>
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/blob/app/screenshot/timer_setting.png"/>
 
 <img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/blob/app/screenshot/user.png"/>
 </div>
