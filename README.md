@@ -4,37 +4,49 @@
 
 支持：Android 4.4 及以上
 
-目前 APP 出于快速更迭状态，可能界面略显粗糙
+目前 APP 处于快速更迭状态，可能界面略显粗糙
 
 以下是部分截图：
 
-![png](screenshot/guide3.png)
+<div>
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/guide3.png"/>
 
-![png](screenshot/login.png)
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/login.png"/>
 
-![png](screenshot/app.png)
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/app.png"/>
+</div>
 
-![png](screenshot/qr.png)
+<div>
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/qr.png"/>
 
-![png](screenshot/hub_list.png)
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/hub_list.png"/>
 
-![png](screenshot/slit.png)
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/slit.png"/>
+</div>
 
-![png](screenshot/nav.png)
+<div>
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/nav.png"/>
 
-![png](screenshot/hub_now.png)
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/hub_now.png"/>
 
-![png](screenshot/hub_spare.png)
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/hub_spare.png"/>
+</div>
 
-![png](screenshot/timer_list.png)
+<div>
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/timer_list.png"/>
 
-![png](screenshot/timer_setting.png)
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/timer_setting.png"/>
 
-![png](screenshot/user.png)
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/user.png"/>
+</div>
 
-![png](screenshot/about.png)
+<div>
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/about.png"/>
 
-![png](screenshot/night.png)
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/night.png"/>
+
+<!--<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/"/>-->
+</div>
 
 # 命名规范
 
