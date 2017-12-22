@@ -9,43 +9,43 @@
 以下是部分截图：
 
 <div>
-<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/guide3.png"/>
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/blob/app/screenshot/guide3.png"/>
 
-<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/login.png"/>
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/blob/app/screenshot/login.png"/>
 
-<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/app.png"/>
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/blob/app/screenshot/app.png"/>
 </div>
 
 <div>
-<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/qr.png"/>
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/blob/app/screenshot/qr.png"/>
 
-<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/hub_list.png"/>
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/blob/app/screenshot/hub_list.png"/>
 
-<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/slit.png"/>
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/blob/app/screenshot/slit.png"/>
 </div>
 
 <div>
-<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/nav.png"/>
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/blob/app/screenshot/nav.png"/>
 
-<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/hub_now.png"/>
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/blob/app/screenshot/hub_now.png"/>
 
-<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/hub_spare.png"/>
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/blob/app/screenshot/hub_spare.png"/>
 </div>
 
 <div>
-<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/timer_list.png"/>
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/blob/app/screenshot/timer_list.png"/>
 
-<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/timer_setting.png"/>
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/blob/app/screenshot/timer_setting.png"/>
 
-<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/user.png"/>
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/blob/app/screenshot/user.png"/>
 </div>
 
 <div>
-<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/about.png"/>
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/blob/app/screenshot/about.png"/>
 
-<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/night.png"/>
+<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/blob/app/screenshot/night.png"/>
 
-<!--<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/tree/app/screenshot/"/>-->
+<!--<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/blob/app/screenshot/"/>-->
 </div>
 
 # 命名规范
