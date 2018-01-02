@@ -21,7 +21,6 @@ import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.CacheUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
-import com.zoctan.smarthub.App;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.about.AboutFragment;
 import com.zoctan.smarthub.base.BaseActivity;
@@ -105,9 +104,9 @@ public class MainActivity extends BaseActivity {
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void setHeaderUser() {
         // 显示头像
-        Glide.with(this).load(App.mSPUtil.getString("user_avatar")).into(headerUserAvatar);
+        Glide.with(this).load(mSPUtil.getString("user_avatar")).into(headerUserAvatar);
         // 显示用户名
-        headerUserName.setText(App.mSPUtil.getString("user_name"));
+        headerUserName.setText(mSPUtil.getString("user_name"));
     }
 
     @Override
@@ -242,7 +241,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void switch2DayNight() {
-        App.setDayNightMode(true);
+        setDayNightMode(true);
         mNavigationView.setCheckedItem(R.id.item_hub_list);
         recreate();
     }

@@ -4,11 +4,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.gyf.barlibrary.ImmersionBar;
-import com.zoctan.smarthub.App;
 import com.zoctan.smarthub.R;
 
 import butterknife.ButterKnife;
@@ -20,6 +21,7 @@ import butterknife.Unbinder;
 public abstract class BaseActivity extends AppCompatActivity {
 
     protected ImmersionBar mImmersionBar;
+    protected SPUtils mSPUtil = SPUtils.getInstance();
     private InputMethodManager mInputMethodManager;
     private Unbinder unbinder;
 
@@ -38,7 +40,18 @@ public abstract class BaseActivity extends AppCompatActivity {
         initData();
         // view与数据绑定
         initView();
-        App.setDayNightMode(false);
+        setDayNightMode(false);
+    }
+
+    protected void setDayNightMode(Boolean isChange) {
+        if (isChange) {
+            mSPUtil.put("day", !mSPUtil.getBoolean("day"));
+        }
+        if (mSPUtil.getBoolean("day")) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
     }
 
     @Override

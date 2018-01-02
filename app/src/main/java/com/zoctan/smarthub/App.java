@@ -6,11 +6,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatDelegate;
 
 import com.blankj.utilcode.util.CrashUtils;
 import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.Utils;
 import com.okhttplib.OkHttpUtil;
 import com.okhttplib.annotation.CacheType;
@@ -47,7 +45,6 @@ public class App extends Application {
 
     private static App instance;
     private ApplicationLike tinkerApplicationLike;
-    public static SPUtils mSPUtil;
 
     public static App getInstance() {
         return instance;
@@ -60,8 +57,6 @@ public class App extends Application {
         Utils.init(instance);
         CrashUtils.init();
         initOkHttpUtil(instance);
-        mSPUtil = SPUtils.getInstance();
-        setDayNightMode(false);
         registerActivityLifecycleCallbacks(mCallbacks);
         initTinkerPatch();
     }
@@ -204,17 +199,6 @@ public class App extends Application {
             LogUtils.d("onActivityDestroyed() called with: activity = [" + activity + "]");
         }
     };
-
-    public static void setDayNightMode(Boolean isChange) {
-        if (isChange) {
-            mSPUtil.put("day", !mSPUtil.getBoolean("day"));
-        }
-        if (mSPUtil.getBoolean("day")) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
-    }
 
     // static 代码段可以防止内存泄露
     static {

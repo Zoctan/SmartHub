@@ -17,7 +17,6 @@ import com.geetest.gt3unbindsdk.Bind.GT3GeetestBindListener;
 import com.geetest.gt3unbindsdk.Bind.GT3GeetestUtilsBind;
 import com.gyf.barlibrary.ImmersionBar;
 import com.wang.avi.AVLoadingIndicatorView;
-import com.zoctan.smarthub.App;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseActivity;
 import com.zoctan.smarthub.beans.UserBean;
@@ -221,13 +220,13 @@ public class UserLoginActivity extends BaseActivity implements UserLoginView {
 
     @Override
     public void showSuccessMsg(UserBean userBean) {
-        App.mSPUtil.put("login", true);
+        mSPUtil.put("login", true);
         // 将用户信息存在本地
-        App.mSPUtil.put("user_id", userBean.getId());
-        App.mSPUtil.put("user_avatar", userBean.getAvatar());
-        App.mSPUtil.put("user_phone", userBean.getPhone());
-        App.mSPUtil.put("user_name", userBean.getUsername());
-        App.mSPUtil.put("user_password", userBean.getPassword());
+        mSPUtil.put("user_id", userBean.getId());
+        mSPUtil.put("user_avatar", userBean.getAvatar());
+        mSPUtil.put("user_phone", userBean.getPhone());
+        mSPUtil.put("user_name", userBean.getUsername());
+        mSPUtil.put("user_password", userBean.getPassword());
         if (mBtnLogin.getText() == "注册") {
             AlerterUtil.showInfo(this, R.string.user_register_success);
         } else {

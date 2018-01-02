@@ -109,9 +109,9 @@ public class HubListFragment extends BaseFragment implements HubListView {
             HubBean hub = mAdapter.getItem(position);
             switch (action) {
                 case "detail":
-                    App.mSPUtil.put("hub_name", hub.getName());
-                    App.mSPUtil.put("hub_onenet_id", hub.getOnenet_id());
-                    App.mSPUtil.put("hub_online", hub.getOnline());
+                    mSPUtil.put("hub_name", hub.getName());
+                    mSPUtil.put("hub_onenet_id", hub.getOnenet_id());
+                    mSPUtil.put("hub_online", hub.getOnline());
                     Intent intent = new Intent("hub_detail");
                     intent.addCategory("hub");
                     startActivity(intent);
@@ -120,7 +120,7 @@ public class HubListFragment extends BaseFragment implements HubListView {
                 case "on":
                 case "off":
                     mHubListPresenter.hubOpenClose(
-                            App.mSPUtil.getString("hubOneNetId"), action);
+                            mSPUtil.getString("hubOneNetId"), action);
                     //ToastUtils.showShort(action);
                     break;
                 case "update":
@@ -146,7 +146,7 @@ public class HubListFragment extends BaseFragment implements HubListView {
                     @Override
                     public void onClick(View v) {
                         mHubListPresenter.doHub("delete",
-                                App.mSPUtil.getString("user_password"),
+                                mSPUtil.getString("user_password"),
                                 hub);
                         dialog.dismiss();
                     }
@@ -193,7 +193,7 @@ public class HubListFragment extends BaseFragment implements HubListView {
                                 && mLayoutHubName.getError() == null) {
                             hub.setName(mEtHubName.getText().toString());
                             mHubListPresenter.doHub(action,
-                                    App.mSPUtil.getString("user_password"),
+                                    mSPUtil.getString("user_password"),
                                     hub);
                         }
                         dialog.dismiss();
@@ -206,7 +206,7 @@ public class HubListFragment extends BaseFragment implements HubListView {
             mData.clear();
         }
         mHubListPresenter.loadHubList(
-                App.mSPUtil.getString("user_password"));
+                mSPUtil.getString("user_password"));
     }
 
     private void setSmartRefreshListener() {
@@ -307,7 +307,7 @@ public class HubListFragment extends BaseFragment implements HubListView {
                     @Override
                     public void onClick(View v) {
                         mHubListPresenter.doHub("add",
-                                App.mSPUtil.getString("user_password"),
+                                mSPUtil.getString("user_password"),
                                 hub);
                         dialog.dismiss();
                     }

@@ -15,7 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.zoctan.smarthub.App;
+import com.blankj.utilcode.util.SPUtils;
 import com.zoctan.smarthub.R;
 
 import java.util.ArrayList;
@@ -43,6 +43,7 @@ public class GuideActivity extends Activity implements OnClickListener {
     // 记录当前选中位置
     private int currentIndex;
     private Unbinder unbinder;
+    private SPUtils mSPUtil = SPUtils.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,7 @@ public class GuideActivity extends Activity implements OnClickListener {
     }
 
     protected void initView() {
-        App.mSPUtil.put("first_open", true);
+        mSPUtil.put("first_open", true);
         List<View> views = new ArrayList<>();
         // 初始化引导页视图列表
         for (int i = 0; i < pics.length; i++) {

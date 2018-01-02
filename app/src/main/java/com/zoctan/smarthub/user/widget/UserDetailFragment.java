@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.ImageUtils;
 import com.bumptech.glide.Glide;
-import com.zoctan.smarthub.App;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
 import com.zoctan.smarthub.beans.UserBean;
@@ -65,9 +64,9 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
 
     @Override
     protected void initView(View view, Bundle savedInstanceState) {
-        userName = App.mSPUtil.getString("user_name");
-        userPhone = App.mSPUtil.getString("user_phone");
-        String userAvatarUrl = App.mSPUtil.getString("user_avatar");
+        userName = mSPUtil.getString("user_name");
+        userPhone = mSPUtil.getString("user_phone");
+        String userAvatarUrl = mSPUtil.getString("user_avatar");
         mTvUserName.setText(userName);
         mTvUserPhone.setText(userPhone);
         Glide.with(this).load(userAvatarUrl).into(mCircleImageView);
@@ -174,7 +173,7 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
                                 && mEtUserInfo[1].getText().length() > 0) {
                             userName = mEtUserInfo[0].getText().toString();
                             userPhone = mEtUserInfo[1].getText().toString();
-                            UserBean user = new UserBean(userName, App.mSPUtil.getString("user_password"));
+                            UserBean user = new UserBean(userName, mSPUtil.getString("user_password"));
                             user.setPhone(userPhone);
                             mUserDetailPresenter.modify("info", user);
                         }
@@ -277,7 +276,7 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
 
     // 用户退出操作
     private void userLogout() {
-        App.mSPUtil.put("login", false);
+        mSPUtil.put("login", false);
         //noinspection ConstantConditions
         getHoldingActivity().sendBroadcast(new Intent("user_login"));
     }
@@ -286,7 +285,7 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
     public void showSuccessMsg(String avatarUrl) {
         if (avatarUrl != null) {
             // 更新头像链接
-            App.mSPUtil.put("user_avatar", avatarUrl);
+            mSPUtil.put("user_avatar", avatarUrl);
             // 更新头像显示
             Glide.with(this).load(avatarUrl).into(mCircleImageView);
         }

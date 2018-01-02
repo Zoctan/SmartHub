@@ -1,6 +1,5 @@
 package com.zoctan.smarthub.base;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.blankj.utilcode.util.SPUtils;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
@@ -19,6 +20,7 @@ public abstract class BaseFragment extends Fragment {
     // 当前 Activity 渲染的视图 View
     protected View contentView;
     protected BaseActivity mActivity;
+    protected SPUtils mSPUtil = SPUtils.getInstance();
     private Unbinder unbinder;
 
     // 获取布局文件ID
