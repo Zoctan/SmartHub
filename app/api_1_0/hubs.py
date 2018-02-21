@@ -27,7 +27,7 @@ def hub_online(onenet_id):
 """
 def hub_online(onenet_id):
     # https://open.iot.10086.cn/doc/art260.html#68
-    url = 'http://api.heclouds.com/devices/{}/datapoints?datastream_id=Status&limit=1'.format(onenet_id)
+    url = 'http://api.heclouds.com/devices/{}/datapoints?datastream_id=Relay&limit=1'.format(onenet_id)
     headers = {'api-key': 'nJVyiaj5Y297Fc6Q=bUYVWnz2=0='}
     response = requests.get(url, headers=headers)
     print(response.json()['data']['datastreams'][0])
