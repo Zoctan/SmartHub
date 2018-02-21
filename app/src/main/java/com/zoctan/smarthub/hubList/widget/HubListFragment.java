@@ -28,7 +28,6 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.vansuita.library.Icon;
-import com.zoctan.smarthub.App;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
 import com.zoctan.smarthub.beans.HubBean;
@@ -119,8 +118,7 @@ public class HubListFragment extends BaseFragment implements HubListView {
                     break;
                 case "on":
                 case "off":
-                    mHubListPresenter.hubOpenClose(
-                            mSPUtil.getString("hubOneNetId"), action);
+                    mHubListPresenter.hubOpenClose(hub.getOnenet_id(), action);
                     //ToastUtils.showShort(action);
                     break;
                 case "update":

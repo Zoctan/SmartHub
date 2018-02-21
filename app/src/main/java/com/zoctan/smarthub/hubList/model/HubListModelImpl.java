@@ -1,8 +1,6 @@
 package com.zoctan.smarthub.hubList.model;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.okhttplib.HttpInfo;
 import com.okhttplib.OkHttpUtil;
 import com.okhttplib.annotation.RequestType;
@@ -59,19 +57,22 @@ public class HubListModelImpl implements HubListModel {
         String headerValue = "nJVyiaj5Y297Fc6Q=bUYVWnz2=0=";
         String url = OneNetUrls.buildOrderSend(oneNetId);
         final String msg;
+        final int isOpen;
         switch (order) {
             case "off":
                 msg = "成功关闭";
+                isOpen = 0;
                 break;
             default:
                 msg = "成功开启";
+                isOpen = 1;
                 break;
         }
         OkHttpUtil.getDefault(this).doAsync(
                 HttpInfo.Builder()
                         .setUrl(url)
-                        .setRequestType(RequestType.GET)
-                        .addParam("xx", "xx")
+                        .setRequestType(RequestType.POST)
+                        .addParamBytes("{Relay}" + isOpen)
                         .addHead(headerKey, headerValue)
                         .build(),
                 new Callback() {
@@ -86,6 +87,8 @@ public class HubListModelImpl implements HubListModel {
                         ResponseOneNet responseOneNet = JsonUtil.getObjectFromHttpInfo(info, ResponseOneNet.class);
                         if (responseOneNet.getError().equals("succ")) {
                             listener.onSuccess(msg);
+                        } else {
+                            listener.onFailure(msg);
                         }
                     }
                 });

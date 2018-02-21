@@ -39,9 +39,7 @@ public class OneNetUrls {
     // https://open.iot.10086.cn/doc/art257.html#68
     // 发送命令
     public static String buildOrderSend(String device_id) {
-        return "http://api.heclouds.com/cmds" +
-                "?device_id=" +
-                device_id +
-                "{}&qos=1&timeout=100&type=0";
+        return String.format("http://api.heclouds.com/cmds" +
+                "?device_id=%s&qos=1&timeout=100&type=0", device_id);
     }
 }
