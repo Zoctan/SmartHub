@@ -2,7 +2,9 @@ package com.zoctan.smarthub.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import com.okhttplib.HttpInfo;
 
 import java.lang.reflect.Type;
 
@@ -40,6 +42,18 @@ public class JsonUtil {
      */
     public static <T> T deserialize(String json, Type type) throws JsonSyntaxException {
         return mGson.fromJson(json, type);
+    }
+
+    /**
+     * 将Json字符串转换为实体对象
+     */
+    public static <T> T getObjectFromHttpInfo(HttpInfo info, Class<T> clz) {
+        String response = info.getRetDetail();
+        // 创建一个JsonParser
+        JsonParser parser = new JsonParser();
+        // 将res转换成Json对象
+        JsonObject jsonObj = parser.parse(response).getAsJsonObject();
+        return deserialize(jsonObj, clz);
     }
 
 }

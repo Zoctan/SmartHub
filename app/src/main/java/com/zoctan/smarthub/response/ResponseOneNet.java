@@ -1,11 +1,9 @@
 package com.zoctan.smarthub.response;
 
-import com.zoctan.smarthub.beans.OneNetDataCmdsBean;
-
-public class ResponseOneNetCmds {
+public class ResponseOneNet {
     private Integer errno;
     private String error;
-    private OneNetDataCmdsBean data;
+    private Object data;
 
     public String getError() {
         return error;
@@ -23,11 +21,11 @@ public class ResponseOneNetCmds {
         this.errno = errno;
     }
 
-    public OneNetDataCmdsBean getData() {
+    public Object getData() {
         return data;
     }
 
-    public void setData(OneNetDataCmdsBean data) {
+    public void setData(Object data) {
         this.data = data;
     }
 }

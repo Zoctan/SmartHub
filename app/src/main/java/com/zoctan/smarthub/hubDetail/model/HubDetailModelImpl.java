@@ -12,7 +12,7 @@ import com.zoctan.smarthub.api.OneNetUrls;
 import com.zoctan.smarthub.beans.OneNetDataPointsBean;
 import com.zoctan.smarthub.beans.OneNetDataStreamsBean;
 import com.zoctan.smarthub.beans.TimerBean;
-import com.zoctan.smarthub.response.ResponseOneNetDataPoints;
+import com.zoctan.smarthub.response.ResponseOneNet;
 import com.zoctan.smarthub.response.ResponseOneNetDataStreams;
 import com.zoctan.smarthub.response.ResponseTimer;
 import com.zoctan.smarthub.utils.JsonUtil;
@@ -87,12 +87,12 @@ public class HubDetailModelImpl implements HubDetailModel {
                         // 将res转换成Json对象
                         JsonObject jsonObj = parser.parse(response).getAsJsonObject();
                         // 将Json对象转换为User实体
-                        ResponseOneNetDataPoints responseOneNetDataPoints = JsonUtil.deserialize(jsonObj, ResponseOneNetDataPoints.class);
-                        if (responseOneNetDataPoints.getErrno() == 0) {
-                            final OneNetDataPointsBean oneNetDataPoints = responseOneNetDataPoints.getData();
+                        ResponseOneNet responseOneNet = JsonUtil.deserialize(jsonObj, ResponseOneNet.class);
+                        if (responseOneNet.getErrno() == 0) {
+                            final OneNetDataPointsBean oneNetDataPoints = (OneNetDataPointsBean) responseOneNet.getData();
                             listener.onSuccess(oneNetDataPoints);
                         } else {
-                            listener.onFailure(responseOneNetDataPoints.getError());
+                            listener.onFailure(responseOneNet.getError());
                         }
                     }
                 });

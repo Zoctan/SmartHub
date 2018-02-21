@@ -51,7 +51,7 @@ public class HubDetailActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        mToolbar.setTitle(App.mSPUtil.getString("hub_name"));
+        mToolbar.setTitle(mSPUtil.getString("hub_name"));
         setSupportActionBar(mToolbar);
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

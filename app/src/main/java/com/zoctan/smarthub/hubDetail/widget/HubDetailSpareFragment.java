@@ -84,7 +84,7 @@ public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpa
             params.put(keys[i], values[i]);
         }
         mHubDetailSparePresenter.loadHubSpareList(
-                App.mSPUtil.getString("hub_onenet_id"),
+                mSPUtil.getString("hub_onenet_id"),
                 "W",
                 params);
     }

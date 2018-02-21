@@ -40,7 +40,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
 
     @Override
     protected void initView(View view, Bundle savedInstanceState) {
-        if (App.mSPUtil.getBoolean("hub_online")) {
+        if (mSPUtil.getBoolean("hub_online")) {
             handler.postDelayed(runnable, 1000);
         }
     }
@@ -59,7 +59,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
 
         void updateDetail() {
             mHubDetailNowPresenter.loadHubNowList(
-                    App.mSPUtil.getString("hub_onenet_id"),
+                    mSPUtil.getString("hub_onenet_id"),
                     "I,V,W,Q");
         }
     };

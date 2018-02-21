@@ -129,8 +129,8 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
             timer.setMinute(Calendar.MINUTE + "");
         }
         mHubDetailPresenter.doHubTimer(
-                App.mSPUtil.getString("user_password"),
-                App.mSPUtil.getString("hub_onenet_id"),
+                mSPUtil.getString("user_password"),
+                mSPUtil.getString("hub_onenet_id"),
                 timer);
     }
 
@@ -195,8 +195,8 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
             mData.clear();
         }
         mHubDetailPresenter.loadHubTimerList(
-                App.mSPUtil.getString("user_password"),
-                App.mSPUtil.getString("hub_onenet_id"));
+                mSPUtil.getString("user_password"),
+                mSPUtil.getString("hub_onenet_id"));
     }
 
     @Override

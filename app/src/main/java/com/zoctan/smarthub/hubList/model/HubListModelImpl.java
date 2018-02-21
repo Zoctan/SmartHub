@@ -11,7 +11,7 @@ import com.zoctan.smarthub.api.HubUrls;
 import com.zoctan.smarthub.api.OneNetUrls;
 import com.zoctan.smarthub.beans.HubBean;
 import com.zoctan.smarthub.response.ResponseHubList;
-import com.zoctan.smarthub.response.ResponseOneNetCmds;
+import com.zoctan.smarthub.response.ResponseOneNet;
 import com.zoctan.smarthub.utils.JsonUtil;
 
 import java.io.IOException;
@@ -40,13 +40,8 @@ public class HubListModelImpl implements HubListModel {
 
                     @Override
                     public void onSuccess(HttpInfo info) throws IOException {
-                        String response = info.getRetDetail();
-                        // 创建一个JsonParser
-                        JsonParser parser = new JsonParser();
-                        // 将res转换成Json对象
-                        JsonObject jsonObj = parser.parse(response).getAsJsonObject();
                         // 将Json对象转换为User实体
-                        ResponseHubList responseHubList = JsonUtil.deserialize(jsonObj, ResponseHubList.class);
+                        ResponseHubList responseHubList = JsonUtil.getObjectFromHttpInfo(info, ResponseHubList.class);
                         if (responseHubList.getMsg().equals("ok")) {
                             List<HubBean> hubList = responseHubList.getResult();
                             listener.onSuccess(hubList);
@@ -88,11 +83,8 @@ public class HubListModelImpl implements HubListModel {
 
                     @Override
                     public void onSuccess(HttpInfo info) throws IOException {
-                        String response = info.getRetDetail();
-                        JsonParser parser = new JsonParser();
-                        JsonObject jsonObj = parser.parse(response).getAsJsonObject();
-                        ResponseOneNetCmds responseOneNetCmds = JsonUtil.deserialize(jsonObj, ResponseOneNetCmds.class);
-                        if (responseOneNetCmds.getError().equals("succ")) {
+                        ResponseOneNet responseOneNet = JsonUtil.getObjectFromHttpInfo(info, ResponseOneNet.class);
+                        if (responseOneNet.getError().equals("succ")) {
                             listener.onSuccess(msg);
                         }
                     }
@@ -138,13 +130,7 @@ public class HubListModelImpl implements HubListModel {
 
                     @Override
                     public void onSuccess(HttpInfo info) throws IOException {
-                        String response = info.getRetDetail();
-                        // 创建一个JsonParser
-                        JsonParser parser = new JsonParser();
-                        // 将res转换成Json对象
-                        JsonObject jsonObj = parser.parse(response).getAsJsonObject();
-                        // 将Json对象转换为User实体
-                        ResponseHubList responseHubList = JsonUtil.deserialize(jsonObj, ResponseHubList.class);
+                        ResponseHubList responseHubList = JsonUtil.getObjectFromHttpInfo(info, ResponseHubList.class);
                         if (responseHubList.getMsg().equals("ok")) {
                             listener.onSuccess(msg);
                         } else {
