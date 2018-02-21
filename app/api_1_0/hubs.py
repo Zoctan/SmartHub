@@ -26,14 +26,12 @@ def hub_online(onenet_id):
     return response.json()['data']
 """
 def hub_online(onenet_id):
-    # https://open.iot.10086.cn/doc/art262.html#68
-    url = 'http://api.heclouds.com/devices/'
-    cmd_url = url + onenet_id
-    # 产品API
-    # https://open.iot.10086.cn/product?pid=99569
+    # https://open.iot.10086.cn/doc/art260.html#68
+    url = 'http://api.heclouds.com/devices/{}/datapoints?datastream_id=Status&limit=1'.format(onenet_id)
     headers = {'api-key': 'nJVyiaj5Y297Fc6Q=bUYVWnz2=0='}
-    response = requests.get(cmd_url, headers=headers)
-    return response.json()['data']
+    response = requests.get(url, headers=headers)
+    print(response.json()['data']['datastreams'][0])
+    return response.json()['data']['datastreams'][0]['datapoints'][0]['value'] == 0
 
 @decorators.route('/api/hubs', methods=['GET'])
 def get_hubs():
@@ -42,7 +40,7 @@ def get_hubs():
         return jsonify({'msg': 'no', 'error': 'user doesn\'t exist'})
     hub_list = []
     for hub in user.hubs:
-        #online = hub_online(hub.onenet_id)['online']
+        online = hub_online(hub.onenet_id)
         tmp = {'online': online}
         tmp.update(hub.to_json())
         hub_list.append(tmp)
@@ -86,7 +84,7 @@ def hub_turn_on_or_off(status, device_id):
     # https://open.iot.10086.cn/doc/art257.html#68
     url = 'http://api.heclouds.com/cmds'
     cmd_url = url + '?device_id={}&qos=1&timeout=100&type=0'.format(device_id)
-    data = '{xx}' + status
+    data = '{Relay}' + status
     headers = {'api-key': 'nJVyiaj5Y297Fc6Q=bUYVWnz2=0='}
     response = requests.post(cmd_url, data=data, headers=headers)
 
