@@ -31,7 +31,7 @@ def hub_online(onenet_id):
     headers = {'api-key': 'nJVyiaj5Y297Fc6Q=bUYVWnz2=0='}
     response = requests.get(url, headers=headers)
     print(response.json()['data']['datastreams'][0])
-    return response.json()['data']['datastreams'][0]['datapoints'][0]['value'] == 0
+    return response.json()['data']['datastreams'][0]['datapoints'][0]['value'] == 1
 
 @decorators.route('/api/hubs', methods=['GET'])
 def get_hubs():
