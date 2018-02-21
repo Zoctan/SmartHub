@@ -13,14 +13,27 @@ from ..models import User, Hub
 
 # test_init
 # db.drop_all();db.create_all();user = models.User();user.phone='13192605482';user.username = 'test';user.password = 'test';db.session.add(user);hub = models.Hub();hub.name = '可识别智能插座测试机';hub.mac = 'AB:CD:EF:GH:IJ:KL';hub.user_id = 1;hub.onenet_id='19959358';db.session.add(hub);db.session.commit()
+"""
+插座本身是开着的，因为需要WIFI控制开关，只是控制继电器开关，而官网查询只是查询插座状态
 def hub_online(onenet_id):
     # https://open.iot.10086.cn/doc/art262.html#68
     url = 'http://api.heclouds.com/devices/'
     cmd_url = url + onenet_id
+    # 产品API
+    # https://open.iot.10086.cn/product?pid=99569
     headers = {'api-key': 'nJVyiaj5Y297Fc6Q=bUYVWnz2=0='}
     response = requests.get(cmd_url, headers=headers)
     return response.json()['data']
-
+"""
+def hub_online(onenet_id):
+    # https://open.iot.10086.cn/doc/art262.html#68
+    url = 'http://api.heclouds.com/devices/'
+    cmd_url = url + onenet_id
+    # 产品API
+    # https://open.iot.10086.cn/product?pid=99569
+    headers = {'api-key': 'nJVyiaj5Y297Fc6Q=bUYVWnz2=0='}
+    response = requests.get(cmd_url, headers=headers)
+    return response.json()['data']
 
 @decorators.route('/api/hubs', methods=['GET'])
 def get_hubs():
@@ -29,7 +42,7 @@ def get_hubs():
         return jsonify({'msg': 'no', 'error': 'user doesn\'t exist'})
     hub_list = []
     for hub in user.hubs:
-        online = hub_online(hub.onenet_id)['online']
+        #online = hub_online(hub.onenet_id)['online']
         tmp = {'online': online}
         tmp.update(hub.to_json())
         hub_list.append(tmp)
