@@ -82,13 +82,15 @@ class Hub(db.Model):
 class Device(db.Model):
     __tablename__ = 'smart_devices'
     id = db.Column(db.Integer, primary_key=True)
+    onenet_id = db.Column(db.Unicode(64, collation='utf8_bin'), nullable=False)
     name = db.Column(db.Unicode(256, collation='utf8_bin'), nullable=False)
-    img = db.Column(db.Unicode(256, collation='utf8_bin'), nullable=False)
+    img = db.Column(db.Unicode(256, collation='utf8_bin'))
     eigenvalue = db.Column(db.Unicode(128, collation='utf8_bin'), nullable=False)
 
     def to_json(self):
         json = {
             'id': self.id,
+            'onenet_id': self.onenet_id,
             'name': self.name,
             'img': self.img,
             'eigenvalue': self.eigenvalue
