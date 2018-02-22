@@ -12,8 +12,6 @@ from ..models import User, Hub, Device
 
 headers = {'api-key': 'nJVyiaj5Y297Fc6Q=bUYVWnz2=0='}
 
-# test_init
-# db.drop_all();db.create_all();user = models.User();user.phone='13192605482';user.username = 'test';user.password = 'test';db.session.add(user);hub = models.Hub();hub.name = '可识别智能插座测试机';hub.mac = 'AB:CD:EF:GH:IJ:KL';hub.user_id = 1;hub.onenet_id='19959358';db.session.add(hub);db.session.commit()
 '''
 插座本身是开着的，因为需要WIFI控制开关
 控制的只是继电器开关，而官网查询只是查询插座状态
@@ -131,7 +129,7 @@ def send_order(device_id, order, status):
         return msg
 
 
-@decorators.route('/api/hubs/order/<device_id>', methods=['GET'])
+@decorators.route('/api/hubs/<device_id>/order', methods=['GET'])
 def hub_order(device_id):
     order = request.args.get('order')
     status = request.args.get('status')
