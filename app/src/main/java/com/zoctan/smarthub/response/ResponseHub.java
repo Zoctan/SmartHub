@@ -2,12 +2,10 @@ package com.zoctan.smarthub.response;
 
 import com.zoctan.smarthub.beans.HubBean;
 
-import java.util.List;
-
-public class ResponseHubList {
+public class ResponseHub {
     private String msg;
     private String error;
-    private List<HubBean> result;
+    private HubBean result;
 
     public String getMsg() {
         return this.msg;
@@ -17,11 +15,11 @@ public class ResponseHubList {
         this.msg = msg;
     }
 
-    public List<HubBean> getResult() {
+    public HubBean getResult() {
         return this.result;
     }
 
-    public void setResult(final List<HubBean> result) {
+    public void setResult(final HubBean result) {
         this.result = result;
     }
 

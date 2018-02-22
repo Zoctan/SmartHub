@@ -1,19 +1,17 @@
 package com.zoctan.smarthub.response;
 
-import com.zoctan.smarthub.beans.OneNetDataStreamsBean;
+import com.zoctan.smarthub.beans.OneNetDataPointsBean;
 
-import java.util.List;
-
-public class ResponseOneNetDataStreams {
+public class ResponseOneNetDataPoints {
     private String errno;
     private String error;
-    private List<OneNetDataStreamsBean> data;
+    private OneNetDataPointsBean data;
 
-    public List<OneNetDataStreamsBean> getData() {
+    public OneNetDataPointsBean getData() {
         return this.data;
     }
 
-    public void setData(final List<OneNetDataStreamsBean> data) {
+    public void setData(final OneNetDataPointsBean data) {
         this.data = data;
     }
 

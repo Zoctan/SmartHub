@@ -11,45 +11,45 @@ public class HubListPresenter {
     private final HubListView mHubView;
     private final HubListModel mHubModel;
 
-    public HubListPresenter(HubListView hublistView) {
+    public HubListPresenter(final HubListView hublistView) {
         this.mHubModel = new HubListModelImpl();
         this.mHubView = hublistView;
     }
 
     public void doHub(final String action, final String token,
                       final HubBean hub) {
-        mHubModel.doHub(action, token, hub, new HubListPresenter.OnListener());
+        this.mHubModel.doHub(action, token, hub, new HubListPresenter.OnListener());
     }
 
-    public void hubOpenClose(final String oneNetId, final String order) {
-        mHubModel.hubOpenClose(oneNetId, order, new HubListPresenter.OnListener());
+    public void hubOpenClose(final String oneNetId, final String order, final String token) {
+        this.mHubModel.hubOpenClose(oneNetId, order, token, new HubListPresenter.OnListener());
     }
 
     public void loadHubList(final String token) {
-        mHubModel.loadHubList(token, new HubListPresenter.OnLoadHubListListener());
+        this.mHubModel.loadHubList(token, new HubListPresenter.OnLoadHubListListener());
     }
 
     private class OnListener implements HubListModel.OnListener {
         @Override
-        public void onSuccess(String msg) {
-            mHubView.showSuccessMsg(msg);
+        public void onSuccess(final String msg) {
+            HubListPresenter.this.mHubView.showSuccessMsg(msg);
         }
 
         @Override
-        public void onFailure(String msg) {
-            mHubView.showFailedMsg(msg);
+        public void onFailure(final String msg) {
+            HubListPresenter.this.mHubView.showFailedMsg(msg);
         }
     }
 
     private class OnLoadHubListListener implements HubListModel.OnLoadHubListListener {
         @Override
-        public void onSuccess(List<HubBean> list) {
-            mHubView.loadHubList(list);
+        public void onSuccess(final List<HubBean> list) {
+            HubListPresenter.this.mHubView.loadHubList(list);
         }
 
         @Override
-        public void onFailure(String msg) {
-            mHubView.showFailedMsg(msg);
+        public void onFailure(final String msg) {
+            HubListPresenter.this.mHubView.showFailedMsg(msg);
         }
     }
 }

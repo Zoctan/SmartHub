@@ -20,7 +20,6 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.Utils;
 import com.wang.avi.AVLoadingIndicatorView;
-import com.zoctan.smarthub.App;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
 import com.zoctan.smarthub.hubDetail.presenter.HubDetailSparePresenter;
@@ -60,24 +59,24 @@ public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpa
     }
 
     @Override
-    protected void initView(View view, Bundle savedInstanceState) {
+    protected void initView(final View view, final Bundle savedInstanceState) {
         initLineChart();
         loadLineChartData();
     }
 
     private void loadLineChartData() {
-        Map<String, String> params = new HashMap<>();
-        String[] keys = new String[]{
+        final Map<String, String> params = new HashMap<>();
+        final String[] keys = new String[]{
                 "start",
                 "end",
                 "duration",
                 "limit"};
         // "2017-12-01T08:00:35"
-        String[] values = new String[]{
+        final String[] values = new String[]{
                 getNowString(new SimpleDateFormat(
-                        "yyyy-MM-dd", Locale.getDefault())) + "T00:00",
+                        "YYYY-MM-DD", Locale.getDefault())) + "T00:00",
                 getNowString(new SimpleDateFormat(
-                        "yyyy-MM-dd'T'HH:mm", Locale.getDefault())),
+                        "YYYY-MM-DD'T'hh:mm:ss", Locale.getDefault())),
                 "3600",
                 "24"};
         for (int i = 0; i < 4; i++) {
@@ -140,9 +139,9 @@ public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpa
     }
 
     @Override
-    public void setLineChartData(String[] x, ArrayList<Entry> y) {
+    public void setLineChartData(final String[] x, final ArrayList<Entry> y) {
         // LineDataSet每一个对象就是一条连接线
-        LineDataSet lineDataSet;
+        final LineDataSet lineDataSet;
         // 判断图表中原来是否有数据
         if (mLineChart.getData() != null && mLineChart.getData().getDataSetCount() > 0) {
             // 获取数据
@@ -182,7 +181,7 @@ public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpa
 
             if (Utils.getSDKInt() >= 18) {
                 // 填充背景只支持SDK18以上
-                @SuppressWarnings("ConstantConditions") Drawable drawable = ContextCompat.getDrawable(getContext(), R.color.danger);
+                @SuppressWarnings("ConstantConditions") final Drawable drawable = ContextCompat.getDrawable(getContext(), R.color.danger);
                 lineDataSet.setFillDrawable(drawable);//设置范围背景填充
                 lineDataSet.setFillColor(Color.YELLOW);
             } else {
@@ -190,21 +189,21 @@ public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpa
             }
 
             // 保存LineDataSet集合
-            ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+            final ArrayList<ILineDataSet> dataSets = new ArrayList<>();
             // 添加数据源
             dataSets.add(lineDataSet);
             // 创建LineData对象 属于LineChart折线图的数据集合
-            LineData data = new LineData(dataSets);
+            final LineData data = new LineData(dataSets);
             // 添加到图表中
             mLineChart.setData(data);
             // 绘制图表
             mLineChart.invalidate();
-            Matrix m = new Matrix();
+            final Matrix m = new Matrix();
             m.postScale(1.5f, 1f);//两个参数分别是x,y轴的缩放比例。例如：将x轴的数据放大为之前的1.5倍
             mLineChart.getViewPortHandler().refresh(m, mLineChart, false);//将图表动画显示之前进行缩放
             mLineChart.animateX(1000); // 立即执行的动画,x轴
             // 图例
-            Legend legend = mLineChart.getLegend();
+            final Legend legend = mLineChart.getLegend();
             // 设置文字大小
             legend.setTextSize(10f);
             // 正方形，圆形或线
@@ -229,19 +228,19 @@ public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpa
     }
 
     @Override
-    public void showFailedMsg(String msg) {
+    public void showFailedMsg(final String msg) {
         AlerterUtil.showDanger(getHoldingActivity(), msg);
     }
 
     private static class MyValueFormatter implements IAxisValueFormatter {
         private final String[] x;
 
-        MyValueFormatter(String[] x) {
+        MyValueFormatter(final String[] x) {
             this.x = x;
         }
 
         @Override
-        public String getFormattedValue(float value, AxisBase axis) {
+        public String getFormattedValue(final float value, final AxisBase axis) {
             return this.x[(int) value % this.x.length];
         }
     }

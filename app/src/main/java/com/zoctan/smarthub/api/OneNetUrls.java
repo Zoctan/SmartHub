@@ -16,29 +16,25 @@ public class OneNetUrls {
     sort=DESC | ASC            // 值为DESC|ASC时间排序方式，DESC:倒序，ASC升序，默认升序
      */
     // 查询设备数据点(指定时间段)
-    public static String buildDataPointsGet(String device_id, String datastream_id, Map params) {
+    public static String buildDataPointsGet(final String device_id, final String datastream_id, final Map params) {
         return "http://api.heclouds.com/devices/" +
                 device_id +
                 "/datapoints" +
-                "?datastream_id=" + datastream_id +
+                "?newadd=true&datastream_id=" + datastream_id +
                 "&start=" + params.get("start") +
                 "&end=" + params.get("end") +
                 "&duration=" + params.get("duration") +
                 "&limit=" + params.get("limit");
     }
 
-    // https://open.iot.10086.cn/doc/art261.html#68
-    // 查询设备数据流(最新数据)
-    public static String buildDataStreamsGet(String device_id, String datastream_ids) {
+    public static String buildDataStreamsGet(final String device_id, final String datastream_ids) {
         return "http://api.heclouds.com/devices/" +
                 device_id +
                 "/datastreams" +
                 "?datastream_ids=" + datastream_ids;
     }
 
-    // https://open.iot.10086.cn/doc/art257.html#68
-    // 发送命令
-    public static String buildOrderSend(String device_id) {
+    public static String buildOrderSend(final String device_id) {
         return String.format("http://api.heclouds.com/cmds" +
                 "?device_id=%s&qos=1&timeout=100&type=0", device_id);
     }

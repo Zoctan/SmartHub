@@ -11,7 +11,7 @@ public class HubDetailTimerPresenter {
     private final HubDetailTimerView mHubView;
     private final HubDetailModel mHubModel;
 
-    public HubDetailTimerPresenter(HubDetailTimerView hubDetailView) {
+    public HubDetailTimerPresenter(final HubDetailTimerView hubDetailView) {
         this.mHubView = hubDetailView;
         this.mHubModel = new HubDetailModelImpl();
     }
@@ -22,12 +22,12 @@ public class HubDetailTimerPresenter {
 
     private class OnLoadHubTimerListListener implements HubDetailModel.OnLoadHubDetailTimerListener {
         @Override
-        public void onSuccess(List<TimerBean> list) {
+        public void onSuccess(final List<TimerBean> list) {
             mHubView.loadTimerList(list);
         }
 
         @Override
-        public void onFailure(String msg) {
+        public void onFailure(final String msg) {
             mHubView.showFailedMsg(msg);
         }
     }
@@ -36,14 +36,14 @@ public class HubDetailTimerPresenter {
         mHubModel.doHubTimer(token, hubOneNetId, timer, new HubDetailTimerPresenter.OnDoHubTimerListener());
     }
 
-    private class OnDoHubTimerListener implements HubDetailModel.OnDoHubTimerListener {
+    private class OnDoHubTimerListener implements HubDetailModel.OnListener {
         @Override
-        public void onSuccess(String msg) {
+        public void onSuccess(final String msg) {
             mHubView.showSuccessMsg(msg);
         }
 
         @Override
-        public void onFailure(String msg) {
+        public void onFailure(final String msg) {
             mHubView.showFailedMsg(msg);
         }
     }

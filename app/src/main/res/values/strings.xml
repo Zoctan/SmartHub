@@ -20,7 +20,7 @@
     <string name="user_detail_logout">登出</string>
     <string name="user_detail_new_avatar">修改头像</string>
     <string name="user_detail_new_password">修改密码</string>
-    <string name="user_detail_new_info">修改信息</string>
+    <string name="user_detail_new_info">修改用户信息</string>
     <string name="all_different_password">两次密码不一致</string>
     <string name="all_cannot_crop">设备不支持裁剪行为</string>
 
@@ -48,6 +48,7 @@
 
     <string name="all_exit_app">再按一次退出程序</string>
     <string name="all_edit">编辑</string>
+    <string name="all_add">添加</string>
     <string name="all_delete">删除</string>
     <string name="all_zero">0</string>
     <string name="all_max_name">名字超过最大长度</string>
@@ -58,6 +59,11 @@
     <string name="hub_add_msg">确定添加插座吗？</string>
     <string name="hub_delete">删除插座</string>
     <string name="hub_delete_msg">确定删除插座吗？</string>
+
+    <string name="hub_hint_input_device">请输入用电器名</string>
+    <string name="hub_detail_add_device">添加当前用电器</string>
+    <string name="hub_detail_update_device">更新当前用电器</string>
+    <string name="hub_detail_reset_hub">清除存储的所有用电器特征值</string>
 
     <string name="hub_detail_real_time_info">实时信息</string>
     <string name="hub_detail_energy_used">日用电量</string>
@@ -83,13 +89,9 @@
         2.兼容 4.X-7.0 及各种分辨率\n
         3.支持扫码添加插座\n
         4.支持对插座的状态、日用电量查看、设置定时开关\n
+        5.多时间段用电量\n
         5.支持日夜间模式\n
         6.目前基本功能已完成\n
-        7.后期仍会继续添加的功能：\n
-        局域网添加\n
-        多场景定时\n
-        多时间段用电量\n
-        等……
     </string>
     <string name="about_source_code">源码</string>
     <string name="about_source_code_url">https://github.com/Zoctan/SmartHub.git</string>

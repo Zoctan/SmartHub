@@ -4,32 +4,32 @@ import com.zoctan.smarthub.beans.TimerBean;
 
 import java.util.List;
 
-public class ResponseTimer {
+public class ResponseTimerList {
     private String msg;
     private String error;
     private List<TimerBean> result;
 
     public String getMsg() {
-        return msg;
+        return this.msg;
     }
 
-    public void setMsg(String msg) {
+    public void setMsg(final String msg) {
         this.msg = msg;
     }
 
     public List<TimerBean> getResult() {
-        return result;
+        return this.result;
     }
 
-    public void setResult(List<TimerBean> result) {
+    public void setResult(final List<TimerBean> result) {
         this.result = result;
     }
 
     public String getError() {
-        return error;
+        return this.error;
     }
 
-    public void setError(String error) {
+    public void setError(final String error) {
         this.error = error;
     }
 }

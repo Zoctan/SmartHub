@@ -1,21 +1,28 @@
 package com.zoctan.smarthub.hubDetail.widget;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.TextInputEditText;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.zoctan.smarthub.App;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
+import com.zoctan.smarthub.beans.DeviceBean;
 import com.zoctan.smarthub.hubDetail.presenter.HubDetailNowPresenter;
 import com.zoctan.smarthub.hubDetail.view.HubDetailNowView;
 import com.zoctan.smarthub.utils.AlerterUtil;
+import com.zoctan.smarthub.utils.NiftyDialog;
+import com.zoctan.smarthub.utils.NiftyDialogUtil;
 
 import java.util.Map;
 
 import butterknife.BindView;
+import io.github.yavski.fabspeeddial.FabSpeedDial;
+import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
 public class HubDetailNowFragment extends BaseFragment implements HubDetailNowView {
 
@@ -31,6 +38,9 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
     TextView mTvPowerFactor;
     @BindView(R.id.TextView_hub_detail_now_power)
     TextView mTvPower;
+    @BindView(R.id.FabSpeedDial_hub_detail)
+    FabSpeedDial mFabSpeedDial;
+    TextInputEditText mEtDeviceInfo;
     private final Handler handler = new Handler();
     private final HubDetailNowPresenter mHubDetailNowPresenter = new HubDetailNowPresenter(this);
 
@@ -39,9 +49,31 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
     }
 
     @Override
-    protected void initView(View view, Bundle savedInstanceState) {
-        if (mSPUtil.getBoolean("hub_online")) {
-            handler.postDelayed(runnable, 1000);
+    protected void initView(final View view, final Bundle savedInstanceState) {
+        if (this.mSPUtil.getBoolean("hub_online")) {
+            this.handler.postDelayed(this.runnable, 1000);
+            this.mHubDetailNowPresenter.loadHubDevice(
+                    mSPUtil.getString("hub_onenet_id"),
+                    mSPUtil.getString("user_password")
+            );
+
+            mFabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
+                @Override
+                public boolean onMenuItemSelected(final MenuItem menuItem) {
+                    switch (menuItem.getItemId()) {
+                        case R.id.action_add_device:
+                            addDevice();
+                            break;
+                        case R.id.action_update_device:
+                            updateDevice();
+                            break;
+                        case R.id.action_reset_hub:
+                            resetHub();
+                            break;
+                    }
+                    return false;
+                }
+            });
         }
     }
 
@@ -51,6 +83,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
     }
 
     private final Runnable runnable = new Runnable() {
+        @Override
         public void run() {
             this.updateDetail();
             // 间隔5秒
@@ -59,21 +92,113 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
 
         void updateDetail() {
             mHubDetailNowPresenter.loadHubNowList(
-                    mSPUtil.getString("hub_onenet_id"),
-                    "I,V,W,Q");
+                    mSPUtil.getString("hub_onenet_id"), "I,V,W,Q");
         }
     };
 
-    @Override
-    public void setData(Map<String, String> data) {
-        mTvVoltage.setText(data.get("V"));
-        mTvAmpere.setText(data.get("I"));
-        mTvPowerFactor.setText(data.get("Q"));
-        mTvPower.setText(data.get("W"));
+    public void resetHub() {
+
+        final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
+                .init(R.string.nav_clear,
+                        "确定清除存储的所有用电器特征值吗？",
+                        R.drawable.ic_clear,
+                        R.string.all_ensure);
+        dialog
+                .setButton1Click(new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View v) {
+                        mHubDetailNowPresenter.resetHub(mSPUtil.getString("hub_onenet_id"), mSPUtil.getString("user_password"));
+                    }
+                })
+                .show();
+    }
+
+    public void updateDevice() {
+        @SuppressLint("InflateParams") final View view = this.getLayoutInflater().inflate(R.layout.dialog_update_device, null);
+        mEtDeviceInfo = view.findViewById(R.id.EditText_device_name);
+
+        final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
+                .init(R.string.hub_detail_update_device,
+                        null,
+                        R.drawable.ic_modify,
+                        R.string.all_edit);
+        dialog
+                .setCustomView(view, getHoldingActivity())
+                .setButton1Click(new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View v) {
+                        if (mEtDeviceInfo.getText().length() > 0) {
+                            final String name = mEtDeviceInfo.getText().toString();
+                            final DeviceBean deviceBean = new DeviceBean();
+                            deviceBean.setName(name);
+                            deviceBean.setOnenet_id(mSPUtil.getString("hub_onenet_id"));
+                            mHubDetailNowPresenter.doDevice(deviceBean, mSPUtil.getString("user_password"), "update");
+                        }
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+    }
+
+
+    public void addDevice() {
+        @SuppressLint("InflateParams") final View view = this.getLayoutInflater().inflate(R.layout.dialog_new_device, null);
+        mEtDeviceInfo = view.findViewById(R.id.EditText_device_name);
+
+        final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
+                .init(R.string.hub_detail_add_device,
+                        null,
+                        R.drawable.ic_modify,
+                        R.string.all_add);
+        dialog
+                .setCustomView(view, getHoldingActivity())
+                .setButton1Click(new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View v) {
+                        if (mEtDeviceInfo.getText().length() > 0) {
+                            final String name = mEtDeviceInfo.getText().toString();
+                            final DeviceBean deviceBean = new DeviceBean();
+                            deviceBean.setName(name);
+                            deviceBean.setOnenet_id(mSPUtil.getString("hub_onenet_id"));
+                            mHubDetailNowPresenter.doDevice(deviceBean, mSPUtil.getString("user_password"), "add");
+                        }
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 
     @Override
-    public void showFailedMsg(String msg) {
+    public void setDevice(final DeviceBean device) {
+        //this.mIvAppliances.setImageURI(device.getImg());
+        this.mTvAppliances.setText(device.getName());
+        mSPUtil.put("device", device.getName());
+    }
+
+    @Override
+    public void setData(final Map<String, String> data) {
+        this.mTvVoltage.setText(data.get("V"));
+        this.mTvAmpere.setText(data.get("I"));
+        this.mTvPowerFactor.setText(data.get("Q"));
+        this.mTvPower.setText(data.get("W"));
+    }
+
+    @Override
+    public void showDoDetailDeviceSuccessMsg(final String msg) {
+        AlerterUtil.showInfo(getHoldingActivity(), msg);
+        this.mHubDetailNowPresenter.loadHubDevice(
+                mSPUtil.getString("hub_onenet_id"),
+                mSPUtil.getString("user_password")
+        );
+    }
+
+    @Override
+    public void showSuccessMsg(final String msg) {
+        AlerterUtil.showInfo(getHoldingActivity(), msg);
+    }
+
+    @Override
+    public void showFailedMsg(final String msg) {
         AlerterUtil.showDanger(getHoldingActivity(), msg);
     }
 
@@ -81,6 +206,6 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
     public void onDestroyView() {
         super.onDestroyView();
         // 停止刷新
-        handler.removeCallbacks(runnable);
+        this.handler.removeCallbacks(this.runnable);
     }
 }

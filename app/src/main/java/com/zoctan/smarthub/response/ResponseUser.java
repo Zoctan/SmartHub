@@ -2,34 +2,32 @@ package com.zoctan.smarthub.response;
 
 import com.zoctan.smarthub.beans.UserBean;
 
-import java.util.List;
-
 public class ResponseUser {
     private String msg;
     private String error;
-    private List<UserBean> result;
+    private UserBean result;
 
     public String getMsg() {
-        return msg;
+        return this.msg;
     }
 
-    public void setMsg(String msg) {
+    public void setMsg(final String msg) {
         this.msg = msg;
     }
 
-    public List<UserBean> getResult() {
-        return result;
+    public UserBean getResult() {
+        return this.result;
     }
 
-    public void setResult(List<UserBean> result) {
+    public void setResult(final UserBean result) {
         this.result = result;
     }
 
     public String getError() {
-        return error;
+        return this.error;
     }
 
-    public void setError(String error) {
+    public void setError(final String error) {
         this.error = error;
     }
 }
