@@ -33,6 +33,7 @@ def hub_online(onenet_id):
     print(response.json()['data']['datastreams'][0])
     return response.json()['data']['datastreams'][0]['datapoints'][0]['value'] == 1
 
+
 @decorators.route('/api/hubs', methods=['GET'])
 def get_hubs():
     user = User.query.filter_by(id=g.current_user.id).first()
@@ -79,8 +80,9 @@ def update_hub(device_id):
     return jsonify({'msg': 'ok'})
 
 
-@decorators.route('/api/hubs/<status>/<device_id>', methods=['GET'])
-def hub_turn_on_or_off(status, device_id):
+@decorators.route('/api/hubs/turn/<device_id>', methods=['GET'])
+def hub_turn_on_or_off(device_id):
+    status = request.args.get("status")
     # https://open.iot.10086.cn/doc/art257.html#68
     url = 'http://api.heclouds.com/cmds'
     cmd_url = url + '?device_id={}&qos=1&timeout=100&type=0'.format(device_id)
@@ -88,11 +90,28 @@ def hub_turn_on_or_off(status, device_id):
     headers = {'api-key': 'nJVyiaj5Y297Fc6Q=bUYVWnz2=0='}
     response = requests.post(cmd_url, data=data, headers=headers)
 
+    sleep(1)
     query_url = url + '/' + response.json()['data']['cmd_uuid']
     query_response = requests.get(query_url, headers=headers)
-
+    status = query_response.json()['data']['status']
+    if status == 0:
+        msg = '设备不在线'
+    elif status == 1:
+        msg = '命令已创建'
+    elif status == 2:
+        msg = '命令已发往设备'
+    elif status == 3:
+        msg = '命令发往设备失败'
+    elif status == 4:
+        msg = '设备正常响应'
+    elif status == 5:
+        msg = '命令执行超时'
+    else:
+        msg = '设备响应消息过长'
+    return jsonify({'msg': msg})
+    """
     cmd_res_url = query_url + '/resp'
     cmd_response = requests.get(cmd_res_url, headers=headers)
-    sleep(1)
     return jsonify({'cmd_status': query_response.json()['data']['desc'],
                     'text': cmd_response.text})
+    """
