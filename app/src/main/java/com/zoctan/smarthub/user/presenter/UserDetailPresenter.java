@@ -10,28 +10,28 @@ public class UserDetailPresenter {
     private final UserDetailView mUserDetailView;
     private final UserModel mUserModel;
 
-    public UserDetailPresenter(UserDetailView userDetailView) {
+    public UserDetailPresenter(final UserDetailView userDetailView) {
         this.mUserDetailView = userDetailView;
         this.mUserModel = new UserModelImpl();
     }
 
     // 修改密码
-    public void modify(final String action, final UserBean user) {
+    public void modify(final String action, final UserBean user, final String token) {
         mUserDetailView.showLoading();
         String url = null;
-        if(action.equals("info")){
+        if (action.equals("info")) {
             url = UserUrls.USERS;
-        }else if(action.equals("password")){
+        } else if (action.equals("password")) {
             url = UserUrls.PASSWORD;
         }
-        mUserModel.modify(url, user, new UserModel.ModifyUserListener() {
+        mUserModel.modify(url, user, token, new UserModel.ModifyUserListener() {
             @Override
             public void onSuccess() {
                 mUserDetailView.showSuccessMsg(null);
             }
 
             @Override
-            public void onFailure(String msg) {
+            public void onFailure(final String msg) {
                 mUserDetailView.showFailedMsg(msg);
             }
         });
@@ -43,12 +43,12 @@ public class UserDetailPresenter {
         mUserDetailView.showLoading();
         mUserModel.uploadAvatar(userName, photoPath, new UserModel.UploadAvatarListener() {
             @Override
-            public void onSuccess(String avatarUrl) {
+            public void onSuccess(final String avatarUrl) {
                 mUserDetailView.showSuccessMsg(avatarUrl);
             }
 
             @Override
-            public void onFailure(String msg) {
+            public void onFailure(final String msg) {
                 mUserDetailView.showFailedMsg(msg);
             }
         });

@@ -11,7 +11,7 @@
         android:id="@+id/GridLayout_hub"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:columnCount="3"
+        android:columnCount="4"
         android:orientation="vertical"
         android:padding="12dp"
         android:rowCount="2">
@@ -43,20 +43,27 @@
             android:text="@string/all_zero"
             android:textSize="14sp" />
 
+        <TextView
+            android:id="@+id/TextView_hub_connected"
+            android:layout_column="2"
+            android:layout_row="1"
+            android:text="@string/hub_not_connected"
+            android:textSize="14sp" />
+
         <Switch
             android:id="@+id/Switch_hub_open_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_column="2"
+            android:layout_column="3"
             android:layout_gravity="end"
             android:layout_row="0" />
 
         <TextView
-            android:id="@+id/TextView_hub_online"
-            android:layout_column="2"
+            android:id="@+id/TextView_hub_electric"
+            android:layout_column="3"
             android:layout_gravity="end"
             android:layout_row="1"
-            android:text="@string/all_zero"
+            android:text="@string/hub_not_electric"
             android:textSize="14sp" />
 
     </GridLayout>

@@ -5,7 +5,7 @@ import com.zoctan.smarthub.beans.UserBean;
 public interface UserModel {
     void loginOrRegister(Boolean login, UserBean user, LoginUserListener listener);
 
-    void modify(String url, UserBean user, ModifyUserListener listener);
+    void modify(String url, UserBean user, String token, ModifyUserListener listener);
 
     void uploadAvatar(String userName, String photoPath, UploadAvatarListener listener);
 

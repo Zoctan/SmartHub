@@ -15,6 +15,7 @@ import com.zoctan.smarthub.response.ResponseDevice;
 import com.zoctan.smarthub.response.ResponseHub;
 import com.zoctan.smarthub.response.ResponseOneNetDataPoints;
 import com.zoctan.smarthub.response.ResponseOneNetDataStreams;
+import com.zoctan.smarthub.response.ResponseTimer;
 import com.zoctan.smarthub.response.ResponseTimerList;
 import com.zoctan.smarthub.utils.JsonUtil;
 
@@ -79,7 +80,9 @@ public class HubDetailModelImpl implements HubDetailModel {
                         if (responseDevice.getMsg().equals("ok")) {
                             listener.onSuccess(responseDevice.getResult());
                         } else {
-                            listener.onSuccess(null);
+                            final DeviceBean deviceBean = new DeviceBean();
+                            deviceBean.setName(responseDevice.getError());
+                            listener.onSuccess(deviceBean);
                         }
                     }
                 });
@@ -210,16 +213,38 @@ public class HubDetailModelImpl implements HubDetailModel {
     }
 
     @Override
-    public void doHubTimer(final String token, final String hubOneNetId,
-                           final TimerBean timer,
-                           final OnListener listener) {
-        final String url = HubUrls.TIMERS + "/" + hubOneNetId;
+    public void doHubTimer(final String token, final TimerBean timer, final OnListener listener) {
+        final String url = HubUrls.TIMERS + "/" + timer.getHub_id();
         final String headerKey = "Authorization";
         final String headerValue = "Smart " + token;
+        final int requestType;
+        final String msg;
+        switch (timer.getAction()) {
+            case "add":
+                msg = "成功添加";
+                requestType = RequestType.POST;
+                break;
+            case "close":
+                msg = "成功关闭";
+                requestType = RequestType.PUT;
+                break;
+            case "open":
+                msg = "成功开启";
+                requestType = RequestType.PUT;
+                break;
+            case "update":
+                msg = "成功修改";
+                requestType = RequestType.PUT;
+                break;
+            default:
+                msg = "成功删除";
+                requestType = RequestType.DELETE;
+                break;
+        }
         OkHttpUtil.getDefault(this).doAsync(
                 HttpInfo.Builder()
                         .setUrl(url)
-                        .setRequestType(RequestType.PUT)
+                        .setRequestType(requestType)
                         .addHead(headerKey, headerValue)
                         .addParamJson(new Gson().toJson(timer))
                         .build(),
@@ -232,23 +257,11 @@ public class HubDetailModelImpl implements HubDetailModel {
 
                     @Override
                     public void onSuccess(final HttpInfo info) throws IOException {
-                        final ResponseTimerList responseList = JsonUtil.getObjectFromHttpInfo(info, ResponseTimerList.class);
-                        if (responseList.getMsg().equals("ok")) {
-                            final String msg;
-                            switch (timer.getAction()) {
-                                case "add":
-                                    msg = "成功添加";
-                                    break;
-                                case "delete":
-                                    msg = "成功修改";
-                                    break;
-                                default:
-                                    msg = "成功删除";
-                                    break;
-                            }
+                        final ResponseTimer responseTimer = JsonUtil.getObjectFromHttpInfo(info, ResponseTimer.class);
+                        if (responseTimer.getMsg().equals("ok")) {
                             listener.onSuccess(msg);
                         } else {
-                            listener.onFailure(responseList.getError());
+                            listener.onFailure(responseTimer.getError());
                         }
                     }
                 });

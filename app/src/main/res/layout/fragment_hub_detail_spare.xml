@@ -49,6 +49,7 @@
                 android:layout_marginEnd="24dp"
                 android:layout_row="0"
                 android:layout_rowSpan="2"
+                android:tint="@color/orange"
                 android:src="@drawable/ic_electric"
                 tools:ignore="ContentDescription" />
         </GridLayout>
@@ -95,6 +96,7 @@
                 android:layout_marginEnd="24dp"
                 android:layout_row="0"
                 android:layout_rowSpan="2"
+                android:tint="@color/danger"
                 android:src="@drawable/ic_electricity_bill"
                 tools:ignore="ContentDescription" />
         </GridLayout>

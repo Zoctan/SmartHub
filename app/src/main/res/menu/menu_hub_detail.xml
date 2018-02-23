@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_add_device"
-        android:icon="@drawable/ic_new_avatar"
+        android:icon="@drawable/ic_modify"
         android:title="@string/hub_detail_add_device" />
     <item
         android:id="@+id/action_update_device"
-        android:icon="@drawable/ic_modify"
+        android:icon="@drawable/ic_new_avatar"
         android:title="@string/hub_detail_update_device" />
     <item
         android:id="@+id/action_reset_hub"
-        android:icon="@drawable/ic_password"
+        android:icon="@drawable/ic_clear"
         android:title="@string/hub_detail_reset_hub" />
 </menu>

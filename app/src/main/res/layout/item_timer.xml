@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mcxtzhang.swipemenulib.SwipeMenuLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="1dp"
-    app:cardElevation="1dp">
+    app:ios="false"
+    app:swipeEnable="true">
 
     <GridLayout
         android:id="@+id/GridLayout_timer"
@@ -52,4 +51,12 @@
 
     </GridLayout>
 
-</android.support.v7.widget.CardView>
+    <!-- 以下都是侧滑菜单的内容依序排列 -->
+    <Button
+        android:id="@+id/Button_timer_delete"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:background="@color/danger"
+        android:text="@string/all_delete"
+        android:textColor="@android:color/white" />
+</com.mcxtzhang.swipemenulib.SwipeMenuLayout>

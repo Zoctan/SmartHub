@@ -32,8 +32,8 @@ public class HubDetailTimerPresenter {
         }
     }
 
-    public void doHubTimer(final String token, final String hubOneNetId, final TimerBean timer) {
-        mHubModel.doHubTimer(token, hubOneNetId, timer, new HubDetailTimerPresenter.OnDoHubTimerListener());
+    public void doHubTimer(final String token, final TimerBean timer) {
+        mHubModel.doHubTimer(token, timer, new HubDetailTimerPresenter.OnDoHubTimerListener());
     }
 
     private class OnDoHubTimerListener implements HubDetailModel.OnListener {

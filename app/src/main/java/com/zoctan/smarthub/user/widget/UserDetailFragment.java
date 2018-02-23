@@ -63,17 +63,17 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
     }
 
     @Override
-    protected void initView(View view, Bundle savedInstanceState) {
+    protected void initView(final View view, final Bundle savedInstanceState) {
         userName = mSPUtil.getString("user_name");
         userPhone = mSPUtil.getString("user_phone");
-        String userAvatarUrl = mSPUtil.getString("user_avatar");
+        final String userAvatarUrl = mSPUtil.getString("user_avatar");
         mTvUserName.setText(userName);
         mTvUserPhone.setText(userPhone);
         Glide.with(this).load(userAvatarUrl).into(mCircleImageView);
 
         mFabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
-            public boolean onMenuItemSelected(MenuItem menuItem) {
+            public boolean onMenuItemSelected(final MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.action_new_avatar:
                         modifyImg();
@@ -93,7 +93,7 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
         });
 
         // android 7.0系统解决拍照的问题
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        final StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         builder.detectFileUriExposure();
     }
@@ -108,11 +108,11 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
         mEtPassword[1] = view.findViewById(R.id.EditText_user_password2);
         mEtPassword[1].addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public void beforeTextChanged(final CharSequence charSequence, final int i, final int i1, final int i2) {
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
                 if (!mEtPassword[0].getText().toString().equals(mEtPassword[1].getText().toString())) {
                     mLayoutUserPassword2.setErrorEnabled(true);
                     mLayoutUserPassword2.setError(getString(R.string.all_different_password));
@@ -122,7 +122,7 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
+            public void afterTextChanged(final Editable editable) {
             }
         });
         final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
@@ -134,14 +134,13 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
                 .setCustomView(view, getHoldingActivity())
                 .setButton1Click(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(final View v) {
                         if (mEtPassword[0].getText().length() > 0
                                 && mEtPassword[1].getText().length() > 0
                                 && mEtPassword[0].getError() == null
                                 && mEtPassword[1].getError() == null) {
-                            String password = mEtPassword[0].getText().toString();
-                            // fixme
-                            mUserDetailPresenter.modify("password", new UserBean(userName, password));
+                            final String password = mEtPassword[0].getText().toString();
+                            mUserDetailPresenter.modify("password", new UserBean(userName, password), mSPUtil.getString("user_password"));
                         }
                         dialog.dismiss();
                     }
@@ -168,14 +167,14 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
                 .setCustomView(view, getHoldingActivity())
                 .setButton1Click(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(final View v) {
                         if (mEtUserInfo[0].getText().length() > 0
                                 && mEtUserInfo[1].getText().length() > 0) {
                             userName = mEtUserInfo[0].getText().toString();
                             userPhone = mEtUserInfo[1].getText().toString();
-                            UserBean user = new UserBean(userName, mSPUtil.getString("user_password"));
+                            final UserBean user = new UserBean(userName, null);
                             user.setPhone(userPhone);
-                            mUserDetailPresenter.modify("info", user);
+                            mUserDetailPresenter.modify("info", user, mSPUtil.getString("user_password"));
                         }
                         dialog.dismiss();
                     }
@@ -185,23 +184,23 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
 
     // 显示修改头像的对话框
     private void modifyImg() {
-        @SuppressWarnings("ConstantConditions") AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        @SuppressWarnings("ConstantConditions") final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("设置头像");
-        String[] items = {"选择本地照片", "拍照"};
+        final String[] items = {"选择本地照片", "拍照"};
         builder.setNegativeButton("取消", null);
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(final DialogInterface dialog, final int which) {
                 switch (which) {
                     // 选择本地照片
                     case CHOOSE_PICTURE:
-                        Intent openAlbumIntent = new Intent(Intent.ACTION_PICK, null);
+                        final Intent openAlbumIntent = new Intent(Intent.ACTION_PICK, null);
                         openAlbumIntent.setType("image/*");
                         startActivityForResult(openAlbumIntent, CHOOSE_PICTURE);
                         break;
                     // 拍照
                     case TAKE_PICTURE:
-                        Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        final Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         imageUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), "user.jpg"));
                         // 指定照片保存路径（SD卡），user.jpg为一个临时文件，每次拍照后这个图片都会被替换
                         openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
@@ -215,7 +214,7 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
 
     // 修改头像对话框操作处理
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             // 如果返回码是可以的
@@ -232,7 +231,7 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
                 case CROP_SMALL_PICTURE:
                     if (data != null) {
                         // 上传裁剪图片
-                        Bundle extras = data.getExtras();
+                        final Bundle extras = data.getExtras();
                         if (extras != null) {
                             Bitmap photo = extras.getParcelable("data");
                             // 图片处理成圆形
@@ -248,14 +247,14 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
     }
 
     // 裁剪图片方法实现
-    private void startPhotoZoom(Uri uri) {
+    private void startPhotoZoom(final Uri uri) {
         if (uri == null) {
             AlerterUtil.showDanger(getHoldingActivity(), "图片路径不存在");
             return;
         }
         try {
             imageUri = uri;
-            Intent intent = new Intent("com.android.camera.action.CROP");
+            final Intent intent = new Intent("com.android.camera.action.CROP");
             // 打开图片类文件
             intent.setDataAndType(uri, "image/*");
             // 设置裁剪
@@ -268,7 +267,7 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
             intent.putExtra("outputY", 250);
             intent.putExtra("return-data", true);
             startActivityForResult(intent, CROP_SMALL_PICTURE);
-        } catch (ActivityNotFoundException e) {
+        } catch (final ActivityNotFoundException e) {
             e.printStackTrace();
             AlerterUtil.showDanger(getHoldingActivity(), R.string.all_cannot_crop);
         }
@@ -282,7 +281,7 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
     }
 
     @Override
-    public void showSuccessMsg(String avatarUrl) {
+    public void showSuccessMsg(final String avatarUrl) {
         if (avatarUrl != null) {
             // 更新头像链接
             mSPUtil.put("user_avatar", avatarUrl);
@@ -295,7 +294,7 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
     }
 
     @Override
-    public void showFailedMsg(String msg) {
+    public void showFailedMsg(final String msg) {
         AlerterUtil.showDanger(getHoldingActivity(), msg);
     }
 

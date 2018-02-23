@@ -2,9 +2,13 @@ package com.zoctan.smarthub.hubDetail.widget;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +23,6 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.vansuita.library.Icon;
-import com.zoctan.smarthub.App;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
 import com.zoctan.smarthub.beans.TimerBean;
@@ -53,28 +56,32 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
     private List<TimerBean> mData;
     private final HubDetailTimerListAdapter.OnItemClickListener mOnItemClickListener = new HubDetailTimerListAdapter.OnItemClickListener() {
         @Override
-        public void onItemClick(String action, View view, int position) {
+        public void onItemClick(final String action, final View view, final int position) {
             if (mData.size() <= 0) {
                 return;
             }
-            TimerBean timer = mAdapter.getItem(position);
+            final TimerBean timer = mAdapter.getItem(position);
             timer.setAction(action);
             switch (action) {
-                case "replace":
-                    setTime(timer);
-                    //ToastUtils.showShort("replace");
+                case "update":
+                    showTimerDialog(timer);
+                    //ToastUtils.showShort("update");
                     break;
-                case "add":
-                    doTime(timer, true);
-                    //ToastUtils.showShort("add");
+                case "close":
+                case "open":
+                    timer.setStatus(timer.getAction().equals("close") ? 0 : 1);
+                    mHubDetailPresenter.doHubTimer(
+                            mSPUtil.getString("user_password"),
+                            timer);
+                    //ToastUtils.showShort("update");
                     break;
                 case "delete":
-                    // server need hour and minute...
-                    doTime(timer, true);
+                    mHubDetailPresenter.doHubTimer(
+                            mSPUtil.getString("user_password"),
+                            timer);
                     //ToastUtils.showShort("delete");
                     break;
             }
-            refreshTimerList();
         }
     };
 
@@ -88,9 +95,9 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
     }
 
     @Override
-    protected void initView(View view, Bundle savedInstanceState) {
+    protected void initView(final View view, final Bundle savedInstanceState) {
         mRecyclerView.setHasFixedSize(true);
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
@@ -104,72 +111,97 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
     private void setSmartRefresh() {
         mSmartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onRefresh(RefreshLayout refreshlayout) {
+            public void onRefresh(final RefreshLayout refreshlayout) {
                 refreshTimerList();
                 refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
             }
         });
         mSmartRefreshLayout.setOnLoadmoreListener(new OnLoadmoreListener() {
             @Override
-            public void onLoadmore(RefreshLayout refreshlayout) {
+            public void onLoadmore(final RefreshLayout refreshlayout) {
                 refreshlayout.finishLoadmore(2000/*,false*/);//传入false表示加载失败
             }
         });
     }
 
-    private void doTime(final TimerBean timer, Boolean empty) {
-        if (timer.getName().equals("定时开机")) {
-            timer.setWhich("power_on");
-        } else {
-            timer.setWhich("power_off");
-        }
-        if (empty) {
-            timer.setRepeat("每天");
-            timer.setHour(calendar.get(Calendar.HOUR_OF_DAY) + "");
-            timer.setMinute(Calendar.MINUTE + "");
-        }
-        mHubDetailPresenter.doHubTimer(
-                mSPUtil.getString("user_password"),
-                mSPUtil.getString("hub_onenet_id"),
-                timer);
+    @OnClick(R.id.FloatingActionButton_timer_list)
+    public void addTimer() {
+        final TimerBean timer = new TimerBean();
+        timer.setAction("add");
+        timer.setHub_id(mSPUtil.getString("hub_onenet_id"));
+        timer.setPower(0);
+        timer.setRepeat("每天");
+        showTimerDialog(timer);
     }
 
-    public void setTime(final TimerBean timer) {
-        @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.dialog_timer, null);
-        final TimePicker mTimePicker = view.findViewById(R.id.TimePicker_timer);
-        NiceSpinner mSpinnerOpenClose = view.findViewById(R.id.NiceSpinner_timer_open_close);
-        final LinkedList<String> openCloseList = new LinkedList<>(
-                Arrays.asList("定时开机", "定时关机"));
+    public void showTimerDialog(final TimerBean timer) {
+        @SuppressLint("InflateParams") final View view = getLayoutInflater().inflate(R.layout.dialog_timer, null);
+
+        final TextInputEditText mEtTimerName = view.findViewById(R.id.EditText_timer_name);
+        final TextInputLayout mLayoutTimerName = view.findViewById(R.id.TextInputLayout_timer_name);
+
+        mEtTimerName.setText(timer.getName());
+        mEtTimerName.setSelection(mEtTimerName.getText().length());
+        mEtTimerName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(final CharSequence charSequence, final int i, final int i1, final int i2) {
+            }
+
+            @Override
+            public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
+                if (s.length() > 12) {
+                    mLayoutTimerName.setErrorEnabled(true);
+                    mEtTimerName.setError(getString(R.string.all_max_name));
+                } else {
+                    mEtTimerName.setError(null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(final Editable editable) {
+            }
+        });
+        // 下拉菜单
+        final NiceSpinner mSpinnerOpenClose = view.findViewById(R.id.NiceSpinner_timer_open_close);
+        final LinkedList<String> openCloseList = new LinkedList<>(Arrays.asList("定时关机", "定时开机"));
+        timer.setPower(timer.getPower());
         mSpinnerOpenClose.attachDataSource(openCloseList);
         mSpinnerOpenClose.addOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (openCloseList.get(i).equals("定时开机")) {
-                    timer.setWhich("power_on");
+            public void onItemClick(final AdapterView<?> adapterView, final View view, final int i, final long l) {
+                if (openCloseList.get(i).equals("定时关机")) {
+                    timer.setPower(0);
                 } else {
-                    timer.setWhich("power_off");
+                    timer.setPower(1);
                 }
                 //ToastUtils.showShort(openCloseList.get(i));
             }
         });
 
-        NiceSpinner mSpinnerRepeat = view.findViewById(R.id.NiceSpinner_timer_repeat);
-        final LinkedList<String> repeatList = new LinkedList<>(
-                Arrays.asList("每天", "每周1-5", "一次性"));
+        final NiceSpinner mSpinnerRepeat = view.findViewById(R.id.NiceSpinner_timer_repeat);
+        final LinkedList<String> repeatList = new LinkedList<>(Arrays.asList("每天", "每周1-5", "一次性"));
+        timer.setRepeat(timer.getRepeat());
         mSpinnerRepeat.attachDataSource(repeatList);
         mSpinnerRepeat.addOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemClick(final AdapterView<?> adapterView, final View view, final int i, final long l) {
                 timer.setRepeat(repeatList.get(i));
                 //ToastUtils.showShort(repeatList.get(i));
             }
         });
 
-        // 初始化时间
+        // 时间选择器
+        final TimePicker mTimePicker = view.findViewById(R.id.TimePicker_timer);
         calendar.setTimeInMillis(System.currentTimeMillis());
         mTimePicker.setIs24HourView(true);
-        mTimePicker.setHour(calendar.get(Calendar.HOUR_OF_DAY));
-        mTimePicker.setMinute(Calendar.MINUTE);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = Calendar.MINUTE;
+        if (timer.getTime() != null) {
+            hour = Integer.parseInt(timer.getTime().split(":")[0]);
+            minute = Integer.parseInt(timer.getTime().split(":")[1]);
+        }
+        mTimePicker.setHour(hour);
+        mTimePicker.setMinute(minute);
 
         final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
                 .init(R.string.hub_detail_timer_setting,
@@ -180,11 +212,16 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
                 .setCustomView(view, getHoldingActivity())
                 .setButton1Click(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
-                        timer.setHour(mTimePicker.getHour() + "");
-                        timer.setMinute(mTimePicker.getMinute() + "");
-                        doTime(timer, false);
-                        dialog.dismiss();
+                    public void onClick(final View v) {
+                        if (mEtTimerName.getText().length() > 0
+                                && mLayoutTimerName.getError() == null) {
+                            timer.setTime(mTimePicker.getHour() + ":" + mTimePicker.getMinute());
+                            timer.setName(mEtTimerName.getText().toString());
+                            mHubDetailPresenter.doHubTimer(
+                                    mSPUtil.getString("user_password"),
+                                    timer);
+                            dialog.dismiss();
+                        }
                     }
                 })
                 .show();
@@ -200,7 +237,7 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
     }
 
     @Override
-    public void loadTimerList(List<TimerBean> timerList) {
+    public void loadTimerList(final List<TimerBean> timerList) {
         mData = new ArrayList<>();
         if (timerList != null) {
             mData.addAll(timerList);
@@ -210,13 +247,13 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
     }
 
     @Override
-    public void showSuccessMsg(String msg) {
+    public void showSuccessMsg(final String msg) {
         AlerterUtil.showInfo(getHoldingActivity(), msg);
         refreshTimerList();
     }
 
     @Override
-    public void showFailedMsg(String msg) {
+    public void showFailedMsg(final String msg) {
         AlerterUtil.showDanger(getHoldingActivity(), msg);
     }
 }
@@ -227,34 +264,36 @@ class HubDetailTimerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private OnItemClickListener mOnItemClickListener;
 
-    public void setData(List<TimerBean> data) {
+    public void setData(final List<TimerBean> data) {
         this.mData = data;
         this.notifyDataSetChanged();
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_timer, parent, false);
+    public RecyclerView.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
+        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_timer, parent, false);
         return new ItemViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof ItemViewHolder) {
-            TimerBean timer = mData.get(position);
+            final TimerBean timer = mData.get(position);
             if (timer == null) {
                 return;
             }
-            if (timer.getStatus()) {
+            if (timer.getPower() == 1) {
                 Icon.on(((ItemViewHolder) holder).mTvTimerPic).color(R.color.accent).icon(R.drawable.ic_switch).put();
             }
             ((ItemViewHolder) holder).mTvTimerName.setText(timer.getName());
-            String detail_time = timer.getRepeat() + " " + timer.getTime();
+            final String power = timer.getPower() == 0 ? "定时关机 " : "定时开机 ";
+            final String detail_time = power + timer.getRepeat() + " " + timer.getTime();
             ((ItemViewHolder) holder).mTvTimerRepeat.setText(detail_time);
-            ((ItemViewHolder) holder).mSwitchOpenClose.setChecked(timer.getStatus());
+            ((ItemViewHolder) holder).mSwitchOpenClose.setChecked(timer.getStatus() == 1);
         }
     }
 
+    @Override
     public int getItemCount() {
         if (mData == null) {
             return 0;
@@ -262,11 +301,11 @@ class HubDetailTimerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return mData.size();
     }
 
-    TimerBean getItem(int position) {
+    TimerBean getItem(final int position) {
         return mData.get(position);
     }
 
-    void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+    void setOnItemClickListener(final OnItemClickListener onItemClickListener) {
         this.mOnItemClickListener = onItemClickListener;
     }
 
@@ -285,23 +324,26 @@ class HubDetailTimerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         @BindView(R.id.Switch_timer_open_close)
         Switch mSwitchOpenClose;
 
-        ItemViewHolder(View view) {
+        ItemViewHolder(final View view) {
             super(view);
             ButterKnife.bind(this, view);
         }
 
-        @OnClick({R.id.Switch_timer_open_close, R.id.GridLayout_timer})
-        public void onClick(View view) {
+        @OnClick({R.id.Switch_timer_open_close, R.id.GridLayout_timer, R.id.Button_timer_delete})
+        public void onClick(final View view) {
             if (mOnItemClickListener == null) {
                 return;
             }
-            String action;
+            String action = null;
             switch (view.getId()) {
                 case R.id.Switch_timer_open_close:
-                    action = mSwitchOpenClose.isChecked() ? "add" : "delete";
+                    action = mSwitchOpenClose.isChecked() ? "open" : "close";
                     break;
-                default:
-                    action = mSwitchOpenClose.isChecked() ? "replace" : "add";
+                case R.id.GridLayout_timer:
+                    action = "update";
+                    break;
+                case R.id.Button_timer_delete:
+                    action = "delete";
                     break;
             }
             mOnItemClickListener.onItemClick(action, view, this.getLayoutPosition());

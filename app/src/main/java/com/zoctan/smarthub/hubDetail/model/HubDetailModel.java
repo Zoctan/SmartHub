@@ -21,7 +21,7 @@ public interface HubDetailModel {
 
     void doDevice(DeviceBean deviceBean, String token, String action, OnListener listener);
 
-    void doHubTimer(String token, String hubOneNetId, TimerBean timer, OnListener listener);
+    void doHubTimer(String token, TimerBean timer, OnListener listener);
 
     interface OnListener {
         void onSuccess(String msg);

@@ -183,36 +183,6 @@
                             android:paddingBottom="10dp"
                             android:paddingEnd="0dp"
                             android:paddingStart="20dp"
-                            android:paddingTop="10dp"
-                            android:text="@string/about_blog"
-                            android:textColor="@color/secondary_text"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:autoLink="web"
-                            android:paddingBottom="10dp"
-                            android:paddingEnd="0dp"
-                            android:paddingStart="5dp"
-                            android:paddingTop="10dp"
-                            android:text="@string/about_blog_url"
-                            android:textColor="@color/secondary_text"
-                            android:textColorLink="@color/primary"
-                            android:textSize="14sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingBottom="10dp"
-                            android:paddingEnd="0dp"
-                            android:paddingStart="20dp"
                             android:paddingTop="5dp"
                             android:text="@string/about_github"
                             android:textColor="@color/secondary_text"
@@ -306,10 +276,6 @@
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="200dp" />
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

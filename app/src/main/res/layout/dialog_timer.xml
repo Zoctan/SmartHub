@@ -3,11 +3,57 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/icon"
     android:columnCount="2"
     android:orientation="vertical"
     android:padding="2dp"
-    android:rowCount="2">
+    android:rowCount="3">
+
+    <LinearLayout
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_width="match_parent"
+        android:layout_column="0"
+        android:layout_columnSpan="2"
+        android:layout_row="0"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        tools:ignore="UselessParent">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="4dp"
+            android:paddingTop="20dp"
+            android:src="@drawable/ic_timer"
+            tools:ignore="ContentDescription" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/TextInputLayout_timer_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="4dp"
+            android:background="@null"
+            app:counterOverflowTextAppearance="@style/TextErrorAppearance"
+            app:errorTextAppearance="@style/TextErrorAppearance"
+            app:hintTextAppearance="@style/HintAppearance"
+            app:counterEnabled="true"
+            app:counterMaxLength="12"
+            app:errorEnabled="true">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/EditText_timer_name"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@null"
+                android:hint="@string/timer_hint_name"
+                android:inputType="text"
+                android:textColor="@color/primary_text"
+                android:textSize="@dimen/edit_size" />
+        </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
 
     <TimePicker
         android:id="@+id/TimePicker_timer"
@@ -15,7 +61,7 @@
         android:layout_height="match_parent"
         android:layout_column="0"
         android:layout_columnWeight="1"
-        android:layout_row="0"
+        android:layout_row="1"
         android:layout_rowSpan="2"
         android:timePickerMode="spinner" />
 
@@ -25,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_column="1"
         android:layout_columnWeight="1"
-        android:layout_row="0"
+        android:layout_row="1"
         android:layout_rowWeight="1"
         app:arrowTint="@color/primary"
         app:textTint="@color/primary_text" />
@@ -36,7 +82,7 @@
         android:layout_height="wrap_content"
         android:layout_column="1"
         android:layout_columnWeight="1"
-        android:layout_row="1"
+        android:layout_row="2"
         android:layout_rowWeight="1"
         app:arrowTint="@color/primary"
         app:textTint="@color/primary_text" />

@@ -54,6 +54,11 @@
     <string name="all_max_name">名字超过最大长度</string>
 
     <string name="hub_hint_name">插座名字</string>
+    <string name="hub_is_connected">在线</string>
+    <string name="hub_not_connected">离线</string>
+    <string name="hub_msg_not_connected">插座已离线</string>
+    <string name="hub_is_electric">已通电</string>
+    <string name="hub_not_electric">已断电</string>
 
     <string name="hub_add">添加插座</string>
     <string name="hub_add_msg">确定添加插座吗？</string>
@@ -69,6 +74,7 @@
     <string name="hub_detail_energy_used">日用电量</string>
     <string name="hub_detail_timer">定时</string>
     <string name="hub_detail_timer_setting">定时设置</string>
+    <string name="timer_hint_name">请输入定时器名字</string>
 
     <string name="qr_smart_hub">扫描智能插座</string>
     <string name="qr_code_scan">二维码/条形码扫描</string>
@@ -96,8 +102,6 @@
     <string name="about_source_code">源码</string>
     <string name="about_source_code_url">https://github.com/Zoctan/SmartHub.git</string>
     <string name="about_author">APP作者</string>
-    <string name="about_blog">博客:</string>
-    <string name="about_blog_url">https://Zoctan.github.io</string>
     <string name="about_github">Github:</string>
     <string name="about_github_url">https://github.com/Zoctan</string>
     <string name="about_email">邮箱:</string>

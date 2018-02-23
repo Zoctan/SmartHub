@@ -50,9 +50,13 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
 
     @Override
     protected void initView(final View view, final Bundle savedInstanceState) {
-        if (this.mSPUtil.getBoolean("hub_online")) {
-            this.handler.postDelayed(this.runnable, 1000);
-            this.mHubDetailNowPresenter.loadHubDevice(
+        if (mSPUtil.getBoolean("hub_connected")) {
+            handler.postDelayed(runnable, 1000);
+        }
+        if (!mSPUtil.getBoolean("hub_is_electric")) {
+            mFabSpeedDial.setVisibility(View.GONE);
+        } else {
+            mHubDetailNowPresenter.loadHubDevice(
                     mSPUtil.getString("hub_onenet_id"),
                     mSPUtil.getString("user_password")
             );
@@ -85,7 +89,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
     private final Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            this.updateDetail();
+            updateDetail();
             // 间隔5秒
             handler.postDelayed(this, 1000 * 5);
         }
@@ -97,7 +101,6 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
     };
 
     public void resetHub() {
-
         final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
                 .init(R.string.nav_clear,
                         "确定清除存储的所有用电器特征值吗？",
@@ -114,7 +117,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
     }
 
     public void updateDevice() {
-        @SuppressLint("InflateParams") final View view = this.getLayoutInflater().inflate(R.layout.dialog_update_device, null);
+        @SuppressLint("InflateParams") final View view = getLayoutInflater().inflate(R.layout.dialog_update_device, null);
         mEtDeviceInfo = view.findViewById(R.id.EditText_device_name);
 
         final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
@@ -142,7 +145,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
 
 
     public void addDevice() {
-        @SuppressLint("InflateParams") final View view = this.getLayoutInflater().inflate(R.layout.dialog_new_device, null);
+        @SuppressLint("InflateParams") final View view = getLayoutInflater().inflate(R.layout.dialog_new_device, null);
         mEtDeviceInfo = view.findViewById(R.id.EditText_device_name);
 
         final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
@@ -170,23 +173,23 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
 
     @Override
     public void setDevice(final DeviceBean device) {
-        //this.mIvAppliances.setImageURI(device.getImg());
-        this.mTvAppliances.setText(device.getName());
+        //mIvAppliances.setImageURI(device.getImg());
+        mTvAppliances.setText(device.getName());
         mSPUtil.put("device", device.getName());
     }
 
     @Override
     public void setData(final Map<String, String> data) {
-        this.mTvVoltage.setText(data.get("V"));
-        this.mTvAmpere.setText(data.get("I"));
-        this.mTvPowerFactor.setText(data.get("Q"));
-        this.mTvPower.setText(data.get("W"));
+        mTvVoltage.setText(data.get("V"));
+        mTvAmpere.setText(data.get("I"));
+        mTvPowerFactor.setText(data.get("Q"));
+        mTvPower.setText(data.get("W"));
     }
 
     @Override
     public void showDoDetailDeviceSuccessMsg(final String msg) {
         AlerterUtil.showInfo(getHoldingActivity(), msg);
-        this.mHubDetailNowPresenter.loadHubDevice(
+        mHubDetailNowPresenter.loadHubDevice(
                 mSPUtil.getString("hub_onenet_id"),
                 mSPUtil.getString("user_password")
         );
@@ -206,6 +209,6 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
     public void onDestroyView() {
         super.onDestroyView();
         // 停止刷新
-        this.handler.removeCallbacks(this.runnable);
+        handler.removeCallbacks(runnable);
     }
 }

@@ -64,12 +64,16 @@ public class UserModelImpl implements UserModel {
     // 修改
     @Override
     public void modify(final String url, final UserBean user,
+                       final String token,
                        final ModifyUserListener listener) {
+        final String headerKey = "Authorization";
+        final String headerValue = "Smart " + token;
         OkHttpUtil.getDefault(this).doAsync(
                 HttpInfo.Builder()
                         .setUrl(url)
                         .setRequestType(RequestType.PUT)
                         .addParamJson(new Gson().toJson(user))
+                        .addHead(headerKey, headerValue)
                         .build(),
                 new Callback() {
                     @Override

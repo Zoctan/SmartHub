@@ -16,7 +16,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -76,19 +75,19 @@ public class HubListFragment extends BaseFragment implements HubListView {
     @Override
     protected void initView(final View view, final Bundle savedInstanceState) {
         // 固定RecyclerView大小
-        this.mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setHasFixedSize(true);
         // 设置布局管理器
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        this.mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         // 设置item动画
-        this.mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        this.mAdapter = new HubListAdapter();
-        this.mAdapter.setOnItemClickListener(this.mOnItemClickListener);
-        this.mRecyclerView.setAdapter(this.mAdapter);
+        mAdapter = new HubListAdapter();
+        mAdapter.setOnItemClickListener(mOnItemClickListener);
+        mRecyclerView.setAdapter(mAdapter);
 
         final HubListFragment self = this;
-        this.mFloatingButton.setOnClickListener(new View.OnClickListener() {
+        mFloatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
                 HubListFragmentPermissionsDispatcher.openScannerWithPermissionCheck(self);
@@ -102,23 +101,27 @@ public class HubListFragment extends BaseFragment implements HubListView {
     private final HubListAdapter.OnItemClickListener mOnItemClickListener = new HubListAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(final String action, final View view, final int position) {
-            if (HubListFragment.this.mData.size() <= 0) {
+            if (mData.size() <= 0) {
                 return;
             }
-            final HubBean hub = HubListFragment.this.mAdapter.getItem(position);
+            final HubBean hub = mAdapter.getItem(position);
             switch (action) {
                 case "detail":
-                    HubListFragment.this.mSPUtil.put("hub_name", hub.getName());
-                    HubListFragment.this.mSPUtil.put("hub_onenet_id", hub.getOnenet_id());
-                    HubListFragment.this.mSPUtil.put("hub_online", hub.getOnline());
+                    mSPUtil.put("hub_name", hub.getName());
+                    mSPUtil.put("hub_onenet_id", hub.getOnenet_id());
+                    mSPUtil.put("hub_is_electric", hub.getIs_electric());
+                    mSPUtil.put("hub_connected", hub.getConnected());
                     final Intent intent = new Intent("hub_detail");
                     intent.addCategory("hub");
                     startActivity(intent);
                     getHoldingActivity().overridePendingTransition(android.R.anim.slide_in_left, 0);
                     break;
+                case "noConnected":
+                    AlerterUtil.showDanger(getHoldingActivity(), R.string.hub_msg_not_connected);
+                    break;
                 case "on":
                 case "off":
-                    HubListFragment.this.mHubListPresenter.hubOpenClose(hub.getOnenet_id(), action, HubListFragment.this.mSPUtil.getString("user_password"));
+                    mHubListPresenter.hubOpenClose(hub.getOnenet_id(), action, mSPUtil.getString("user_password"));
                     //ToastUtils.showShort(action);
                     break;
                 case "update":
@@ -143,8 +146,8 @@ public class HubListFragment extends BaseFragment implements HubListView {
                 .setButton1Click(new View.OnClickListener() {
                     @Override
                     public void onClick(final View v) {
-                        HubListFragment.this.mHubListPresenter.doHub("delete",
-                                HubListFragment.this.mSPUtil.getString("user_password"),
+                        mHubListPresenter.doHub("delete",
+                                mSPUtil.getString("user_password"),
                                 hub);
                         dialog.dismiss();
                     }
@@ -152,7 +155,7 @@ public class HubListFragment extends BaseFragment implements HubListView {
     }
 
     private void showUpdateDialog(final String action, final HubBean hub) {
-        @SuppressLint("InflateParams") final View view = this.getLayoutInflater().inflate(R.layout.dialog_edit_hub, null);
+        @SuppressLint("InflateParams") final View view = getLayoutInflater().inflate(R.layout.dialog_edit_hub, null);
         final TextInputEditText mEtHubName = view.findViewById(R.id.EditText_hub_name);
         final TextInputLayout mLayoutHubName = view.findViewById(R.id.TextInputLayout_hub_name);
         mEtHubName.setText(hub.getName());
@@ -190,32 +193,31 @@ public class HubListFragment extends BaseFragment implements HubListView {
                         if (mEtHubName.getText().length() > 0
                                 && mLayoutHubName.getError() == null) {
                             hub.setName(mEtHubName.getText().toString());
-                            HubListFragment.this.mHubListPresenter.doHub(action,
-                                    HubListFragment.this.mSPUtil.getString("user_password"),
+                            mHubListPresenter.doHub(action,
+                                    mSPUtil.getString("user_password"),
                                     hub);
+                            dialog.dismiss();
                         }
-                        dialog.dismiss();
                     }
                 }).show();
     }
 
     public void refreshHubList() {
-        if (this.mData != null) {
-            this.mData.clear();
+        if (mData != null) {
+            mData.clear();
         }
-        this.mHubListPresenter.loadHubList(
-                this.mSPUtil.getString("user_password"));
+        mHubListPresenter.loadHubList(mSPUtil.getString("user_password"));
     }
 
     private void setSmartRefreshListener() {
-        this.mSmartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+        mSmartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(final RefreshLayout refreshlayout) {
                 refreshHubList();
                 refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
             }
         });
-        this.mSmartRefreshLayout.setOnLoadmoreListener(new OnLoadmoreListener() {
+        mSmartRefreshLayout.setOnLoadmoreListener(new OnLoadmoreListener() {
             @Override
             public void onLoadmore(final RefreshLayout refreshlayout) {
                 refreshlayout.finishLoadmore(2000/*,false*/);//传入false表示加载失败
@@ -304,8 +306,8 @@ public class HubListFragment extends BaseFragment implements HubListView {
                 .setButton1Click(new View.OnClickListener() {
                     @Override
                     public void onClick(final View v) {
-                        HubListFragment.this.mHubListPresenter.doHub("add",
-                                HubListFragment.this.mSPUtil.getString("user_password"),
+                        mHubListPresenter.doHub("add",
+                                mSPUtil.getString("user_password"),
                                 hub);
                         dialog.dismiss();
                     }
@@ -315,14 +317,14 @@ public class HubListFragment extends BaseFragment implements HubListView {
 
     @Override
     public void loadHubList(final List<HubBean> hubList) {
-        this.mData = new ArrayList<>();
+        mData = new ArrayList<>();
         if (hubList != null) {
-            this.mData.addAll(hubList);
-            this.mAdapter.setData(this.mData);
+            mData.addAll(hubList);
+            mAdapter.setData(mData);
         } else {
             AlerterUtil.showInfo(getHoldingActivity(), R.string.tip_add_hub);
         }
-        this.mAdapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -342,8 +344,8 @@ class HubListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private OnItemClickListener mOnItemClickListener;
 
     public void setData(final List<HubBean> data) {
-        this.mData = data;
-        this.notifyDataSetChanged();
+        mData = data;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -355,41 +357,48 @@ class HubListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof ItemViewHolder) {
-            final HubBean hub = this.mData.get(position);
+            final HubBean hub = mData.get(position);
             if (hub == null) {
                 return;
             }
             ((ItemViewHolder) holder).mTvHubName.setText((hub.getName()));
             ((ItemViewHolder) holder).mTvHubMac.setText((hub.getMac()));
-            final String text;
+            final int text1;
+            final int text2;
             final Boolean checked;
-            if (hub.getOnline()) {
-                text = "在线";
+            if (hub.getIs_electric()) {
+                text2 = R.string.hub_is_electric;
                 checked = true;
                 Icon.on(((ItemViewHolder) holder).mIvHub).color(R.color.accent).icon(R.drawable.ic_hub).put();
             } else {
-                text = "离线";
+                text2 = R.string.hub_not_electric;
                 checked = false;
             }
-            ((ItemViewHolder) holder).mTvHubOnline.setText(text);
+            if (hub.getConnected()) {
+                text1 = R.string.hub_is_connected;
+            } else {
+                text1 = R.string.hub_not_connected;
+            }
+            ((ItemViewHolder) holder).mTvHubConnected.setText(text1);
+            ((ItemViewHolder) holder).mTvHubElectric.setText(text2);
             ((ItemViewHolder) holder).mSwitchOpenClose.setChecked(checked);
         }
     }
 
     @Override
     public int getItemCount() {
-        if (this.mData == null) {
+        if (mData == null) {
             return 0;
         }
-        return this.mData.size();
+        return mData.size();
     }
 
     HubBean getItem(final int position) {
-        return this.mData.get(position);
+        return mData.get(position);
     }
 
     void setOnItemClickListener(final OnItemClickListener onItemClickListener) {
-        this.mOnItemClickListener = onItemClickListener;
+        mOnItemClickListener = onItemClickListener;
     }
 
     public interface OnItemClickListener {
@@ -405,14 +414,12 @@ class HubListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         TextView mTvHubName;
         @BindView(R.id.TextView_hub_mac)
         TextView mTvHubMac;
-        @BindView(R.id.TextView_hub_online)
-        TextView mTvHubOnline;
+        @BindView(R.id.TextView_hub_connected)
+        TextView mTvHubConnected;
+        @BindView(R.id.TextView_hub_electric)
+        TextView mTvHubElectric;
         @BindView(R.id.Switch_hub_open_close)
         Switch mSwitchOpenClose;
-        @BindView(R.id.Button_hub_edit)
-        Button mBtnHubEdit;
-        @BindView(R.id.Button_hub_delete)
-        Button mBtnHubDelete;
 
         ItemViewHolder(final View view) {
             super(view);
@@ -421,13 +428,19 @@ class HubListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         @OnClick({R.id.Switch_hub_open_close, R.id.GridLayout_hub, R.id.Button_hub_edit, R.id.Button_hub_delete})
         public void onClick(final View view) {
-            if (HubListAdapter.this.mOnItemClickListener == null) {
+            if (mOnItemClickListener == null) {
                 return;
             }
             String action = null;
             switch (view.getId()) {
                 case R.id.Switch_hub_open_close:
-                    action = this.mTvHubOnline.getText().equals("离线") ? "on" : "off";
+                    if (mTvHubConnected.getText().equals("在线")) {
+                        action = mTvHubElectric.getText().equals("已通电") ? "off" : "on";
+                    } else {
+                        action = "noConnected";
+                        // 插座不在线，点开关也没用
+                        mSwitchOpenClose.setChecked(!mSwitchOpenClose.isChecked());
+                    }
                     break;
                 case R.id.GridLayout_hub:
                     action = "detail";
@@ -439,7 +452,7 @@ class HubListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     action = "delete";
                     break;
             }
-            HubListAdapter.this.mOnItemClickListener.onItemClick(action, view, this.getLayoutPosition());
+            mOnItemClickListener.onItemClick(action, view, getLayoutPosition());
         }
     }
 }
