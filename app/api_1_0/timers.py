@@ -12,7 +12,7 @@ def add_timer(device_id):
     hub = Hub.query.filter_by(onenet_id=device_id).first()
     if not hub:
         return jsonify({'msg': 'no', 'error': '插座不存在'})
-    name, = request.json.get('name')
+    name = request.json.get('name')
     power = request.json.get('power')
     repeat = request.json.get('repeat')
     time = request.json.get('time')
