@@ -8,36 +8,28 @@ from flask import jsonify, g, request
 
 from app import db
 from . import decorators
-from ..models import User, Hub, Device
+from ..models import User, Hub
 
 headers = {'api-key': 'nJVyiaj5Y297Fc6Q=bUYVWnz2=0='}
 
-'''
-插座本身是开着的，因为需要WIFI控制开关
-控制的只是继电器开关，而官网查询只是查询插座状态
-def hub_online(onenet_id):
+
+def hub_connected(onenet_id):
     # https://open.iot.10086.cn/doc/art262.html#68
     url = 'http://api.heclouds.com/devices/'
     cmd_url = url + onenet_id
     # 产品API
     # https://open.iot.10086.cn/product?pid=99569
-    headers = {'api-key': 'nJVyiaj5Y297Fc6Q=bUYVWnz2=0='}
     response = requests.get(cmd_url, headers=headers)
-    return response.json()['data']
-'''
+    return response.json()['data']['online']
 
-def hub_online(onenet_id):
-    # https://open.iot.10086.cn/doc/art260.html#68
-    url = 'http://api.heclouds.com/cmds'
-    cmd_url = url + '?device_id={}&qos=1&timeout=100&type=0'.format(onenet_id)
-    # 由于无法判断继电器本身是否在线，只能通过下方命令判断了
-    data = '{match}0'
-    response = requests.post(cmd_url, data=data, headers=headers)
-    sleep(1)
-    query_url = url + '/' + response.json()['data']['cmd_uuid']
-    query_response = requests.get(query_url, headers=headers)
-    print(query_response.json())
-    return query_response.json()['data']['status'] != 0
+
+def hub_is_electric(onenet_id):
+    # 查询单个数据流
+    # https://open.iot.10086.cn/doc/art261.html#68
+    url = 'http://api.heclouds.com/devices/{}/datastreams/Relay'.format(onenet_id)
+    response = requests.get(url, headers=headers)
+    print(response.json())
+    return response.json()['data']['current_value'] == 1
 
 
 @decorators.route('/api/hubs', methods=['GET'])
@@ -47,8 +39,11 @@ def get_hubs():
         return jsonify({'msg': 'no', 'error': '请带上token查询'})
     hub_list = []
     for hub in user.hubs:
-        online = hub_online(hub.onenet_id)
-        tmp = {'online': online}
+        # 插座是否在线，插座不在线继电器即无法发送开关命令
+        connected = hub_connected(hub.onenet_id)
+        # 继电器通电情况
+        is_electric = hub_is_electric(hub.onenet_id)
+        tmp = {'connected': connected, 'is_electric': is_electric}
         tmp.update(hub.to_json())
         hub_list.append(tmp)
     return jsonify({'msg': 'ok', 'result': hub_list})
