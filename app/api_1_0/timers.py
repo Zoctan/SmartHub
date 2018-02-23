@@ -16,8 +16,11 @@ def add_timer(device_id):
     power = request.json.get('power')
     repeat = request.json.get('repeat')
     time = request.json.get('time')
-    print(request.json)
-    print(request.json.get('repeat'))
+    if name == '':
+        if power == 0:
+            name = '定时关机'
+        else:
+            name = '定时开机'
     timer = Timer(hub_id=device_id, name=name, power=power, repeat=repeat, time=time, status=1)
     db.session.add(timer)
     return jsonify({'msg': 'ok'})
@@ -44,9 +47,9 @@ def update_timer(device_id):
     power = request.json.get('power')
     if name == '':
         if power == 0:
-            name = '定时关机<{}>'.format(id)
+            name = '定时关机'
         else:
-            name = '定时开机<{}>'.format(id)
+            name = '定时开机'
     timer.name, = name
     timer.power = power
     timer.repeat = request.json.get('repeat')
