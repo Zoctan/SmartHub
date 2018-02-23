@@ -16,6 +16,7 @@ def add_timer(device_id):
     power = request.json.get('power')
     repeat = request.json.get('repeat')
     time = request.json.get('time')
+    print(request.json)
     timer = Timer(hub_id=device_id, name=name, power=power, repeat=repeat, time=time, status=1)
     db.session.add(timer)
     return jsonify({'msg': 'ok'})
