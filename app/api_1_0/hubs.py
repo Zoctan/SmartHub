@@ -28,7 +28,7 @@ def hub_is_electric(onenet_id):
     # https://open.iot.10086.cn/doc/art261.html#68
     url = 'http://api.heclouds.com/devices/{}/datastreams/Relay'.format(onenet_id)
     response = requests.get(url, headers=headers)
-    print(response.json())
+    # 服务器api查询的是最后一次通电时的状态，插座本身不在线的话该数据就是不对的
     return response.json()['data']['current_value'] == 1
 
 
@@ -42,7 +42,9 @@ def get_hubs():
         # 插座是否在线，插座不在线继电器即无法发送开关命令
         connected = hub_connected(hub.onenet_id)
         # 继电器通电情况
-        is_electric = hub_is_electric(hub.onenet_id)
+        is_electric = False
+        if connected:
+            is_electric = hub_is_electric(hub.onenet_id)
         tmp = {'connected': connected, 'is_electric': is_electric}
         tmp.update(hub.to_json())
         hub_list.append(tmp)
