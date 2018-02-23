@@ -36,6 +36,7 @@ def hub_online(onenet_id):
     sleep(0.5)
     query_url = url + '/' + response.json()['data']['cmd_uuid']
     query_response = requests.get(query_url, headers=headers)
+    print(query_response.json())
     return query_response.json()['data']['status'] != 0
 
 
