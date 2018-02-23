@@ -33,7 +33,7 @@ def hub_online(onenet_id):
     # 由于无法判断继电器本身是否在线，只能通过下方命令判断了
     data = '{match}0'
     response = requests.post(cmd_url, data=data, headers=headers)
-    sleep(0.5)
+    sleep(1)
     query_url = url + '/' + response.json()['data']['cmd_uuid']
     query_response = requests.get(query_url, headers=headers)
     print(query_response.json())
