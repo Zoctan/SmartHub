@@ -50,7 +50,7 @@ def update_timer(device_id):
             name = '定时关机'
         else:
             name = '定时开机'
-    timer.name, = name
+    timer.name = name
     timer.power = power
     timer.repeat = request.json.get('repeat')
     timer.time = request.json.get('time')
