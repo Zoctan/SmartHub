@@ -65,7 +65,7 @@ def add_hub():
     return jsonify({'msg': 'ok'})
 
 
-@decorators.composed(decorators.route('/api/hubs/<device_id>', methods=['DELETE']))
+@decorators.route('/api/hubs/<device_id>', methods=['DELETE'])
 def delete_hub(device_id):
     hub = Hub.query.filter_by(onenet_id=device_id).first()
     if not hub:

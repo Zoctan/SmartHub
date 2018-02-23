@@ -62,15 +62,14 @@ class AnonymousUser(User):
 
 class Hub(db.Model):
     __tablename__ = 'smart_hubs'
-    id = db.Column(db.Integer, primary_key=True)
+    onenet_id = db.Column(db.Unicode(64, collation='utf8_bin'), primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('smart_users.id'))
     name = db.Column(db.Unicode(64, collation='utf8_bin'), default='插座')
     mac = db.Column(db.Unicode(64, collation='utf8_bin'), nullable=False)
-    onenet_id = db.Column(db.Unicode(64, collation='utf8_bin'))
+    timers = db.relationship('Timer', backref='Hub', lazy='dynamic', cascade='all, delete-orphan')
 
     def to_json(self):
         json = {
-            'id': self.id,
             'onenet_id': self.onenet_id,
             'name': self.name,
             'mac': self.mac,
@@ -101,3 +100,33 @@ class Device(db.Model):
 
     def __repr__(self):
         return '<Device(name={}, eigenvalue={})>'.format(self.name, self.eigenvalue)
+
+
+class Timer(db.Model):
+    __tablename__ = 'smart_timers'
+    id = db.Column(db.Integer, primary_key=True)
+    hub_id = db.Column(db.Unicode(64, collation='utf8_bin'), db.ForeignKey('smart_hubs.onenet_id'))
+    name = db.Column(db.Unicode(256, collation='utf8_bin'), nullable=False)
+    # 0: 关 1: 开
+    power = db.Column(db.SmallInteger, nullable=False)
+    # 每天|每周1-5|一次性
+    repeat = db.Column(db.Unicode(256, collation='utf8_bin'), nullable=False)
+    # 15:26
+    time = db.Column(db.Unicode(32, collation='utf8_bin'), nullable=False)
+    # 0: 关 1: 开
+    status = db.Column(db.SmallInteger, nullable=False)
+
+    def to_json(self):
+        json = {
+            'id': self.id,
+            'hub_id': self.hub_id,
+            'name': self.name,
+            'power': self.power,
+            'repeat': self.repeat,
+            'time': self.time,
+            'status': self.status
+        }
+        return json
+
+    def __repr__(self):
+        return '<Timer(name={}, power={})>'.format(self.name, self.power)
