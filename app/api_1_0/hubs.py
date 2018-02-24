@@ -87,6 +87,7 @@ def send_order(device_id, order, status):
     url = 'http://api.heclouds.com/cmds'
     cmd_url = url + '?device_id={}&qos=1&timeout=100&type=0'.format(device_id)
     data = None
+    status = str(status)
     if order == 'turn':
         # 继电器开关
         data = '{Relay}' + status
