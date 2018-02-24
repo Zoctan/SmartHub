@@ -23,7 +23,7 @@ def add_timer(device_id):
             name = '定时开机'
     timer = Timer(hub_id=device_id, name=name, power=power, repeat=repeat, time=time, status=1)
     db.session.add(timer)
-    return jsonify({'msg': 'ok'})
+    return jsonify({'msg': 'ok', 'result': '定时器添加成功'})
 
 
 @decorators.route('/api/hubs/timers/<device_id>', methods=['GET'])
@@ -55,7 +55,7 @@ def update_timer(device_id):
     timer.repeat = request.json.get('repeat')
     timer.time = request.json.get('time')
     timer.status = request.json.get('status')
-    return jsonify({'msg': 'ok'})
+    return jsonify({'msg': 'ok', 'result': '定时器修改成功'})
 
 
 @decorators.composed(decorators.route('/api/hubs/timers/<device_id>', methods=['DELETE']), decorators.json_required)
@@ -65,4 +65,4 @@ def delete_timer(device_id):
     if not timer:
         return jsonify({'msg': 'no', 'error': '定时器不存在'})
     db.session.delete(timer)
-    return jsonify({'msg': 'ok'})
+    return jsonify({'msg': 'ok', 'result': '定时器删除成功'})

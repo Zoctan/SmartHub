@@ -59,7 +59,7 @@ def add_hub():
         return jsonify({'msg': 'no', 'error': '插座已存在'})
     hub = Hub(user_id=g.current_user.id, mac=mac, onenet_id=onenet_id)
     db.session.add(hub)
-    return jsonify({'msg': 'ok'})
+    return jsonify({'msg': 'ok', 'result': '插座添加成功'})
 
 
 @decorators.route('/api/hubs/<device_id>', methods=['DELETE'])
@@ -68,7 +68,7 @@ def delete_hub(device_id):
     if not hub:
         return jsonify({'msg': 'no', 'error': '插座不存在'})
     db.session.delete(hub)
-    return jsonify({'msg': 'ok'})
+    return jsonify({'msg': 'ok', 'result': '插座删除成功'})
 
 
 @decorators.composed(decorators.route('/api/hubs/<device_id>', methods=['PUT']), decorators.json_required)
@@ -77,7 +77,7 @@ def update_hub(device_id):
     if not hub:
         return jsonify({'msg': 'no', 'error': '插座不存在'})
     hub.name = request.json.get('name')
-    return jsonify({'msg': 'ok'})
+    return jsonify({'msg': 'ok', 'result': '插座修改成功'})
 
 
 # https://open.iot.10086.cn/doc/art257.html#68

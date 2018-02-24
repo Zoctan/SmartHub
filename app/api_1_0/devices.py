@@ -26,7 +26,7 @@ def add_device(device_id):
     response = requests.get(url, headers=headers)
     device = Device(eigenvalue=response.json()['data']['current_value'], onenet_id=device_id, name=name)
     db.session.add(device)
-    return jsonify({'msg': 'ok'})
+    return jsonify({'msg': 'ok', 'result': '用电器添加成功'})
 
 
 @decorators.composed(decorators.route('/api/hubs/device/<device_id>', methods=['PUT']), decorators.json_required)
@@ -37,7 +37,7 @@ def update_device_img(device_id):
     device = Device.query.filter_by(name=oldname, onenet_id=device_id).first()
     device.img = request.json.get('img')
     device.name = request.json.get('name')
-    return jsonify({'msg': 'ok'})
+    return jsonify({'msg': 'ok', 'result': '用电器修改成功'})
 
 
 @decorators.route('/api/hubs/device/<device_id>', methods=['GET'])
