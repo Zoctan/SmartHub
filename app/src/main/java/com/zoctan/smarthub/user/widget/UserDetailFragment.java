@@ -66,31 +66,11 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
     protected void initView(final View view, final Bundle savedInstanceState) {
         userName = mSPUtil.getString("user_name");
         userPhone = mSPUtil.getString("user_phone");
-        final String userAvatarUrl = mSPUtil.getString("user_avatar");
         mTvUserName.setText(userName);
         mTvUserPhone.setText(userPhone);
-        Glide.with(this).load(userAvatarUrl).into(mCircleImageView);
+        Glide.with(this).load(mSPUtil.getString("user_avatar")).into(mCircleImageView);
 
-        mFabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
-            @Override
-            public boolean onMenuItemSelected(final MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.action_new_avatar:
-                        modifyImg();
-                        break;
-                    case R.id.action_new_info:
-                        modifyInfo();
-                        break;
-                    case R.id.action_new_password:
-                        modifyPassword();
-                        break;
-                    case R.id.action_logout:
-                        userLogout();
-                        break;
-                }
-                return false;
-            }
-        });
+        mFabSpeedDial.setMenuListener(new MenuListener());
 
         // android 7.0系统解决拍照的问题
         final StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
@@ -98,10 +78,31 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
         builder.detectFileUriExposure();
     }
 
+    private class MenuListener extends SimpleMenuListenerAdapter {
+        @Override
+        public boolean onMenuItemSelected(final MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+                case R.id.action_new_avatar:
+                    showUpdateAvatarDialog();
+                    break;
+                case R.id.action_new_info:
+                    showUpdateInfoDialog();
+                    break;
+                case R.id.action_new_password:
+                    showModifyPasswordDialog();
+                    break;
+                case R.id.action_logout:
+                    userLogout();
+                    break;
+            }
+            return false;
+        }
+    }
+
     private final TextInputEditText[] mEtPassword = new TextInputEditText[2];
     private TextInputLayout mLayoutUserPassword2;
 
-    public void modifyPassword() {
+    public void showModifyPasswordDialog() {
         @SuppressLint("InflateParams") final View view = this.getLayoutInflater().inflate(R.layout.dialog_new_password, null);
         mLayoutUserPassword2 = view.findViewById(R.id.TextInputLayout_user_password2);
         mEtPassword[0] = view.findViewById(R.id.EditText_user_password);
@@ -128,8 +129,8 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
         final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
                 .init(R.string.user_detail_new_password,
                         null,
-                        R.drawable.ic_modify,
-                        R.string.all_modify);
+                        R.drawable.ic_update,
+                        R.string.all_update);
         dialog
                 .setCustomView(view, getHoldingActivity())
                 .setButton1Click(new View.OnClickListener() {
@@ -140,7 +141,9 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
                                 && mEtPassword[0].getError() == null
                                 && mEtPassword[1].getError() == null) {
                             final String password = mEtPassword[0].getText().toString();
-                            mUserDetailPresenter.modify("password", new UserBean(userName, password), mSPUtil.getString("user_password"));
+                            final UserBean user = new UserBean();
+                            user.setPassword(password);
+                            mUserDetailPresenter.update("password", user, mSPUtil.getString("user_password"));
                         }
                         dialog.dismiss();
                     }
@@ -150,7 +153,7 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
 
     private final TextInputEditText[] mEtUserInfo = new TextInputEditText[2];
 
-    public void modifyInfo() {
+    public void showUpdateInfoDialog() {
         @SuppressLint("InflateParams") final View view = this.getLayoutInflater().inflate(R.layout.dialog_new_info, null);
         mEtUserInfo[0] = view.findViewById(R.id.EditText_user_username);
         mEtUserInfo[1] = view.findViewById(R.id.EditText_user_phone);
@@ -161,8 +164,8 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
         final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
                 .init(R.string.user_detail_new_info,
                         null,
-                        R.drawable.ic_modify,
-                        R.string.all_modify);
+                        R.drawable.ic_update,
+                        R.string.all_update);
         dialog
                 .setCustomView(view, getHoldingActivity())
                 .setButton1Click(new View.OnClickListener() {
@@ -172,9 +175,12 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
                                 && mEtUserInfo[1].getText().length() > 0) {
                             userName = mEtUserInfo[0].getText().toString();
                             userPhone = mEtUserInfo[1].getText().toString();
-                            final UserBean user = new UserBean(userName, null);
+                            final UserBean user = new UserBean();
+                            user.setUsername(userName);
                             user.setPhone(userPhone);
-                            mUserDetailPresenter.modify("info", user, mSPUtil.getString("user_password"));
+                            mSPUtil.put("user_name", userName);
+                            mSPUtil.put("user_phone", userPhone);
+                            mUserDetailPresenter.update("info", user, mSPUtil.getString("user_password"));
                         }
                         dialog.dismiss();
                     }
@@ -182,8 +188,7 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
                 .show();
     }
 
-    // 显示修改头像的对话框
-    private void modifyImg() {
+    private void showUpdateAvatarDialog() {
         @SuppressWarnings("ConstantConditions") final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("设置头像");
         final String[] items = {"选择本地照片", "拍照"};
@@ -246,7 +251,7 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
         }
     }
 
-    // 裁剪图片方法实现
+    // 裁剪图片
     private void startPhotoZoom(final Uri uri) {
         if (uri == null) {
             AlerterUtil.showDanger(getHoldingActivity(), "图片路径不存在");
@@ -273,24 +278,36 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
         }
     }
 
-    // 用户退出操作
+    // 用户登出
     private void userLogout() {
         mSPUtil.put("login", false);
         //noinspection ConstantConditions
-        getHoldingActivity().sendBroadcast(new Intent("user_login"));
+        getHoldingActivity().sendBroadcast(new Intent("user_logout"));
     }
 
     @Override
-    public void showSuccessMsg(final String avatarUrl) {
-        if (avatarUrl != null) {
-            // 更新头像链接
-            mSPUtil.put("user_avatar", avatarUrl);
-            // 更新头像显示
-            Glide.with(this).load(avatarUrl).into(mCircleImageView);
-        }
+    public void showUpdateInfoSuccessMsg() {
+        initView(null, null);
         //noinspection ConstantConditions
-        getActivity().sendBroadcast(new Intent("modify"));
-        AlerterUtil.showInfo(getHoldingActivity(), R.string.user_modify_success);
+        getActivity().sendBroadcast(new Intent("update_user_info_or_avatar"));
+        AlerterUtil.showInfo(getHoldingActivity(), R.string.msg_update_user_info_success);
+    }
+
+    @Override
+    public void showUpdatePasswordSuccessMsg(final String token) {
+        mSPUtil.put("user_password", token);
+        AlerterUtil.showInfo(getHoldingActivity(), R.string.msg_update_user_password_success);
+    }
+
+    @Override
+    public void showUpdateAvatarSuccessMsg(final String avatarUrl) {
+        // 更新头像链接
+        mSPUtil.put("user_avatar", avatarUrl);
+        // 更新头像显示
+        Glide.with(this).load(avatarUrl).into(mCircleImageView);
+        //noinspection ConstantConditions
+        getActivity().sendBroadcast(new Intent("update_user_info_or_avatar"));
+        AlerterUtil.showInfo(getHoldingActivity(), R.string.msg_update_user_avatar_success);
     }
 
     @Override

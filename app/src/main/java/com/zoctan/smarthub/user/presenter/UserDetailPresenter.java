@@ -15,19 +15,29 @@ public class UserDetailPresenter {
         this.mUserModel = new UserModelImpl();
     }
 
-    // 修改密码
-    public void modify(final String action, final UserBean user, final String token) {
+    public void update(final String action, final UserBean user, final String token) {
         mUserDetailView.showLoading();
         String url = null;
         if (action.equals("info")) {
             url = UserUrls.USERS;
         } else if (action.equals("password")) {
+            // 修改密码
             url = UserUrls.PASSWORD;
         }
-        mUserModel.modify(url, user, token, new UserModel.ModifyUserListener() {
+        mUserModel.update(url, user, token, new UserModel.Listener() {
             @Override
             public void onSuccess() {
-                mUserDetailView.showSuccessMsg(null);
+                mUserDetailView.showUpdateInfoSuccessMsg();
+            }
+
+            @Override
+            public void onSuccess(final String token) {
+                mUserDetailView.showUpdatePasswordSuccessMsg(token);
+            }
+
+            @Override
+            public void onSuccess(final UserBean userBean) {
+
             }
 
             @Override
@@ -44,7 +54,7 @@ public class UserDetailPresenter {
         mUserModel.uploadAvatar(userName, photoPath, new UserModel.UploadAvatarListener() {
             @Override
             public void onSuccess(final String avatarUrl) {
-                mUserDetailView.showSuccessMsg(avatarUrl);
+                mUserDetailView.showUpdateAvatarSuccessMsg(avatarUrl);
             }
 
             @Override

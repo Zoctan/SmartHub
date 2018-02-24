@@ -10,7 +10,7 @@ public class UserLoginPresenter {
     private final UserLoginView mUserLoginView;
     private final UserModel mUserModel;
 
-    public UserLoginPresenter(UserLoginView userLoginView) {
+    public UserLoginPresenter(final UserLoginView userLoginView) {
         this.mUserLoginView = userLoginView;
         this.mUserModel = new UserModelImpl();
     }
@@ -18,24 +18,28 @@ public class UserLoginPresenter {
     // 登录或注册
     public void userAction(final Boolean login, final UserBean user) {
         mUserLoginView.showLoading();
-        mUserModel.loginOrRegister(login, user, new UserLoginPresenter.LoginUserListener());
-    }
+        mUserModel.loginOrRegister(login, user, new UserModel.Listener() {
+            @Override
+            public void onSuccess() {
 
-    private class LoginUserListener implements UserModel.LoginUserListener {
-        @Override
-        public void onSuccess(UserBean userBean) {
-            mUserLoginView.hideLoading();
-            if (userBean != null) {
-                mUserLoginView.showSuccessMsg(userBean);
-            } else {
-                mUserLoginView.showFailedMsg("登录失败");
             }
-        }
 
-        @Override
-        public void onFailure(String msg) {
-            mUserLoginView.hideLoading();
-            mUserLoginView.showFailedMsg(msg);
-        }
+            @Override
+            public void onSuccess(final String token) {
+
+            }
+
+            @Override
+            public void onSuccess(final UserBean userBean) {
+                mUserLoginView.hideLoading();
+                mUserLoginView.showSuccessMsg(userBean);
+            }
+
+            @Override
+            public void onFailure(final String msg) {
+                mUserLoginView.hideLoading();
+                mUserLoginView.showFailedMsg(msg);
+            }
+        });
     }
 }

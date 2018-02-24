@@ -8,7 +8,11 @@ public interface UserDetailView {
 
     void hideLoading();
 
-    void showSuccessMsg(String avatarUrl);
+    void showUpdateInfoSuccessMsg();
+
+    void showUpdatePasswordSuccessMsg(String token);
+
+    void showUpdateAvatarSuccessMsg(String avatarUrl);
 
     void showFailedMsg(String msg);
 }

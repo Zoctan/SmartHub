@@ -3,20 +3,18 @@ package com.zoctan.smarthub.user.model;
 import com.zoctan.smarthub.beans.UserBean;
 
 public interface UserModel {
-    void loginOrRegister(Boolean login, UserBean user, LoginUserListener listener);
+    void loginOrRegister(Boolean login, UserBean user, Listener listener);
 
-    void modify(String url, UserBean user, String token, ModifyUserListener listener);
+    void update(String url, UserBean user, String token, Listener listener);
 
     void uploadAvatar(String userName, String photoPath, UploadAvatarListener listener);
 
-    interface LoginUserListener {
-        void onSuccess(UserBean userBean);
-
-        void onFailure(String msg);
-    }
-
-    interface ModifyUserListener {
+    interface Listener {
         void onSuccess();
+
+        void onSuccess(String token);
+
+        void onSuccess(UserBean userBean);
 
         void onFailure(String msg);
     }

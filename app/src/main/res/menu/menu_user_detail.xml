@@ -6,12 +6,12 @@
         android:title="@string/user_detail_new_avatar" />
     <item
         android:id="@+id/action_new_info"
-        android:icon="@drawable/ic_modify"
-        android:title="@string/user_detail_new_info"/>
+        android:icon="@drawable/ic_update"
+        android:title="@string/user_detail_new_info" />
     <item
         android:id="@+id/action_new_password"
         android:icon="@drawable/ic_password"
-        android:title="@string/user_detail_new_password"/>
+        android:title="@string/user_detail_new_password" />
     <item
         android:id="@+id/action_logout"
         android:icon="@drawable/ic_logout"

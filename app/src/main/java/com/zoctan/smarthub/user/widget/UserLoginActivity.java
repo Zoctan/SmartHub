@@ -89,7 +89,7 @@ public class UserLoginActivity extends BaseActivity implements UserLoginView {
     }
 
     @OnTextChanged(value = R.id.EditText_user_name, callback = OnTextChanged.Callback.TEXT_CHANGED)
-    void onUserNameChanged(CharSequence s, int start, int count, int after) {
+    void onUserNameChanged(final CharSequence s, final int start, final int count, final int after) {
         if (s.length() > 12) {
             mLayoutUserName.setErrorEnabled(true);
             mLayoutUserName.setError(getString(R.string.all_max_name));
@@ -99,7 +99,7 @@ public class UserLoginActivity extends BaseActivity implements UserLoginView {
     }
 
     @OnTextChanged(value = R.id.EditText_user_password2, callback = OnTextChanged.Callback.TEXT_CHANGED)
-    void onPassword2Changed(CharSequence s, int start, int count, int after) {
+    void onPassword2Changed(final CharSequence s, final int start, final int count, final int after) {
         if (!mEtPassword.getText().toString().equals(mEtPassword2.getText().toString())) {
             mLayoutUserPassword2.setErrorEnabled(true);
             mLayoutUserPassword2.setError(getString(R.string.all_different_password));
@@ -168,7 +168,7 @@ public class UserLoginActivity extends BaseActivity implements UserLoginView {
              */
             @Override
             public Map<String, String> gt3SecondResult() {
-                Map<String, String> map = new HashMap<>();
+                final Map<String, String> map = new HashMap<>();
                 map.put("testkey", "12315");
                 return map;
             }
@@ -181,14 +181,16 @@ public class UserLoginActivity extends BaseActivity implements UserLoginView {
              * 二次验证失败调用 mGt3GeetestUtils.gt3TestClose();
              */
             @Override
-            public void gt3DialogSuccessResult(String result) {
+            public void gt3DialogSuccessResult(final String result) {
                 if (!TextUtils.isEmpty(result)) {
                     try {
-                        JSONObject jobj = new JSONObject(result);
-                        String sta = jobj.getString("status");
+                        final JSONObject jobj = new JSONObject(result);
+                        final String sta = jobj.getString("status");
                         if ("success".equals(sta)) {
                             mGt3GeetestUtils.gt3TestFinish();
-                            UserBean user = new UserBean(mEtUserName.getText().toString(), mEtPassword.getText().toString());
+                            final UserBean user = new UserBean();
+                            user.setUsername(mEtUserName.getText().toString());
+                            user.setPassword(mEtPassword.getText().toString());
                             if (mBtnLogin.getText() == "注册") {
                                 mLoginPresenter.userAction(false, user);
                             } else {
@@ -197,7 +199,7 @@ public class UserLoginActivity extends BaseActivity implements UserLoginView {
                         } else {
                             mGt3GeetestUtils.gt3TestClose();
                         }
-                    } catch (JSONException e) {
+                    } catch (final JSONException e) {
                         e.printStackTrace();
                     }
                 } else {
@@ -210,7 +212,7 @@ public class UserLoginActivity extends BaseActivity implements UserLoginView {
              * 返回的错误码为判断错误类型的依据
              */
             @Override
-            public void gt3DialogOnError(String error) {
+            public void gt3DialogOnError(final String error) {
                 LogUtils.i("gt3DialogOnError");
             }
         });
@@ -219,7 +221,7 @@ public class UserLoginActivity extends BaseActivity implements UserLoginView {
     }
 
     @Override
-    public void showSuccessMsg(UserBean userBean) {
+    public void showSuccessMsg(final UserBean userBean) {
         mSPUtil.put("login", true);
         // 将用户信息存在本地
         mSPUtil.put("user_id", userBean.getId());
@@ -232,7 +234,7 @@ public class UserLoginActivity extends BaseActivity implements UserLoginView {
         } else {
             AlerterUtil.showInfo(this, R.string.user_login_success);
         }
-        Intent intent = new Intent(this, MainActivity.class);
+        final Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         mGt3GeetestUtils.cancelUtils();
         finish();
@@ -249,7 +251,7 @@ public class UserLoginActivity extends BaseActivity implements UserLoginView {
     }
 
     @Override
-    public void showFailedMsg(String msg) {
+    public void showFailedMsg(final String msg) {
         AlerterUtil.showDanger(this, msg);
     }
 
@@ -284,7 +286,7 @@ public class UserLoginActivity extends BaseActivity implements UserLoginView {
 //        }
 //    }
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(final Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mGt3GeetestUtils.changeDialogLayout();
     }

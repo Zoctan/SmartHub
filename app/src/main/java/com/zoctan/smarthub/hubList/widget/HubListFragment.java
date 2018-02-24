@@ -184,7 +184,7 @@ public class HubListFragment extends BaseFragment implements HubListView {
                 .init(R.string.all_edit,
                         null,
                         R.drawable.ic_edit,
-                        R.string.all_modify);
+                        R.string.all_update);
         dialog
                 .setCustomView(view, getHoldingActivity())
                 .setButton1Click(new View.OnClickListener() {

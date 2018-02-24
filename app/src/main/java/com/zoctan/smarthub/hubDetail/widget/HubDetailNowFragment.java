@@ -123,7 +123,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
         final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
                 .init(R.string.hub_detail_update_device,
                         null,
-                        R.drawable.ic_modify,
+                        R.drawable.ic_update,
                         R.string.all_edit);
         dialog
                 .setCustomView(view, getHoldingActivity())
@@ -151,7 +151,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
         final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
                 .init(R.string.hub_detail_add_device,
                         null,
-                        R.drawable.ic_modify,
+                        R.drawable.ic_update,
                         R.string.all_add);
         dialog
                 .setCustomView(view, getHoldingActivity())

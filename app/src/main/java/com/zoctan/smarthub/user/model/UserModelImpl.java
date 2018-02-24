@@ -25,7 +25,7 @@ import java.io.IOException;
 public class UserModelImpl implements UserModel {
     @Override
     public void loginOrRegister(final Boolean login, final UserBean user,
-                                final LoginUserListener listener) {
+                                final Listener listener) {
         String url = UserUrls.TOKENS;
         if (!login) {
             url = UserUrls.USERS;
@@ -61,11 +61,10 @@ public class UserModelImpl implements UserModel {
                 });
     }
 
-    // 修改
     @Override
-    public void modify(final String url, final UserBean user,
+    public void update(final String url, final UserBean user,
                        final String token,
-                       final ModifyUserListener listener) {
+                       final Listener listener) {
         final String headerKey = "Authorization";
         final String headerValue = "Smart " + token;
         OkHttpUtil.getDefault(this).doAsync(
@@ -86,7 +85,11 @@ public class UserModelImpl implements UserModel {
                     public void onSuccess(final HttpInfo info) throws IOException {
                         final ResponseUser responseUser = JsonUtil.getObjectFromHttpInfo(info, ResponseUser.class);
                         if (responseUser.getMsg().equals("ok")) {
-                            listener.onSuccess();
+                            if (user.getToken() != null) {
+                                listener.onSuccess(responseUser.getResult().getToken());
+                            } else {
+                                listener.onSuccess();
+                            }
                         } else {
                             listener.onFailure(responseUser.getError());
                         }

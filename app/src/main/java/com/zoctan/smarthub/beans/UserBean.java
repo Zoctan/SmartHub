@@ -10,19 +10,11 @@ public class UserBean {
     private String avatar;
     private String phone;
 
-    public UserBean(){
-    }
-
-    public UserBean(String username, String password){
-        this.username = username;
-        this.password = password;
-    }
-
     public String getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(String avatar) {
+    public void setAvatar(final String avatar) {
         this.avatar = avatar;
     }
 
@@ -30,7 +22,7 @@ public class UserBean {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this.password = password;
     }
 
@@ -38,7 +30,7 @@ public class UserBean {
         return username;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(final String username) {
         this.username = username;
     }
 
@@ -46,7 +38,7 @@ public class UserBean {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -54,7 +46,7 @@ public class UserBean {
         return phone;
     }
 
-    public void setPhone(String phone) {
+    public void setPhone(final String phone) {
         this.phone = phone;
     }
 
@@ -62,7 +54,7 @@ public class UserBean {
         return token;
     }
 
-    public void setToken(String token) {
+    public void setToken(final String token) {
         this.token = token;
     }
 }

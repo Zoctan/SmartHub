@@ -65,7 +65,7 @@ public class MainActivity extends BaseActivity {
     protected void initView() {
         setSupportActionBar(mToolbar);
         // 创建侧滑键，并实现打开关/闭监听
-        ActionBarDrawerToggle mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.main_drawer_open, R.string.main_drawer_close);
+        final ActionBarDrawerToggle mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.main_drawer_open, R.string.main_drawer_close);
         // 给抽屉Layout绑定切换器监听
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
         // 自动和actionBar关联, 将开关的图片显示在了action上
@@ -75,7 +75,7 @@ public class MainActivity extends BaseActivity {
         // 设置NavigationView点击事件
         setupDrawerContent(mNavigationView);
         // 获取侧滑栏头布局文件
-        View headerView = mNavigationView.getHeaderView(0);
+        final View headerView = mNavigationView.getHeaderView(0);
         headerUserName = headerView.findViewById(R.id.TextView_user_name);
         headerUserAvatar = headerView.findViewById(R.id.CircleImageView_user_avatar);
 
@@ -91,11 +91,13 @@ public class MainActivity extends BaseActivity {
     // 广播
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent) {
-            if (Objects.equals(intent.getAction(), "modify")) {
+        public void onReceive(final Context context, final Intent intent) {
+            // 修改了用户名或头像都要更新主界面侧滑栏
+            if (Objects.equals(intent.getAction(), "update_user_info_or_avatar")) {
                 initView();
             }
-            if (Objects.equals(intent.getAction(), "user_login")) {
+            // 用户登出需要重新登录
+            if (Objects.equals(intent.getAction(), "user_logout")) {
                 startActivity(intent);
             }
         }
@@ -110,7 +112,7 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
@@ -126,14 +128,14 @@ public class MainActivity extends BaseActivity {
         dialog
                 .setButton1Click(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(final View v) {
                         dialog.dismiss();
                         request.proceed();//继续执行请求
                     }
                 })
                 .setButton2Click(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(final View v) {
                         dialog.dismiss();
                         request.cancel();//取消执行请求
                     }
@@ -155,7 +157,7 @@ public class MainActivity extends BaseActivity {
 
     private void setBroadcastReceiver() {
         // 接收来自用户登录/退出/修改头像广播
-        IntentFilter mIntentFilter = new IntentFilter();
+        final IntentFilter mIntentFilter = new IntentFilter();
         mIntentFilter.addAction("user_login");
         mIntentFilter.addAction("modify_user_avatar");
         // 动态注册广播
@@ -163,10 +165,10 @@ public class MainActivity extends BaseActivity {
     }
 
     // 设置NavigationView点击事件
-    public void setupDrawerContent(NavigationView mNavigationView) {
+    public void setupDrawerContent(final NavigationView mNavigationView) {
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            public boolean onNavigationItemSelected(@NonNull final MenuItem menuItem) {
                 switchNavigation(menuItem.getItemId());
                 if (menuItem.getItemId() != R.id.item_clear_cache
                         && menuItem.getItemId() != R.id.item_switch_day_or_night) {
@@ -180,7 +182,7 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private void switchNavigation(int id) {
+    private void switchNavigation(final int id) {
         switch (id) {
             case R.id.item_hub_list:
                 switch2Hub();
@@ -219,12 +221,12 @@ public class MainActivity extends BaseActivity {
         dialog
                 .setButton1Click(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(final View v) {
                         mCacheUtil.clear();
                         // 点击“确认”后的操作
                         ToastUtils.showShort("缓存已清理");
                         // 重启APP
-                        Intent intent = getApplicationContext().getPackageManager()
+                        final Intent intent = getApplicationContext().getPackageManager()
                                 .getLaunchIntentForPackage(getApplicationContext().getPackageName());
                         if (intent != null) {
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -246,7 +248,7 @@ public class MainActivity extends BaseActivity {
         recreate();
     }
 
-    private void replaceFragment(Fragment fragment, String tag) {
+    private void replaceFragment(final Fragment fragment, final String tag) {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.FrameLayout_main_content, fragment, tag)
@@ -257,7 +259,8 @@ public class MainActivity extends BaseActivity {
     }
 
     // 双击退出
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    @Override
+    public boolean onKeyDown(final int keyCode, final KeyEvent event) {
         // 当按下返回键
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             // 如果按下的时间超过2秒
