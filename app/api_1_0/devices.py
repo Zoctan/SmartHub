@@ -34,8 +34,7 @@ def update_device(device_id):
     name = request.json.get('name')
     if name is None:
         return jsonify({'msg': 'no', 'error': '用电器名不能为空'})
-    id = request.json.get('id')
-    device = Device.query.filter_by(id=id, onenet_id=device_id).first()
+    device = Device.query.filter_by(id=request.json.get('id'), onenet_id=device_id).first()
     device.name = name
     return jsonify({'msg': 'ok', 'result': '用电器修改成功'})
 
@@ -45,8 +44,7 @@ def update_device_img(device_id):
     img = request.json.get('img')
     if not img or img == '':
         return jsonify({'msg': 'no', 'error': '图片链接不能为空'})
-    oldname = request.json.get('oldname')
-    device = Device.query.filter_by(name=oldname, onenet_id=device_id).first()
+    device = Device.query.filter_by(id=request.json.get('id'), onenet_id=device_id).first()
     device.img = request.json.get('img')
     return jsonify({'msg': 'ok', 'result': '用电器图片修改成功'})
 
