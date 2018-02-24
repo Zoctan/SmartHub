@@ -16,7 +16,7 @@ headers = {'api-key': 'nJVyiaj5Y297Fc6Q=bUYVWnz2=0='}
 def add_device(device_id):
     name = request.json.get('name')
     if name is None:
-        return jsonify({'msg': 'no', 'error': '用电器备注不能为空'})
+        return jsonify({'msg': 'no', 'error': '用电器名不能为空'})
     # 如果数据库没有，即还没保存该用电器，先让插座flash存下来，再本地数据库存
     send_order(device_id, 'store', 1)
     # match更新list
@@ -31,13 +31,24 @@ def add_device(device_id):
 
 @decorators.composed(decorators.route('/api/hubs/device/<device_id>', methods=['PUT']), decorators.json_required)
 def update_device(device_id):
+    name = request.json.get('name')
+    if name is None:
+        return jsonify({'msg': 'no', 'error': '用电器名不能为空'})
+    id = request.json.get('id')
+    device = Device.query.filter_by(id=id, onenet_id=device_id).first()
+    device.name = name
+    return jsonify({'msg': 'ok', 'result': '用电器修改成功'})
+
+
+@decorators.composed(decorators.route('/api/hubs/device/img/<device_id>', methods=['PUT']), decorators.json_required)
+def update_device_img(device_id):
+    img = request.json.get('img')
+    if not img or img == '':
+        return jsonify({'msg': 'no', 'error': '图片链接不能为空'})
     oldname = request.json.get('oldname')
-    if oldname is None:
-        return jsonify({'msg': 'no', 'error': '用电器备注不能为空'})
     device = Device.query.filter_by(name=oldname, onenet_id=device_id).first()
     device.img = request.json.get('img')
-    device.name = request.json.get('name')
-    return jsonify({'msg': 'ok', 'result': '用电器修改成功'})
+    return jsonify({'msg': 'ok', 'result': '用电器图片修改成功'})
 
 
 @decorators.route('/api/hubs/device/<device_id>', methods=['GET'])
