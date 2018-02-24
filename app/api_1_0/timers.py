@@ -39,8 +39,7 @@ def hub_all_timers(device_id):
 
 @decorators.composed(decorators.route('/api/hubs/timers/<device_id>', methods=['PUT']), decorators.json_required)
 def update_timer(device_id):
-    id = request.json.get('id')
-    timer = Timer.query.filter_by(id=id, hub_id=device_id).first()
+    timer = Timer.query.filter_by(id=request.json.get('id'), hub_id=device_id).first()
     if not timer:
         return jsonify({'msg': 'no', 'error': '定时器不存在'})
     name = request.json.get('name')
@@ -60,8 +59,7 @@ def update_timer(device_id):
 
 @decorators.composed(decorators.route('/api/hubs/timers/<device_id>', methods=['DELETE']), decorators.json_required)
 def delete_timer(device_id):
-    id = request.json.get('id')
-    timer = Timer.query.filter_by(id=id, hub_id=device_id).first()
+    timer = Timer.query.filter_by(id=request.json.get('id'), hub_id=device_id).first()
     if not timer:
         return jsonify({'msg': 'no', 'error': '定时器不存在'})
     db.session.delete(timer)

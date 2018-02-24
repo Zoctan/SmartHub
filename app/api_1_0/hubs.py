@@ -8,7 +8,7 @@ from flask import jsonify, g, request
 
 from app import db
 from . import decorators
-from ..models import Hub
+from ..models import Hub, Device
 
 headers = {'api-key': 'nJVyiaj5Y297Fc6Q=bUYVWnz2=0='}
 
@@ -94,6 +94,10 @@ def send_order(device_id, order, status):
     elif order == 'reset':
         # 清除存储的所有用电器特征值数据
         data = '{reset}' + status
+        # 相应地也要清除所有数据库保存的用电器信息
+        devices = Device.query.filter_by(hub_id=device_id).all()
+        for device in devices:
+            db.session.delete(device)
     elif order == 'store':
         # 存储当前的用电器的特征
         data = '{store}' + status
