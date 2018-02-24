@@ -51,4 +51,4 @@ def get_token():
     token = g.current_user.generate_auth_token(31536000)
     result = g.current_user.to_json()
     result.update({'token': token.decode('ascii')})
-    return jsonify({'msg': 'ok', 'result': [result]})
+    return jsonify({'msg': 'ok', 'result': result})
