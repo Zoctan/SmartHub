@@ -66,8 +66,7 @@ def update_user():
     user = User.query.filter_by(username=username).first()
     if user:
         return jsonify({'msg': 'no', 'error': '用户名已存在'})
-    user = User.query.filter_by(id=g.current_user.id).first()
-    print(user)
-    user.phone = phone
-    user.username = username
+    print(g.current_user)
+    g.current_user.phone = phone
+    g.current_user.username = username
     return jsonify({'msg': 'ok'})
