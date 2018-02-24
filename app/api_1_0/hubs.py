@@ -8,7 +8,7 @@ from flask import jsonify, g, request
 
 from app import db
 from . import decorators
-from ..models import User, Hub
+from ..models import Hub
 
 headers = {'api-key': 'nJVyiaj5Y297Fc6Q=bUYVWnz2=0='}
 
@@ -34,11 +34,8 @@ def hub_is_electric(onenet_id):
 
 @decorators.route('/api/hubs', methods=['GET'])
 def get_hubs():
-    user = User.query.filter_by(id=g.current_user.id).first()
-    if not user:
-        return jsonify({'msg': 'no', 'error': '请带上token查询'})
     hub_list = []
-    for hub in user.hubs:
+    for hub in g.current_user.hubs:
         # 插座是否在线，插座不在线继电器即无法发送开关命令
         connected = hub_connected(hub.onenet_id)
         # 继电器通电情况

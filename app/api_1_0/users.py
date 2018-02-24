@@ -18,8 +18,7 @@ def login():
 
 @decorators.route('/api/users', methods=['GET'])
 def get_user_info():
-    user = User.query.filter_by(id=g.current_user.id).first()
-    return jsonify({'msg': 'ok', 'result': [user.to_json()]})
+    return jsonify({'msg': 'ok', 'result': [g.current_user.to_json()]})
 
 
 @decorators.composed(decorators.route('/api/users', methods=['POST']), decorators.json_required)
@@ -42,8 +41,7 @@ def update_user_avatar():
     avatar = request.json.get('avatar')
     if not avatar:
         return jsonify({'msg': 'no', 'error': '图片链接不能为空'})
-    user = User.query.filter_by(id=g.current_user.id).first()
-    user.avatar = avatar
+    g.current_user.avatar = avatar
     return jsonify({'msg': 'ok'})
 
 
@@ -52,8 +50,7 @@ def update_user_password():
     password = request.json.get('password')
     if not password:
         return jsonify({'msg': 'no', 'error': '密码不能为空'})
-    user = User.query.filter_by(id=g.current_user.id).first()
-    user.password = password
+    g.current_user.password = password
     return get_token()
 
 
