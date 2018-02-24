@@ -10,7 +10,7 @@ public interface UserDetailView {
 
     void showUpdateSuccessMsg(String msg);
 
-    void showUpdateAvatarSuccessMsg(String avatarUrl);
+    void showUpdateAvatarSuccessMsg(String avatarUrl, String msg);
 
     void showFailedMsg(String msg);
 }

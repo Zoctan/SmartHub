@@ -228,7 +228,7 @@ public class UserLoginActivity extends BaseActivity implements UserLoginView {
         mSPUtil.put("user_avatar", userBean.getAvatar());
         mSPUtil.put("user_phone", userBean.getPhone());
         mSPUtil.put("user_name", userBean.getUsername());
-        mSPUtil.put("user_password", userBean.getPassword());
+        mSPUtil.put("user_token", userBean.getToken());
         if (mBtnLogin.getText() == "注册") {
             AlerterUtil.showInfo(this, R.string.user_register_success);
         } else {

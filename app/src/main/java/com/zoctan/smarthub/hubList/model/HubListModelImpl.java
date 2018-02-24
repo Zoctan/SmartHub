@@ -8,7 +8,6 @@ import com.okhttplib.callback.Callback;
 import com.zoctan.smarthub.api.HubUrls;
 import com.zoctan.smarthub.beans.HubBean;
 import com.zoctan.smarthub.response.Response;
-import com.zoctan.smarthub.response.ResponseHub;
 import com.zoctan.smarthub.response.ResponseHubList;
 import com.zoctan.smarthub.utils.JsonUtil;
 

@@ -58,7 +58,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
         } else {
             mPresenter.loadHubDevice(
                     mSPUtil.getString("hub_onenet_id"),
-                    mSPUtil.getString("user_password")
+                    mSPUtil.getString("user_token")
             );
 
             mFabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
@@ -110,7 +110,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                 .setButton1Click(new View.OnClickListener() {
                     @Override
                     public void onClick(final View v) {
-                        mPresenter.resetHub(mSPUtil.getString("hub_onenet_id"), mSPUtil.getString("user_password"));
+                        mPresenter.resetHub(mSPUtil.getString("hub_onenet_id"), mSPUtil.getString("user_token"));
                     }
                 })
                 .show();
@@ -135,7 +135,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                             final DeviceBean deviceBean = new DeviceBean();
                             deviceBean.setName(name);
                             deviceBean.setOnenet_id(mSPUtil.getString("hub_onenet_id"));
-                            mPresenter.doDevice(deviceBean, mSPUtil.getString("user_password"), "update");
+                            mPresenter.doDevice(deviceBean, mSPUtil.getString("user_token"), "update");
                         }
                         dialog.dismiss();
                     }
@@ -163,7 +163,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                             final DeviceBean deviceBean = new DeviceBean();
                             deviceBean.setName(name);
                             deviceBean.setOnenet_id(mSPUtil.getString("hub_onenet_id"));
-                            mPresenter.doDevice(deviceBean, mSPUtil.getString("user_password"), "add");
+                            mPresenter.doDevice(deviceBean, mSPUtil.getString("user_token"), "add");
                         }
                         dialog.dismiss();
                     }
@@ -191,7 +191,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
         AlerterUtil.showInfo(getHoldingActivity(), msg);
         mPresenter.loadHubDevice(
                 mSPUtil.getString("hub_onenet_id"),
-                mSPUtil.getString("user_password")
+                mSPUtil.getString("user_token")
         );
     }
 

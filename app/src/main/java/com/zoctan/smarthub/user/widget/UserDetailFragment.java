@@ -143,7 +143,7 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
                             final String password = mEtPassword[0].getText().toString();
                             final UserBean user = new UserBean();
                             user.setPassword(password);
-                            mUserDetailPresenter.update("password", user, mSPUtil.getString("user_password"));
+                            mUserDetailPresenter.update("password", user, mSPUtil.getString("user_token"));
                             dialog.dismiss();
                         }
                     }
@@ -180,7 +180,7 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
                             user.setPhone(userPhone);
                             mSPUtil.put("user_name", userName);
                             mSPUtil.put("user_phone", userPhone);
-                            mUserDetailPresenter.update("info", user, mSPUtil.getString("user_password"));
+                            mUserDetailPresenter.update("info", user, mSPUtil.getString("user_token"));
                             dialog.dismiss();
                         }
                     }
@@ -242,8 +242,12 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
                             // 图片处理成圆形
                             photo = ImageUtils.toRound(photo);
                             ImageUtils.save(photo, imageUri.getPath(), Bitmap.CompressFormat.JPEG);
+                            final UserBean userBean = new UserBean();
+                            userBean.setUsername(userName);
+                            userBean.setToken(mSPUtil.getString("user_token"));
+                            userBean.setAvatar("http://p0qgwnuel.bkt.clouddn.com/" + userName);
                             // 上传图片
-                            mUserDetailPresenter.uploadAvatar(userName, imageUri.getPath());
+                            mUserDetailPresenter.uploadAvatar(userBean, imageUri.getPath());
                         }
                     }
                     break;
@@ -295,14 +299,14 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
     }
 
     @Override
-    public void showUpdateAvatarSuccessMsg(final String avatarUrl) {
+    public void showUpdateAvatarSuccessMsg(final String avatarUrl, final String msg) {
         // 更新头像链接
         mSPUtil.put("user_avatar", avatarUrl);
         // 更新头像显示
         Glide.with(this).load(avatarUrl).into(mCircleImageView);
         //noinspection ConstantConditions
         getActivity().sendBroadcast(new Intent("update_user_info_or_avatar"));
-        AlerterUtil.showInfo(getHoldingActivity(), R.string.msg_update_user_avatar_success);
+        AlerterUtil.showInfo(getHoldingActivity(), msg);
     }
 
     @Override

@@ -11,12 +11,12 @@ import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UpProgressHandler;
 import com.qiniu.android.storage.UploadManager;
 import com.qiniu.android.storage.UploadOptions;
+import com.zoctan.smarthub.api.QiNiuUrls;
 import com.zoctan.smarthub.api.UserUrls;
 import com.zoctan.smarthub.beans.UserBean;
 import com.zoctan.smarthub.response.Response;
 import com.zoctan.smarthub.response.ResponseUser;
 import com.zoctan.smarthub.utils.JsonUtil;
-import com.zoctan.smarthub.utils.QiNiuCloudAuth;
 
 import org.json.JSONObject;
 
@@ -51,8 +51,7 @@ public class UserModelImpl implements UserModel {
                         if (responseUser.getMsg().equals("ok")) {
                             user.setId(responseUser.getResult().getId());
                             user.setAvatar(responseUser.getResult().getAvatar());
-                            // not store password but token
-                            user.setPassword(responseUser.getResult().getToken());
+                            user.setToken(responseUser.getResult().getToken());
                             user.setPhone(responseUser.getResult().getPhone());
                             listener.onSuccess(user);
                         } else {
@@ -95,30 +94,50 @@ public class UserModelImpl implements UserModel {
     }
 
     @Override
-    public void uploadAvatar(final String userName, final String photoPath, final UploadAvatarListener listener) {
-        // 此处填你自己的AccessKey
-        final String accessKey = "2PQFWuKe3VZAsxFLN9LQXncHaRNgAQImcenvnVwy";
-        // 此处填你自己的SecretKey
-        final String secretKey = "KSK82UfPE1S5-ctIMWIWlV5ZHfRkQ8jZsfmt8k_k";
-        LogUtils.d(photoPath);
+    public void uploadAvatar(final UserBean userBean, final String photoPath, final UploadAvatarListener listener) {
+        LogUtils.i(photoPath);
+
+        // 获取服务器token
+        final String url = QiNiuUrls.QiNiu + "/" + userBean.getUsername();
+        final String headerKey = "Authorization";
+        final String headerValue = "Smart " + userBean.getToken();
+        final String[] token = new String[1];
+        OkHttpUtil.getDefault(this).doAsync(
+                HttpInfo.Builder()
+                        .setUrl(url)
+                        .setRequestType(RequestType.GET)
+                        .addHead(headerKey, headerValue)
+                        .build(),
+                new Callback() {
+                    @Override
+                    public void onFailure(final HttpInfo info) throws IOException {
+                        final String response = info.getRetDetail();
+                        listener.onFailure(response);
+                    }
+
+                    @Override
+                    public void onSuccess(final HttpInfo info) throws IOException {
+                        final Response response = JsonUtil.getObjectFromHttpInfo(info, Response.class);
+                        if (response.getMsg().equals("ok")) {
+                            token[0] = response.getResult();
+                        }
+                    }
+                });
+
+        LogUtils.i(token[0]);
+
+        // 上传图片到七牛云
         final UploadManager uploadManager = new UploadManager();
-        final String token = QiNiuCloudAuth.create(accessKey, secretKey).uploadToken("smarthub");
-        LogUtils.d(token);
-        uploadManager.put(photoPath, userName, token, new UpCompletionHandler() {
+        uploadManager.put(photoPath, userBean.getUsername(), token[0], new UpCompletionHandler() {
             @Override
             public void complete(final String key, final ResponseInfo info, final JSONObject res) {
                 LogUtils.i(info);
                 // info.error中包含了错误信息，可打印调试
                 if (info.isOK()) {
                     // 上传成功后将key值上传到自己的服务器
-                    final String url = UserUrls.AVATAR;
-                    final UserBean userBean = new UserBean();
-                    final String avatarUrl = "http://p0qgwnuel.bkt.clouddn.com/" + key;
-                    userBean.setAvatar(avatarUrl);
-                    userBean.setUsername(userName);
                     OkHttpUtil.getDefault(this).doAsync(
                             HttpInfo.Builder()
-                                    .setUrl(url)
+                                    .setUrl(UserUrls.AVATAR)
                                     .setRequestType(RequestType.PUT)
                                     .addParamJson(new Gson().toJson(userBean))
                                     .build(),
@@ -126,14 +145,16 @@ public class UserModelImpl implements UserModel {
                                 @Override
                                 public void onFailure(final HttpInfo info) throws IOException {
                                     final String response = info.getRetDetail();
-                                    LogUtils.d(response);
+                                    LogUtils.i("failed: " + response);
                                     listener.onFailure(response);
                                 }
 
                                 @Override
                                 public void onSuccess(final HttpInfo info) throws IOException {
-                                    final String response = info.getRetDetail();
-                                    listener.onSuccess(avatarUrl);
+                                    final Response response = JsonUtil.getObjectFromHttpInfo(info, Response.class);
+                                    if (response.getMsg().equals("ok")) {
+                                        listener.onSuccess(userBean.getAvatar(), response.getResult());
+                                    }
                                 }
                             });
                 } else {

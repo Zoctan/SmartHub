@@ -121,7 +121,7 @@ public class HubListFragment extends BaseFragment implements HubListView {
                     break;
                 case "on":
                 case "off":
-                    mHubListPresenter.hubOpenClose(hub.getOnenet_id(), action, mSPUtil.getString("user_password"));
+                    mHubListPresenter.hubOpenClose(hub.getOnenet_id(), action, mSPUtil.getString("user_token"));
                     //ToastUtils.showShort(action);
                     break;
                 case "update":
@@ -147,7 +147,7 @@ public class HubListFragment extends BaseFragment implements HubListView {
                     @Override
                     public void onClick(final View v) {
                         mHubListPresenter.doHub("delete",
-                                mSPUtil.getString("user_password"),
+                                mSPUtil.getString("user_token"),
                                 hub);
                         dialog.dismiss();
                     }
@@ -194,7 +194,7 @@ public class HubListFragment extends BaseFragment implements HubListView {
                                 && mLayoutHubName.getError() == null) {
                             hub.setName(mEtHubName.getText().toString());
                             mHubListPresenter.doHub(action,
-                                    mSPUtil.getString("user_password"),
+                                    mSPUtil.getString("user_token"),
                                     hub);
                             dialog.dismiss();
                         }
@@ -206,7 +206,7 @@ public class HubListFragment extends BaseFragment implements HubListView {
         if (mData != null) {
             mData.clear();
         }
-        mHubListPresenter.loadHubList(mSPUtil.getString("user_password"));
+        mHubListPresenter.loadHubList(mSPUtil.getString("user_token"));
     }
 
     private void setSmartRefreshListener() {
@@ -307,7 +307,7 @@ public class HubListFragment extends BaseFragment implements HubListView {
                     @Override
                     public void onClick(final View v) {
                         mHubListPresenter.doHub("add",
-                                mSPUtil.getString("user_password"),
+                                mSPUtil.getString("user_token"),
                                 hub);
                         dialog.dismiss();
                     }

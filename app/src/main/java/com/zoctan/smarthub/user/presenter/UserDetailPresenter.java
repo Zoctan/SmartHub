@@ -44,12 +44,12 @@ public class UserDetailPresenter {
     }
 
     // 图片上传至七牛云
-    public void uploadAvatar(final String userName, final String photoPath) {
+    public void uploadAvatar(final UserBean userBean, final String photoPath) {
         mUserDetailView.showLoading();
-        mUserModel.uploadAvatar(userName, photoPath, new UserModel.UploadAvatarListener() {
+        mUserModel.uploadAvatar(userBean, photoPath, new UserModel.UploadAvatarListener() {
             @Override
-            public void onSuccess(final String avatarUrl) {
-                mUserDetailView.showUpdateAvatarSuccessMsg(avatarUrl);
+            public void onSuccess(final String avatarUrl, final String msg) {
+                mUserDetailView.showUpdateAvatarSuccessMsg(avatarUrl, msg);
             }
 
             @Override
