@@ -7,7 +7,9 @@ public interface UserModel {
 
     void update(String url, UserBean user, String token, Listener listener);
 
-    void uploadAvatar(UserBean userBean, String photoPath, UploadAvatarListener listener);
+    void uploadAvatar(UserBean userBean, String token, String photoPath, UploadAvatarListener listener);
+
+    void getQiNiuToken(UserBean userBean, Listener listener);
 
     interface Listener {
         void onSuccess(String token);

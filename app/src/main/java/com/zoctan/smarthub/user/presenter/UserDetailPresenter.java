@@ -46,10 +46,25 @@ public class UserDetailPresenter {
     // 图片上传至七牛云
     public void uploadAvatar(final UserBean userBean, final String photoPath) {
         mUserDetailView.showLoading();
-        mUserModel.uploadAvatar(userBean, photoPath, new UserModel.UploadAvatarListener() {
+        mUserModel.getQiNiuToken(userBean, new UserModel.Listener() {
             @Override
-            public void onSuccess(final String avatarUrl, final String msg) {
-                mUserDetailView.showUpdateAvatarSuccessMsg(avatarUrl, msg);
+            public void onSuccess(final String token) {
+                mUserModel.uploadAvatar(userBean, token, photoPath, new UserModel.UploadAvatarListener() {
+                    @Override
+                    public void onSuccess(final String avatarUrl, final String msg) {
+                        mUserDetailView.showUpdateAvatarSuccessMsg(avatarUrl, msg);
+                    }
+
+                    @Override
+                    public void onFailure(final String msg) {
+                        mUserDetailView.showFailedMsg(msg);
+                    }
+                });
+            }
+
+            @Override
+            public void onSuccess(final UserBean userBean) {
+
             }
 
             @Override

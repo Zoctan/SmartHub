@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.design.widget.TextInputEditText;
@@ -191,6 +190,8 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
     private void showUpdateAvatarDialog() {
         @SuppressWarnings("ConstantConditions") final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("设置头像");
+        // 指定照片保存路径（应用本身的缓存目录），user.jpg为一个临时文件，每次拍照后这个图片都会被替换
+        imageUri = Uri.fromFile(new File(getHoldingActivity().getCacheDir(), "user.jpg"));
         final String[] items = {"选择本地照片", "拍照"};
         builder.setNegativeButton("取消", null);
         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -206,8 +207,6 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
                     // 拍照
                     case TAKE_PICTURE:
                         final Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        imageUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), "user.jpg"));
-                        // 指定照片保存路径（SD卡），user.jpg为一个临时文件，每次拍照后这个图片都会被替换
                         openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                         startActivityForResult(openCameraIntent, TAKE_PICTURE);
                         break;
@@ -238,10 +237,11 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
                         // 上传裁剪图片
                         final Bundle extras = data.getExtras();
                         if (extras != null) {
-                            Bitmap photo = extras.getParcelable("data");
-                            // 图片处理成圆形
-                            photo = ImageUtils.toRound(photo);
-                            ImageUtils.save(photo, imageUri.getPath(), Bitmap.CompressFormat.JPEG);
+                            final Bitmap photo = extras.getParcelable("data");
+                            // 图片处理成圆形再保存并且压缩一半质量
+                            ImageUtils.save(
+                                    ImageUtils.compressByQuality(ImageUtils.toRound(photo), 50),
+                                    imageUri.getPath(), Bitmap.CompressFormat.JPEG);
                             final UserBean userBean = new UserBean();
                             userBean.setUsername(userName);
                             userBean.setToken(mSPUtil.getString("user_token"));
@@ -262,7 +262,6 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
             return;
         }
         try {
-            imageUri = uri;
             final Intent intent = new Intent("com.android.camera.action.CROP");
             // 打开图片类文件
             intent.setDataAndType(uri, "image/*");

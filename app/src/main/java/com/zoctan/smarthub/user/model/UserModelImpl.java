@@ -94,14 +94,10 @@ public class UserModelImpl implements UserModel {
     }
 
     @Override
-    public void uploadAvatar(final UserBean userBean, final String photoPath, final UploadAvatarListener listener) {
-        LogUtils.i(photoPath);
-
-        // 获取服务器token
+    public void getQiNiuToken(final UserBean userBean, final Listener listener) {
         final String url = QiNiuUrls.QiNiu + "/" + userBean.getUsername();
         final String headerKey = "Authorization";
         final String headerValue = "Smart " + userBean.getToken();
-        final String[] token = new String[1];
         OkHttpUtil.getDefault(this).doAsync(
                 HttpInfo.Builder()
                         .setUrl(url)
@@ -119,19 +115,19 @@ public class UserModelImpl implements UserModel {
                     public void onSuccess(final HttpInfo info) throws IOException {
                         final Response response = JsonUtil.getObjectFromHttpInfo(info, Response.class);
                         if (response.getMsg().equals("ok")) {
-                            token[0] = response.getResult();
+                            listener.onSuccess(response.getResult());
                         }
                     }
                 });
+    }
 
-        LogUtils.i(token[0]);
-
+    @Override
+    public void uploadAvatar(final UserBean userBean, final String token, final String photoPath, final UploadAvatarListener listener) {
         // 上传图片到七牛云
         final UploadManager uploadManager = new UploadManager();
-        uploadManager.put(photoPath, userBean.getUsername(), token[0], new UpCompletionHandler() {
+        uploadManager.put(photoPath, userBean.getUsername(), token, new UpCompletionHandler() {
             @Override
             public void complete(final String key, final ResponseInfo info, final JSONObject res) {
-                LogUtils.i(info);
                 // info.error中包含了错误信息，可打印调试
                 if (info.isOK()) {
                     // 上传成功后将key值上传到自己的服务器
@@ -165,7 +161,7 @@ public class UserModelImpl implements UserModel {
                 new UpProgressHandler() {
                     @Override
                     public void progress(final String key, final double percent) {
-                        LogUtils.i(key + ": " + percent);
+                        LogUtils.d(key + ": " + percent);
                     }
                 }, null));
     }
