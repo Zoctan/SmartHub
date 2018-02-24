@@ -13,6 +13,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -52,7 +53,6 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
     TextView mTvPower;
     @BindView(R.id.FabSpeedDial_hub_detail)
     FabSpeedDial mFabSpeedDial;
-    TextInputEditText mEtDeviceInfo;
     private final Handler handler = new Handler();
     private final HubDetailPresenter mPresenter = new HubDetailPresenter(this);
     protected static final int CHOOSE_PICTURE = 0;
@@ -146,8 +146,17 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
 
     public void updateDevice() {
         @SuppressLint("InflateParams") final View view = getLayoutInflater().inflate(R.layout.dialog_update_device, null);
-        mEtDeviceInfo = view.findViewById(R.id.EditText_device_name);
+        final TextInputEditText mEtDeviceInfo = view.findViewById(R.id.EditText_device_name);
         mEtDeviceInfo.setText(mSPUtil.getString("device_name"));
+
+        final Button mBtnDeviceImg = view.findViewById(R.id.Button_device_img);
+
+        mBtnDeviceImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                showUpdateImgDialog();
+            }
+        });
 
         final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
                 .init(R.string.hub_detail_update_device,
@@ -273,7 +282,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
 
     public void addDevice() {
         @SuppressLint("InflateParams") final View view = getLayoutInflater().inflate(R.layout.dialog_new_device, null);
-        mEtDeviceInfo = view.findViewById(R.id.EditText_device_name);
+        final TextInputEditText mEtDeviceInfo = view.findViewById(R.id.EditText_device_name);
 
         final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
                 .init(R.string.hub_detail_add_device,

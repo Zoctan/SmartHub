@@ -67,6 +67,7 @@
     <string name="hub_hint_input_device">请输入用电器名</string>
     <string name="hub_detail_add_device">添加当前用电器</string>
     <string name="hub_detail_update_device">更新当前用电器</string>
+    <string name="hub_detail_update_device_img">更新当前用电器图片</string>
     <string name="hub_detail_reset_hub">清除存储的所有用电器特征值</string>
     <string name="msg_do_when_no_electric">继电器已断电，请通电后再设置</string>
 
