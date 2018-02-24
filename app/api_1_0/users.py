@@ -54,7 +54,7 @@ def update_user_password():
         return jsonify({'msg': 'no', 'error': '密码不能为空'})
     user = User.query.filter_by(id=g.current_user.id).first()
     user.password = password
-    return jsonify({'msg': 'ok'})
+    return get_token()
 
 
 @decorators.composed(decorators.route('/api/users', methods=['PUT']), decorators.json_required)
