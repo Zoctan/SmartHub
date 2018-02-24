@@ -30,7 +30,7 @@ def add_device(device_id):
 
 
 @decorators.composed(decorators.route('/api/hubs/device/<device_id>', methods=['PUT']), decorators.json_required)
-def update_device_img(device_id):
+def update_device(device_id):
     oldname = request.json.get('oldname')
     if oldname is None:
         return jsonify({'msg': 'no', 'error': '用电器备注不能为空'})
