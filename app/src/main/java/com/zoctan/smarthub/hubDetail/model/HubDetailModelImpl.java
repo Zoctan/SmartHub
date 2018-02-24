@@ -287,12 +287,12 @@ public class HubDetailModelImpl implements HubDetailModel {
                 });
     }
 
+    // 上传图片到七牛云
     @Override
-    public void uploadImg(final DeviceBean deviceBean, final String token, final String photoPath, final UploadListener listener) {
-        // 上传图片到七牛云
+    public void uploadImg(final DeviceBean deviceBean, final String token, final String qiNiuToken, final String photoPath, final UploadListener listener) {
         final UploadManager uploadManager = new UploadManager();
         final String url = DeviceUrls.IMG + "/" + deviceBean.getOnenet_id();
-        uploadManager.put(photoPath, deviceBean.getImg(), token, new UpCompletionHandler() {
+        uploadManager.put(photoPath, deviceBean.getImg(), qiNiuToken, new UpCompletionHandler() {
             @Override
             public void complete(final String key, final ResponseInfo info, final JSONObject res) {
                 // info.error中包含了错误信息，可打印调试
@@ -300,6 +300,7 @@ public class HubDetailModelImpl implements HubDetailModel {
                     // 上传成功后将key值上传到自己的服务器
                     final String headerKey = "Authorization";
                     final String headerValue = "Smart " + token;
+                    deviceBean.setImg("http://p0qgwnuel.bkt.clouddn.com/" + deviceBean.getImg());
                     OkHttpUtil.getDefault(this).doAsync(
                             HttpInfo.Builder()
                                     .setUrl(url)

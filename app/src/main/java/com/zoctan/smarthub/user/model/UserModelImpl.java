@@ -122,10 +122,10 @@ public class UserModelImpl implements UserModel {
     }
 
     @Override
-    public void uploadAvatar(final UserBean userBean, final String token, final String photoPath, final UploadAvatarListener listener) {
+    public void uploadAvatar(final UserBean userBean, final String qiNiuToken, final String photoPath, final UploadAvatarListener listener) {
         // 上传图片到七牛云
         final UploadManager uploadManager = new UploadManager();
-        uploadManager.put(photoPath, userBean.getUsername(), token, new UpCompletionHandler() {
+        uploadManager.put(photoPath, userBean.getUsername(), qiNiuToken, new UpCompletionHandler() {
             @Override
             public void complete(final String key, final ResponseInfo info, final JSONObject res) {
                 // info.error中包含了错误信息，可打印调试

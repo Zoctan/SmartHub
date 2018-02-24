@@ -24,7 +24,7 @@ public interface HubDetailModel {
 
     void doHubTimer(String token, TimerBean timer, Listener listener);
 
-    void uploadImg(DeviceBean deviceBean, String token, String photoPath, UploadListener listener);
+    void uploadImg(DeviceBean deviceBean, String token, String qiNiuToken, String photoPath, UploadListener listener);
 
     void getQiNiuToken(UserBean userBean, DeviceBean deviceBean, UploadListener listener);
 

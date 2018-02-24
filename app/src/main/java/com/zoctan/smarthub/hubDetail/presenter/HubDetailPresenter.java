@@ -71,8 +71,8 @@ public class HubDetailPresenter {
     public void uploadImg(final UserBean userBean, final DeviceBean deviceBean, final String photoPath) {
         mHubModel.getQiNiuToken(userBean, deviceBean, new HubDetailModel.UploadListener() {
             @Override
-            public void onSuccess(final String token) {
-                mHubModel.uploadImg(deviceBean, token, photoPath, new HubDetailModel.UploadListener() {
+            public void onSuccess(final String qiNiuToken) {
+                mHubModel.uploadImg(deviceBean, userBean.getToken(), qiNiuToken, photoPath, new HubDetailModel.UploadListener() {
                     @Override
                     public void onSuccess(final String msg) {
                         mNowView.showUpdateImgSuccessMsg(deviceBean.getImg(), msg);

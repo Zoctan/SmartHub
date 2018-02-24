@@ -146,8 +146,9 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
 
     public void updateDevice() {
         @SuppressLint("InflateParams") final View view = getLayoutInflater().inflate(R.layout.dialog_update_device, null);
-        final TextInputEditText mEtDeviceInfo = view.findViewById(R.id.EditText_device_name);
-        mEtDeviceInfo.setText(mSPUtil.getString("device_name"));
+        final TextInputEditText mEtDeviceName = view.findViewById(R.id.EditText_device_name);
+        mEtDeviceName.setText(mSPUtil.getString("device_name"));
+        mEtDeviceName.setSelection(mEtDeviceName.getText().length());
 
         final Button mBtnDeviceImg = view.findViewById(R.id.Button_device_img);
 
@@ -168,8 +169,8 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                 .setButton1Click(new View.OnClickListener() {
                     @Override
                     public void onClick(final View v) {
-                        if (mEtDeviceInfo.getText().length() > 0) {
-                            final String name = mEtDeviceInfo.getText().toString();
+                        if (mEtDeviceName.getText().length() > 0) {
+                            final String name = mEtDeviceName.getText().toString();
                             final DeviceBean deviceBean = new DeviceBean();
                             deviceBean.setId(mSPUtil.getString("device_id"));
                             deviceBean.setName(name);
@@ -242,7 +243,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                             final DeviceBean deviceBean = new DeviceBean();
                             deviceBean.setId(mSPUtil.getString("device_id"));
                             deviceBean.setOnenet_id(mSPUtil.getString("device_onenet_id"));
-                            deviceBean.setImg(deviceBean.getName() + deviceBean.getOnenet_id() + ".jpg");
+                            deviceBean.setImg(mSPUtil.getString("device_id") + mSPUtil.getString("device_onenet_id") + ".jpg");
                             final UserBean userBean = new UserBean();
                             userBean.setToken(mSPUtil.getString("user_token"));
                             // 上传图片
@@ -282,7 +283,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
 
     public void addDevice() {
         @SuppressLint("InflateParams") final View view = getLayoutInflater().inflate(R.layout.dialog_new_device, null);
-        final TextInputEditText mEtDeviceInfo = view.findViewById(R.id.EditText_device_name);
+        final TextInputEditText mEtDeviceName = view.findViewById(R.id.EditText_device_name);
 
         final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
                 .init(R.string.hub_detail_add_device,
@@ -294,8 +295,8 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                 .setButton1Click(new View.OnClickListener() {
                     @Override
                     public void onClick(final View v) {
-                        if (mEtDeviceInfo.getText().length() > 0) {
-                            final String name = mEtDeviceInfo.getText().toString();
+                        if (mEtDeviceName.getText().length() > 0) {
+                            final String name = mEtDeviceName.getText().toString();
                             final DeviceBean deviceBean = new DeviceBean();
                             deviceBean.setName(name);
                             deviceBean.setOnenet_id(mSPUtil.getString("hub_onenet_id"));
