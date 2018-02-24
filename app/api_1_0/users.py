@@ -29,10 +29,11 @@ def add_user():
     if not username or not password:
         return jsonify({'msg': 'no', 'error': '缺少参数: 用户名 密码'})
     if User.query.filter_by(username=username).first():
-        return jsonify({'msg': 'no', 'error': '用户名: {} 已存在'.format(username)})
+        return jsonify({'msg': 'no', 'error': '用户名已存在'})
     g.current_user = User(username=username)
     g.current_user.password = password
     db.session.add(g.current_user)
+    db.session.flush()
     return get_token()
 
 
