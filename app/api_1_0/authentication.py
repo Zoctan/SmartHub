@@ -3,8 +3,9 @@
 
 from flask import g, jsonify
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
-from ..models import User, AnonymousUser
+
 from . import api
+from ..models import User, AnonymousUser
 
 basic_auth = HTTPBasicAuth()
 token_auth = HTTPTokenAuth(scheme='Smart')
@@ -12,17 +13,15 @@ multi_auth = MultiAuth(basic_auth, token_auth)
 
 
 @basic_auth.error_handler
-def basic_auth_unauthorized(error='unauthorized'):
+def basic_auth_unauthorized(error):
     # request need login, return 403
     # 401: unauthorized, but it will alert a login window, so 403 instead of 401
-    return jsonify({'msg': 'no', 'error': error}), 403
+    return jsonify({'msg': 'no', 'error': error})
 
 
 @token_auth.error_handler
-def token_auth_unauthorized(error='unauthorized'):
-    # request need login, return 403
-    # 401: unauthorized, but it will alert a login window, so 403 instead of 401
-    return jsonify({'msg': 'no', 'error': error}), 403
+def token_auth_unauthorized(error='请带上token访问api'):
+    return jsonify({'msg': 'no', 'error': error})
 
 
 @basic_auth.verify_password
