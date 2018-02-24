@@ -243,11 +243,11 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
                             ImageUtils.save(
                                     ImageUtils.toRound(photo),
                                     imageUri.getPath(),
-                                    Bitmap.CompressFormat.JPEG);
+                                    Bitmap.CompressFormat.PNG);
                             final UserBean userBean = new UserBean();
-                            userBean.setUsername(userName + ".jpg");
+                            userBean.setUsername(userName + ".png");
                             userBean.setToken(mSPUtil.getString("user_token"));
-                            userBean.setAvatar("http://p0qgwnuel.bkt.clouddn.com/" + userName + ".jpg");
+                            userBean.setAvatar("http://p0qgwnuel.bkt.clouddn.com/" + userName + ".png");
                             // 上传图片
                             mUserDetailPresenter.uploadAvatar(userBean, imageUri.getPath());
                         }

@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.ImageUtils;
+import com.bumptech.glide.Glide;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
 import com.zoctan.smarthub.beans.DeviceBean;
@@ -188,7 +189,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
         builder.setTitle("设置用电器图片");
         // 指定照片保存路径（应用本身的缓存目录）
         imageUri = Uri.fromFile(new File(getHoldingActivity().getCacheDir(),
-                System.currentTimeMillis() + "device.jpg"));
+                System.currentTimeMillis() + "device.png"));
         final String[] items = {"选择本地照片", "拍照"};
         builder.setNegativeButton("取消", null);
         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -239,11 +240,11 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                             ImageUtils.save(
                                     ImageUtils.toRound(photo),
                                     imageUri.getPath(),
-                                    Bitmap.CompressFormat.JPEG);
+                                    Bitmap.CompressFormat.PNG);
                             final DeviceBean deviceBean = new DeviceBean();
                             deviceBean.setId(mSPUtil.getString("device_id"));
                             deviceBean.setOnenet_id(mSPUtil.getString("device_onenet_id"));
-                            deviceBean.setImg(mSPUtil.getString("device_id") + mSPUtil.getString("device_onenet_id") + ".jpg");
+                            deviceBean.setImg(mSPUtil.getString("device_id") + mSPUtil.getString("device_onenet_id") + ".png");
                             final UserBean userBean = new UserBean();
                             userBean.setToken(mSPUtil.getString("user_token"));
                             // 上传图片
@@ -310,7 +311,9 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
 
     @Override
     public void setDevice(final DeviceBean device) {
-        //mIvAppliances.setImageURI(device.getImg());
+        if (device.getImg() != null) {
+            Glide.with(this).load(device.getImg()).into(mIvAppliances);
+        }
         mTvAppliances.setText(device.getName());
         mSPUtil.put("device_id", device.getId());
         mSPUtil.put("device_name", device.getName());
