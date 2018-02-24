@@ -10,6 +10,7 @@ from app import db
 # test_init
 # db.drop_all();db.create_all();user = models.User();user.phone='13192605482';user.username = 'test';user.password = 'test';db.session.add(user);hub = models.Hub();hub.name = '可识别智能插座测试机';hub.mac = 'AB:CD:EF:GH:IJ:KL';hub.user_id = 1;hub.onenet_id='19959358';db.session.add(hub);db.session.commit()
 
+
 class User(db.Model):
     __tablename__ = 'smart_users'
     id = db.Column(db.Integer, primary_key=True)
