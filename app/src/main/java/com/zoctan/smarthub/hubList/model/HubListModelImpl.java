@@ -7,6 +7,7 @@ import com.okhttplib.annotation.RequestType;
 import com.okhttplib.callback.Callback;
 import com.zoctan.smarthub.api.HubUrls;
 import com.zoctan.smarthub.beans.HubBean;
+import com.zoctan.smarthub.response.Response;
 import com.zoctan.smarthub.response.ResponseHub;
 import com.zoctan.smarthub.response.ResponseHubList;
 import com.zoctan.smarthub.utils.JsonUtil;
@@ -71,8 +72,8 @@ public class HubListModelImpl implements HubListModel {
 
                     @Override
                     public void onSuccess(final HttpInfo info) throws IOException {
-                        final ResponseHub responseHub = JsonUtil.getObjectFromHttpInfo(info, ResponseHub.class);
-                        listener.onSuccess(responseHub.getMsg());
+                        final Response response = JsonUtil.getObjectFromHttpInfo(info, Response.class);
+                        listener.onSuccess(response.getMsg());
                     }
                 });
     }
@@ -82,20 +83,14 @@ public class HubListModelImpl implements HubListModel {
                       final HubBean hub, final Listener listener) {
         String url = HubUrls.HUBS;
         int requestType = RequestType.POST;
-        final String msg;
         switch (action) {
             case "delete":
                 url += "/" + hub.getOnenet_id();
                 requestType = RequestType.DELETE;
-                msg = "成功删除";
                 break;
             case "update":
                 url += "/" + hub.getOnenet_id();
                 requestType = RequestType.PUT;
-                msg = "成功修改";
-                break;
-            default:
-                msg = "成功添加";
                 break;
         }
         final String headerKey = "Authorization";
@@ -116,11 +111,11 @@ public class HubListModelImpl implements HubListModel {
 
                     @Override
                     public void onSuccess(final HttpInfo info) throws IOException {
-                        final ResponseHub responseList = JsonUtil.getObjectFromHttpInfo(info, ResponseHub.class);
-                        if (responseList.getMsg().equals("ok")) {
-                            listener.onSuccess(msg);
+                        final Response response = JsonUtil.getObjectFromHttpInfo(info, Response.class);
+                        if (response.getMsg().equals("ok")) {
+                            listener.onSuccess(response.getResult());
                         } else {
-                            listener.onFailure(responseList.getError());
+                            listener.onFailure(response.getError());
                         }
                     }
                 });

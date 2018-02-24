@@ -10,11 +10,11 @@ import com.zoctan.smarthub.api.OneNetUrls;
 import com.zoctan.smarthub.beans.DeviceBean;
 import com.zoctan.smarthub.beans.OneNetDataPointsBean;
 import com.zoctan.smarthub.beans.TimerBean;
+import com.zoctan.smarthub.response.Response;
 import com.zoctan.smarthub.response.ResponseDevice;
 import com.zoctan.smarthub.response.ResponseHub;
 import com.zoctan.smarthub.response.ResponseOneNetDataPoints;
 import com.zoctan.smarthub.response.ResponseOneNetDataStreams;
-import com.zoctan.smarthub.response.ResponseTimer;
 import com.zoctan.smarthub.response.ResponseTimerList;
 import com.zoctan.smarthub.utils.JsonUtil;
 
@@ -108,11 +108,11 @@ public class HubDetailModelImpl implements HubDetailModel {
 
                     @Override
                     public void onSuccess(final HttpInfo info) throws IOException {
-                        final ResponseDevice responseDevice = JsonUtil.getObjectFromHttpInfo(info, ResponseDevice.class);
-                        if (responseDevice.getMsg().equals("ok")) {
-                            listener.onSuccess("成功修改");
+                        final Response response = JsonUtil.getObjectFromHttpInfo(info, Response.class);
+                        if (response.getMsg().equals("ok")) {
+                            listener.onSuccess(response.getResult());
                         } else {
-                            listener.onFailure(responseDevice.getError());
+                            listener.onFailure(response.getError());
                         }
                     }
                 });
@@ -210,26 +210,16 @@ public class HubDetailModelImpl implements HubDetailModel {
         final String headerKey = "Authorization";
         final String headerValue = "Smart " + token;
         final int requestType;
-        final String msg;
         switch (timer.getAction()) {
             case "add":
-                msg = "成功添加";
                 requestType = RequestType.POST;
                 break;
             case "close":
-                msg = "成功关闭";
-                requestType = RequestType.PUT;
-                break;
             case "open":
-                msg = "成功开启";
-                requestType = RequestType.PUT;
-                break;
             case "update":
-                msg = "成功修改";
                 requestType = RequestType.PUT;
                 break;
             default:
-                msg = "成功删除";
                 requestType = RequestType.DELETE;
                 break;
         }
@@ -249,11 +239,11 @@ public class HubDetailModelImpl implements HubDetailModel {
 
                     @Override
                     public void onSuccess(final HttpInfo info) throws IOException {
-                        final ResponseTimer responseTimer = JsonUtil.getObjectFromHttpInfo(info, ResponseTimer.class);
-                        if (responseTimer.getMsg().equals("ok")) {
-                            listener.onSuccess(msg);
+                        final Response response = JsonUtil.getObjectFromHttpInfo(info, Response.class);
+                        if (response.getMsg().equals("ok")) {
+                            listener.onSuccess(response.getResult());
                         } else {
-                            listener.onFailure(responseTimer.getError());
+                            listener.onFailure(response.getError());
                         }
                     }
                 });
