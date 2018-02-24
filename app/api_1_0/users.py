@@ -42,7 +42,9 @@ def update_user_avatar():
     avatar = request.json.get('avatar')
     if not avatar or avatar == '':
         return jsonify({'msg': 'no', 'error': '图片链接不能为空'})
+    print(g.current_user)
     user = User.query.filter_by(id=g.current_user.id).first()
+    print(user)
     user.avatar = avatar
     return jsonify({'msg': 'ok', 'result': '头像修改成功'})
 
