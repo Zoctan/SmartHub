@@ -7,6 +7,7 @@ import com.zoctan.smarthub.beans.OneNetDataPointListBean;
 import com.zoctan.smarthub.beans.OneNetDataPointsBean;
 import com.zoctan.smarthub.beans.OneNetDataStreamsBean;
 import com.zoctan.smarthub.beans.TimerBean;
+import com.zoctan.smarthub.beans.UserBean;
 import com.zoctan.smarthub.hubDetail.model.HubDetailModel;
 import com.zoctan.smarthub.hubDetail.model.HubDetailModelImpl;
 import com.zoctan.smarthub.hubDetail.view.HubDetailNowView;
@@ -64,6 +65,31 @@ public class HubDetailPresenter {
 
     public void doHubTimer(final String token, final TimerBean timer) {
         mHubModel.doHubTimer(token, timer, new HubDetailPresenter.Listener());
+    }
+
+    // 图片上传至七牛云
+    public void uploadImg(final UserBean userBean, final DeviceBean deviceBean, final String photoPath) {
+        mHubModel.getQiNiuToken(userBean, deviceBean, new HubDetailModel.UploadListener() {
+            @Override
+            public void onSuccess(final String token) {
+                mHubModel.uploadImg(deviceBean, token, photoPath, new HubDetailModel.UploadListener() {
+                    @Override
+                    public void onSuccess(final String msg) {
+                        mNowView.showUpdateImgSuccessMsg(deviceBean.getImg(), msg);
+                    }
+
+                    @Override
+                    public void onFailure(final String msg) {
+                        mNowView.showFailedMsg(msg);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(final String msg) {
+                mNowView.showFailedMsg(msg);
+            }
+        });
     }
 
     private class Listener implements HubDetailModel.Listener {

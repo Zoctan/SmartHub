@@ -4,6 +4,7 @@ import com.zoctan.smarthub.beans.DeviceBean;
 import com.zoctan.smarthub.beans.OneNetDataPointsBean;
 import com.zoctan.smarthub.beans.OneNetDataStreamsBean;
 import com.zoctan.smarthub.beans.TimerBean;
+import com.zoctan.smarthub.beans.UserBean;
 
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,16 @@ public interface HubDetailModel {
     void doDevice(DeviceBean deviceBean, String token, String action, Listener listener);
 
     void doHubTimer(String token, TimerBean timer, Listener listener);
+
+    void uploadImg(DeviceBean deviceBean, String token, String photoPath, UploadListener listener);
+
+    void getQiNiuToken(UserBean userBean, DeviceBean deviceBean, UploadListener listener);
+
+    interface UploadListener {
+        void onSuccess(String msg);
+
+        void onFailure(String msg);
+    }
 
     interface Listener {
         void onDoDeviceSuccess(String msg);

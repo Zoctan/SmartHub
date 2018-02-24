@@ -6,7 +6,6 @@ public class DeviceBean implements Serializable {
     private String id;
     private String onenet_id;
     private String name;
-    private String oldname;
     private String img;
     private String eigenvalue;
 
@@ -48,13 +47,5 @@ public class DeviceBean implements Serializable {
 
     public void setImg(final String img) {
         this.img = img;
-    }
-
-    public String getOldname() {
-        return oldname;
-    }
-
-    public void setOldname(final String oldname) {
-        this.oldname = oldname;
     }
 }
