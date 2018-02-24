@@ -56,9 +56,13 @@ class User(db.Model):
         }
         return json
 
+    def __repr__(self):
+        return '<User(name={})>'.format(self.username)
+
 
 class AnonymousUser(User):
-    pass
+    def __repr__(self):
+        return '<AnonymousUser>'
 
 
 class Hub(db.Model):
