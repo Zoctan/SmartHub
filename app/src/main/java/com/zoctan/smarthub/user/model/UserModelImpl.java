@@ -141,7 +141,6 @@ public class UserModelImpl implements UserModel {
                                 @Override
                                 public void onFailure(final HttpInfo info) throws IOException {
                                     final String response = info.getRetDetail();
-                                    LogUtils.i("failed: " + response);
                                     listener.onFailure(response);
                                 }
 
@@ -150,6 +149,8 @@ public class UserModelImpl implements UserModel {
                                     final Response response = JsonUtil.getObjectFromHttpInfo(info, Response.class);
                                     if (response.getMsg().equals("ok")) {
                                         listener.onSuccess(userBean.getAvatar(), response.getResult());
+                                    } else {
+                                        listener.onFailure(response.getResult());
                                     }
                                 }
                             });

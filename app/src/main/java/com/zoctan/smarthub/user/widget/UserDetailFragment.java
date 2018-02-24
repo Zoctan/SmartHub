@@ -190,8 +190,9 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
     private void showUpdateAvatarDialog() {
         @SuppressWarnings("ConstantConditions") final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("设置头像");
-        // 指定照片保存路径（应用本身的缓存目录），user.jpg为一个临时文件，每次拍照后这个图片都会被替换
-        imageUri = Uri.fromFile(new File(getHoldingActivity().getCacheDir(), "user.jpg"));
+        // 指定照片保存路径（应用本身的缓存目录）
+        imageUri = Uri.fromFile(new File(getHoldingActivity().getCacheDir(),
+                System.currentTimeMillis() + "avatar.jpg"));
         final String[] items = {"选择本地照片", "拍照"};
         builder.setNegativeButton("取消", null);
         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -238,14 +239,15 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
                         final Bundle extras = data.getExtras();
                         if (extras != null) {
                             final Bitmap photo = extras.getParcelable("data");
-                            // 图片处理成圆形再保存并且压缩一半质量
+                            // 图片处理成圆形再保存
                             ImageUtils.save(
-                                    ImageUtils.compressByQuality(ImageUtils.toRound(photo), 50),
-                                    imageUri.getPath(), Bitmap.CompressFormat.JPEG);
+                                    ImageUtils.toRound(photo),
+                                    imageUri.getPath(),
+                                    Bitmap.CompressFormat.JPEG);
                             final UserBean userBean = new UserBean();
-                            userBean.setUsername(userName);
+                            userBean.setUsername(userName + ".jpg");
                             userBean.setToken(mSPUtil.getString("user_token"));
-                            userBean.setAvatar("http://p0qgwnuel.bkt.clouddn.com/" + userName);
+                            userBean.setAvatar("http://p0qgwnuel.bkt.clouddn.com/" + userName + ".jpg");
                             // 上传图片
                             mUserDetailPresenter.uploadAvatar(userBean, imageUri.getPath());
                         }
