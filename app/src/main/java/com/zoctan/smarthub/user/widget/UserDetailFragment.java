@@ -144,8 +144,8 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
                             final UserBean user = new UserBean();
                             user.setPassword(password);
                             mUserDetailPresenter.update("password", user, mSPUtil.getString("user_password"));
+                            dialog.dismiss();
                         }
-                        dialog.dismiss();
                     }
                 })
                 .show();
@@ -181,8 +181,8 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
                             mSPUtil.put("user_name", userName);
                             mSPUtil.put("user_phone", userPhone);
                             mUserDetailPresenter.update("info", user, mSPUtil.getString("user_password"));
+                            dialog.dismiss();
                         }
-                        dialog.dismiss();
                     }
                 })
                 .show();

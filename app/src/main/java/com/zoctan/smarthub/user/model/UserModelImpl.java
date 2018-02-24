@@ -85,7 +85,7 @@ public class UserModelImpl implements UserModel {
                     public void onSuccess(final HttpInfo info) throws IOException {
                         final ResponseUser responseUser = JsonUtil.getObjectFromHttpInfo(info, ResponseUser.class);
                         if (responseUser.getMsg().equals("ok")) {
-                            if (user.getToken() != null) {
+                            if (responseUser.getResult().getToken() != null) {
                                 listener.onSuccess(responseUser.getResult().getToken());
                             } else {
                                 listener.onSuccess();

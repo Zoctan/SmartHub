@@ -83,9 +83,18 @@ public class MainActivity extends BaseActivity {
         MainActivityPermissionsDispatcher.setHeaderUserWithPermissionCheck(this);
         // 设置广播接收
         setBroadcastReceiver();
-        // 默认选择插座
+        // 默认显示插座列表
         mNavigationView.setCheckedItem(R.id.item_hub_list);
         switch2Hub();
+    }
+
+    private void setBroadcastReceiver() {
+        // 接收来自用户登录/退出/修改头像广播
+        final IntentFilter mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction("user_logout");
+        mIntentFilter.addAction("update_user_info_or_avatar");
+        // 动态注册广播
+        registerReceiver(broadcastReceiver, mIntentFilter);
     }
 
     // 广播
@@ -94,7 +103,7 @@ public class MainActivity extends BaseActivity {
         public void onReceive(final Context context, final Intent intent) {
             // 修改了用户名或头像都要更新主界面侧滑栏
             if (Objects.equals(intent.getAction(), "update_user_info_or_avatar")) {
-                initView();
+                setHeaderUser();
             }
             // 用户登出需要重新登录
             if (Objects.equals(intent.getAction(), "user_logout")) {
@@ -153,15 +162,6 @@ public class MainActivity extends BaseActivity {
     @OnNeverAskAgain({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void permissionDeniedNeverAsk() {
         AlerterUtil.showDanger(this, R.string.permission_denied_never_ask);
-    }
-
-    private void setBroadcastReceiver() {
-        // 接收来自用户登录/退出/修改头像广播
-        final IntentFilter mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction("user_login");
-        mIntentFilter.addAction("modify_user_avatar");
-        // 动态注册广播
-        registerReceiver(broadcastReceiver, mIntentFilter);
     }
 
     // 设置NavigationView点击事件
