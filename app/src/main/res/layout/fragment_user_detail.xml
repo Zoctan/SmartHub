@@ -7,19 +7,36 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/AppBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:layout_height="150dp"
+        android:background="@color/primary"
         android:fitsSystemWindows="true">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/CircleImageView_user_avatar"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="36dp"
-            android:src="@mipmap/ic_launcher"
-            app:civ_border_color="@color/cyan"
-            app:civ_border_width="2dp" />
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:orientation="horizontal"
+            android:paddingEnd="12dp"
+            android:paddingStart="12dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/CircleImageView_user_avatar"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_column="0"
+                android:layout_gravity="bottom|start"
+                android:src="@mipmap/ic_launcher"
+                app:civ_border_color="@color/cyan"
+                app:civ_border_width="2dp" />
+
+            <ImageView
+                android:layout_width="160dp"
+                android:layout_height="120dp"
+                android:layout_column="1"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/panda"
+                tools:ignore="ContentDescription" />
+        </GridLayout>
     </android.support.design.widget.AppBarLayout>
 
     <LinearLayout
@@ -38,6 +55,7 @@
             android:layout_gravity="center"
             android:layout_margin="12dp"
             android:text="@string/user_detail_info"
+            android:textColor="@color/primary_text"
             android:textSize="14sp" />
 
         <View
@@ -68,6 +86,7 @@
                 android:layout_column="1"
                 android:layout_row="0"
                 android:text="@string/user_detail_name"
+                android:textColor="@color/primary_text"
                 android:textSize="14sp" />
 
             <TextView
@@ -75,6 +94,7 @@
                 android:layout_column="1"
                 android:layout_row="1"
                 android:text="@string/none"
+                android:textColor="@color/primary_text"
                 android:textSize="14sp" />
         </GridLayout>
 
@@ -106,6 +126,7 @@
                 android:layout_column="1"
                 android:layout_row="0"
                 android:text="@string/user_detail_phone"
+                android:textColor="@color/primary_text"
                 android:textSize="14sp" />
 
             <TextView
@@ -113,6 +134,7 @@
                 android:layout_column="1"
                 android:layout_row="1"
                 android:text="@string/none"
+                android:textColor="@color/primary_text"
                 android:textSize="14sp" />
         </GridLayout>
     </LinearLayout>

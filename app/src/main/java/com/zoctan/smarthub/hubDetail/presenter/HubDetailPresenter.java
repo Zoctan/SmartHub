@@ -68,6 +68,11 @@ public class HubDetailPresenter {
 
     private class Listener implements HubDetailModel.Listener {
         @Override
+        public void onDoDeviceSuccess(final String msg) {
+            mNowView.showDoDeviceSuccessMsg(msg);
+        }
+
+        @Override
         public void onSuccess(final String msg) {
             mNowView.showSuccessMsg(msg);
         }

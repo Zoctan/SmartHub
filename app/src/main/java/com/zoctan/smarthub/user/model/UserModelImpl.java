@@ -131,11 +131,14 @@ public class UserModelImpl implements UserModel {
                 // info.error中包含了错误信息，可打印调试
                 if (info.isOK()) {
                     // 上传成功后将key值上传到自己的服务器
+                    final String headerKey = "Authorization";
+                    final String headerValue = "Smart " + userBean.getToken();
                     OkHttpUtil.getDefault(this).doAsync(
                             HttpInfo.Builder()
                                     .setUrl(UserUrls.AVATAR)
                                     .setRequestType(RequestType.PUT)
                                     .addParamJson(new Gson().toJson(userBean))
+                                    .addHead(headerKey, headerValue)
                                     .build(),
                             new Callback() {
                                 @Override

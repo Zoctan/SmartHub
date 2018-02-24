@@ -187,7 +187,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
     }
 
     @Override
-    public void showDoDetailDeviceSuccessMsg(final String msg) {
+    public void showDoDeviceSuccessMsg(final String msg) {
         AlerterUtil.showInfo(getHoldingActivity(), msg);
         mPresenter.loadHubDevice(
                 mSPUtil.getString("hub_onenet_id"),

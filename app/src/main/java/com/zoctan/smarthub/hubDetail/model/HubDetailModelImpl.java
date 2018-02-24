@@ -12,7 +12,6 @@ import com.zoctan.smarthub.beans.OneNetDataPointsBean;
 import com.zoctan.smarthub.beans.TimerBean;
 import com.zoctan.smarthub.response.Response;
 import com.zoctan.smarthub.response.ResponseDevice;
-import com.zoctan.smarthub.response.ResponseHub;
 import com.zoctan.smarthub.response.ResponseOneNetDataPoints;
 import com.zoctan.smarthub.response.ResponseOneNetDataStreams;
 import com.zoctan.smarthub.response.ResponseTimerList;
@@ -110,7 +109,7 @@ public class HubDetailModelImpl implements HubDetailModel {
                     public void onSuccess(final HttpInfo info) throws IOException {
                         final Response response = JsonUtil.getObjectFromHttpInfo(info, Response.class);
                         if (response.getMsg().equals("ok")) {
-                            listener.onSuccess(response.getResult());
+                            listener.onDoDeviceSuccess(response.getResult());
                         } else {
                             listener.onFailure(response.getError());
                         }
@@ -138,8 +137,8 @@ public class HubDetailModelImpl implements HubDetailModel {
 
                     @Override
                     public void onSuccess(final HttpInfo info) throws IOException {
-                        final ResponseHub responseHub = JsonUtil.getObjectFromHttpInfo(info, ResponseHub.class);
-                        listener.onSuccess(responseHub.getMsg());
+                        final Response response = JsonUtil.getObjectFromHttpInfo(info, Response.class);
+                        listener.onSuccess(response.getMsg());
                     }
                 });
     }
