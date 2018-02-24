@@ -282,7 +282,7 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
     private void userLogout() {
         mSPUtil.put("login", false);
         //noinspection ConstantConditions
-        getHoldingActivity().sendBroadcast(new Intent("user_logout"));
+        getHoldingActivity().sendBroadcast(new Intent("user_login"));
     }
 
     @Override
