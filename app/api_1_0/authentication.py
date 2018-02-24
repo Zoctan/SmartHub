@@ -31,14 +31,14 @@ def verify_password(username, password):
     # try to authenticate with username/password
     user = User.query.filter_by(username=username).first()
     g.current_user = user
-    return False if not user else user.verify_password(password)
+    return False if user.id is None else user.verify_password(password)
 
 
 @token_auth.verify_token
 def verify_token(token):
     user = User.verify_auth_token(token)
     g.current_user = user
-    return False if not user else True
+    return False if user.id is None else True
 
 
 @api.before_request
