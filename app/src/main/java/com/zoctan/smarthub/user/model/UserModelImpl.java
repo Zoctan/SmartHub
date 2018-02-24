@@ -13,6 +13,7 @@ import com.qiniu.android.storage.UploadManager;
 import com.qiniu.android.storage.UploadOptions;
 import com.zoctan.smarthub.api.UserUrls;
 import com.zoctan.smarthub.beans.UserBean;
+import com.zoctan.smarthub.response.Response;
 import com.zoctan.smarthub.response.ResponseUser;
 import com.zoctan.smarthub.utils.JsonUtil;
 import com.zoctan.smarthub.utils.QiNiuCloudAuth;
@@ -83,15 +84,11 @@ public class UserModelImpl implements UserModel {
 
                     @Override
                     public void onSuccess(final HttpInfo info) throws IOException {
-                        final ResponseUser responseUser = JsonUtil.getObjectFromHttpInfo(info, ResponseUser.class);
-                        if (responseUser.getMsg().equals("ok")) {
-                            if (responseUser.getResult().getToken() != null) {
-                                listener.onSuccess(responseUser.getResult().getToken());
-                            } else {
-                                listener.onSuccess();
-                            }
+                        final Response response = JsonUtil.getObjectFromHttpInfo(info, Response.class);
+                        if (response.getMsg().equals("ok")) {
+                            listener.onSuccess(response.getResult());
                         } else {
-                            listener.onFailure(responseUser.getError());
+                            listener.onFailure(response.getError());
                         }
                     }
                 });

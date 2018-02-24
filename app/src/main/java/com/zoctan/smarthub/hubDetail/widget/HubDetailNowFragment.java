@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
 import com.zoctan.smarthub.beans.DeviceBean;
-import com.zoctan.smarthub.hubDetail.presenter.HubDetailNowPresenter;
+import com.zoctan.smarthub.hubDetail.presenter.HubDetailPresenter;
 import com.zoctan.smarthub.hubDetail.view.HubDetailNowView;
 import com.zoctan.smarthub.utils.AlerterUtil;
 import com.zoctan.smarthub.utils.NiftyDialog;
@@ -42,7 +42,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
     FabSpeedDial mFabSpeedDial;
     TextInputEditText mEtDeviceInfo;
     private final Handler handler = new Handler();
-    private final HubDetailNowPresenter mHubDetailNowPresenter = new HubDetailNowPresenter(this);
+    private final HubDetailPresenter mPresenter = new HubDetailPresenter(this);
 
     public static HubDetailNowFragment newInstance() {
         return new HubDetailNowFragment();
@@ -56,7 +56,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
         if (!mSPUtil.getBoolean("hub_is_electric")) {
             mFabSpeedDial.setVisibility(View.GONE);
         } else {
-            mHubDetailNowPresenter.loadHubDevice(
+            mPresenter.loadHubDevice(
                     mSPUtil.getString("hub_onenet_id"),
                     mSPUtil.getString("user_password")
             );
@@ -95,7 +95,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
         }
 
         void updateDetail() {
-            mHubDetailNowPresenter.loadHubNowList(
+            mPresenter.loadHubNowList(
                     mSPUtil.getString("hub_onenet_id"), "I,V,W,Q");
         }
     };
@@ -110,7 +110,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                 .setButton1Click(new View.OnClickListener() {
                     @Override
                     public void onClick(final View v) {
-                        mHubDetailNowPresenter.resetHub(mSPUtil.getString("hub_onenet_id"), mSPUtil.getString("user_password"));
+                        mPresenter.resetHub(mSPUtil.getString("hub_onenet_id"), mSPUtil.getString("user_password"));
                     }
                 })
                 .show();
@@ -135,7 +135,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                             final DeviceBean deviceBean = new DeviceBean();
                             deviceBean.setName(name);
                             deviceBean.setOnenet_id(mSPUtil.getString("hub_onenet_id"));
-                            mHubDetailNowPresenter.doDevice(deviceBean, mSPUtil.getString("user_password"), "update");
+                            mPresenter.doDevice(deviceBean, mSPUtil.getString("user_password"), "update");
                         }
                         dialog.dismiss();
                     }
@@ -163,7 +163,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                             final DeviceBean deviceBean = new DeviceBean();
                             deviceBean.setName(name);
                             deviceBean.setOnenet_id(mSPUtil.getString("hub_onenet_id"));
-                            mHubDetailNowPresenter.doDevice(deviceBean, mSPUtil.getString("user_password"), "add");
+                            mPresenter.doDevice(deviceBean, mSPUtil.getString("user_password"), "add");
                         }
                         dialog.dismiss();
                     }
@@ -189,7 +189,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
     @Override
     public void showDoDetailDeviceSuccessMsg(final String msg) {
         AlerterUtil.showInfo(getHoldingActivity(), msg);
-        mHubDetailNowPresenter.loadHubDevice(
+        mPresenter.loadHubDevice(
                 mSPUtil.getString("hub_onenet_id"),
                 mSPUtil.getString("user_password")
         );

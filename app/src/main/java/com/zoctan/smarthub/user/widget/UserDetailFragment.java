@@ -286,17 +286,12 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
     }
 
     @Override
-    public void showUpdateInfoSuccessMsg() {
-        initView(null, null);
+    public void showUpdateSuccessMsg(final String msg) {
+        mTvUserName.setText(userName);
+        mTvUserPhone.setText(userPhone);
         //noinspection ConstantConditions
         getActivity().sendBroadcast(new Intent("update_user_info_or_avatar"));
-        AlerterUtil.showInfo(getHoldingActivity(), R.string.msg_update_user_info_success);
-    }
-
-    @Override
-    public void showUpdatePasswordSuccessMsg(final String token) {
-        mSPUtil.put("user_password", token);
-        AlerterUtil.showInfo(getHoldingActivity(), R.string.msg_update_user_password_success);
+        AlerterUtil.showInfo(getHoldingActivity(), msg);
     }
 
     @Override

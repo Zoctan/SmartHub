@@ -9,7 +9,6 @@ import com.zoctan.smarthub.api.HubUrls;
 import com.zoctan.smarthub.api.OneNetUrls;
 import com.zoctan.smarthub.beans.DeviceBean;
 import com.zoctan.smarthub.beans.OneNetDataPointsBean;
-import com.zoctan.smarthub.beans.OneNetDataStreamsBean;
 import com.zoctan.smarthub.beans.TimerBean;
 import com.zoctan.smarthub.response.ResponseDevice;
 import com.zoctan.smarthub.response.ResponseHub;
@@ -20,12 +19,11 @@ import com.zoctan.smarthub.response.ResponseTimerList;
 import com.zoctan.smarthub.utils.JsonUtil;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 public class HubDetailModelImpl implements HubDetailModel {
     @Override
-    public void loadHubNowList(final String oneNetId, final String dataStreamIds, final OnLoadHubDetailNowListener listener) {
+    public void loadHubNowList(final String oneNetId, final String dataStreamIds, final Listener listener) {
         final String headerKey = "api-key";
         final String headerValue = "nJVyiaj5Y297Fc6Q=bUYVWnz2=0=";
         final String url = OneNetUrls.buildDataStreamsGet(oneNetId, dataStreamIds);
@@ -47,17 +45,14 @@ public class HubDetailModelImpl implements HubDetailModel {
                     public void onSuccess(final HttpInfo info) throws IOException {
                         final ResponseOneNetDataStreams responseList = JsonUtil.getObjectFromHttpInfo(info, ResponseOneNetDataStreams.class);
                         if (responseList.getError().equals("succ")) {
-                            final List<OneNetDataStreamsBean> oneNetDataStreamList = responseList.getData();
-                            listener.onSuccess(oneNetDataStreamList);
-                        } else {
-                            listener.onSuccess(null);
+                            listener.onOneNetDataStreamSuccess(responseList.getData());
                         }
                     }
                 });
     }
 
     @Override
-    public void loadHubDevice(final String oneNetId, final String token, final OnLoadHubDetailDeviceListener listener) {
+    public void loadHubDevice(final String oneNetId, final String token, final Listener listener) {
         final String url = HubUrls.HUBS + "/device/" + oneNetId;
         final String headerKey = "Authorization";
         final String headerValue = "Smart " + token;
@@ -89,7 +84,7 @@ public class HubDetailModelImpl implements HubDetailModel {
     }
 
     @Override
-    public void doDevice(final DeviceBean deviceBean, final String token, final String action, final OnListener listener) {
+    public void doDevice(final DeviceBean deviceBean, final String token, final String action, final Listener listener) {
         final String url = HubUrls.HUBS + "/device/" + deviceBean.getOnenet_id();
         final String headerKey = "Authorization";
         final String headerValue = "Smart " + token;
@@ -124,7 +119,7 @@ public class HubDetailModelImpl implements HubDetailModel {
     }
 
     @Override
-    public void resetHub(final String oneNetId, final String token, final OnListener listener) {
+    public void resetHub(final String oneNetId, final String token, final Listener listener) {
         final String headerKey = "Authorization";
         final String headerValue = "Smart " + token;
         final String url = HubUrls.HUBS + "/" + oneNetId + "/order?order=reset&status=1";
@@ -150,7 +145,7 @@ public class HubDetailModelImpl implements HubDetailModel {
     }
 
     @Override
-    public void loadHubSpareList(final String oneNetId, final String dataStreamIds, final Map params, final OnLoadHubSpareListListener listener) {
+    public void loadHubSpareList(final String oneNetId, final String dataStreamIds, final Map params, final Listener listener) {
         final String headerKey = "api-key";
         final String headerValue = "nJVyiaj5Y297Fc6Q=bUYVWnz2=0=";
         final String url = OneNetUrls.buildDataPointsGet(oneNetId, dataStreamIds, params);
@@ -182,7 +177,7 @@ public class HubDetailModelImpl implements HubDetailModel {
     }
 
     @Override
-    public void loadHubTimerList(final String token, final String hubOneNetId, final OnLoadHubDetailTimerListener listener) {
+    public void loadHubTimerList(final String token, final String hubOneNetId, final Listener listener) {
         final String url = HubUrls.TIMERS + "/" + hubOneNetId;
         final String headerKey = "Authorization";
         final String headerValue = "Smart " + token;
@@ -203,17 +198,14 @@ public class HubDetailModelImpl implements HubDetailModel {
                     public void onSuccess(final HttpInfo info) throws IOException {
                         final ResponseTimerList responseList = JsonUtil.getObjectFromHttpInfo(info, ResponseTimerList.class);
                         if (responseList.getMsg().equals("ok")) {
-                            final List<TimerBean> timerList = responseList.getResult();
-                            listener.onSuccess(timerList);
-                        } else {
-                            listener.onSuccess(null);
+                            listener.onTimerListSuccess(responseList.getResult());
                         }
                     }
                 });
     }
 
     @Override
-    public void doHubTimer(final String token, final TimerBean timer, final OnListener listener) {
+    public void doHubTimer(final String token, final TimerBean timer, final Listener listener) {
         final String url = HubUrls.TIMERS + "/" + timer.getHub_id();
         final String headerKey = "Authorization";
         final String headerValue = "Smart " + token;

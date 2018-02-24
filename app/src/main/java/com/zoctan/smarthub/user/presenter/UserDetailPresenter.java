@@ -26,13 +26,8 @@ public class UserDetailPresenter {
         }
         mUserModel.update(url, user, token, new UserModel.Listener() {
             @Override
-            public void onSuccess() {
-                mUserDetailView.showUpdateInfoSuccessMsg();
-            }
-
-            @Override
-            public void onSuccess(final String token) {
-                mUserDetailView.showUpdatePasswordSuccessMsg(token);
+            public void onSuccess(final String msg) {
+                mUserDetailView.showUpdateSuccessMsg(msg);
             }
 
             @Override

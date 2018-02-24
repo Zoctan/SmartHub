@@ -10,8 +10,6 @@ public interface UserModel {
     void uploadAvatar(String userName, String photoPath, UploadAvatarListener listener);
 
     interface Listener {
-        void onSuccess();
-
         void onSuccess(String token);
 
         void onSuccess(UserBean userBean);

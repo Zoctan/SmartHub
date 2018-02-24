@@ -20,12 +20,7 @@ public class UserLoginPresenter {
         mUserLoginView.showLoading();
         mUserModel.loginOrRegister(login, user, new UserModel.Listener() {
             @Override
-            public void onSuccess() {
-
-            }
-
-            @Override
-            public void onSuccess(final String token) {
+            public void onSuccess(final String msg) {
 
             }
 

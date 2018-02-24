@@ -9,46 +9,30 @@ import java.util.List;
 import java.util.Map;
 
 public interface HubDetailModel {
-    void loadHubDevice(String oneNetId, String token, OnLoadHubDetailDeviceListener listener);
+    void loadHubDevice(String oneNetId, String token, Listener listener);
 
-    void resetHub(String oneNetId, String token, OnListener listener);
+    void resetHub(String oneNetId, String token, Listener listener);
 
-    void loadHubNowList(String oneNetId, String dataStreamIds, OnLoadHubDetailNowListener listener);
+    void loadHubNowList(String oneNetId, String dataStreamIds, Listener listener);
 
-    void loadHubSpareList(String oneNetId, String dataStreamIds, Map params, OnLoadHubSpareListListener listener);
+    void loadHubSpareList(String oneNetId, String dataStreamIds, Map params, Listener listener);
 
-    void loadHubTimerList(String token, String hubOneNetId, OnLoadHubDetailTimerListener listener);
+    void loadHubTimerList(String token, String hubOneNetId, Listener listener);
 
-    void doDevice(DeviceBean deviceBean, String token, String action, OnListener listener);
+    void doDevice(DeviceBean deviceBean, String token, String action, Listener listener);
 
-    void doHubTimer(String token, TimerBean timer, OnListener listener);
+    void doHubTimer(String token, TimerBean timer, Listener listener);
 
-    interface OnListener {
+    interface Listener {
         void onSuccess(String msg);
 
-        void onFailure(String msg);
-    }
-
-    interface OnLoadHubDetailDeviceListener {
         void onSuccess(DeviceBean deviceBean);
 
-        void onFailure(String msg);
-    }
+        void onTimerListSuccess(List<TimerBean> timerBean);
 
-    interface OnLoadHubDetailNowListener {
-        void onSuccess(List<OneNetDataStreamsBean> oneNetDataStreamList);
+        void onOneNetDataStreamSuccess(List<OneNetDataStreamsBean> oneNetDataStreamList);
 
-        void onFailure(String msg);
-    }
-
-    interface OnLoadHubSpareListListener {
         void onSuccess(OneNetDataPointsBean oneNetDataPoints);
-
-        void onFailure(String msg);
-    }
-
-    interface OnLoadHubDetailTimerListener {
-        void onSuccess(List<TimerBean> timerBean);
 
         void onFailure(String msg);
     }

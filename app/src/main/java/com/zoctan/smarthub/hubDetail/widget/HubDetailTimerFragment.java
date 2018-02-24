@@ -26,7 +26,7 @@ import com.vansuita.library.Icon;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
 import com.zoctan.smarthub.beans.TimerBean;
-import com.zoctan.smarthub.hubDetail.presenter.HubDetailTimerPresenter;
+import com.zoctan.smarthub.hubDetail.presenter.HubDetailPresenter;
 import com.zoctan.smarthub.hubDetail.view.HubDetailTimerView;
 import com.zoctan.smarthub.utils.AlerterUtil;
 import com.zoctan.smarthub.utils.NiftyDialog;
@@ -51,7 +51,7 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
     @BindView(R.id.SmartRefreshLayout_timer_list)
     SmartRefreshLayout mSmartRefreshLayout;
     private final Calendar calendar = Calendar.getInstance();
-    private final HubDetailTimerPresenter mHubDetailPresenter = new HubDetailTimerPresenter(this);
+    private final HubDetailPresenter mPresenter = new HubDetailPresenter(this);
     private HubDetailTimerListAdapter mAdapter;
     private List<TimerBean> mData;
     private final HubDetailTimerListAdapter.OnItemClickListener mOnItemClickListener = new HubDetailTimerListAdapter.OnItemClickListener() {
@@ -70,13 +70,13 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
                 case "close":
                 case "open":
                     timer.setStatus(timer.getAction().equals("close") ? 0 : 1);
-                    mHubDetailPresenter.doHubTimer(
+                    mPresenter.doHubTimer(
                             mSPUtil.getString("user_password"),
                             timer);
                     //ToastUtils.showShort("update");
                     break;
                 case "delete":
-                    mHubDetailPresenter.doHubTimer(
+                    mPresenter.doHubTimer(
                             mSPUtil.getString("user_password"),
                             timer);
                     //ToastUtils.showShort("delete");
@@ -217,7 +217,7 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
                                 && mLayoutTimerName.getError() == null) {
                             timer.setTime(mTimePicker.getHour() + ":" + mTimePicker.getMinute());
                             timer.setName(mEtTimerName.getText().toString());
-                            mHubDetailPresenter.doHubTimer(
+                            mPresenter.doHubTimer(
                                     mSPUtil.getString("user_password"),
                                     timer);
                             dialog.dismiss();
@@ -231,7 +231,7 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
         if (mData != null) {
             mData.clear();
         }
-        mHubDetailPresenter.loadHubTimerList(
+        mPresenter.loadHubTimerList(
                 mSPUtil.getString("user_password"),
                 mSPUtil.getString("hub_onenet_id"));
     }

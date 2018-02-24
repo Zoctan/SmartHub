@@ -10,7 +10,6 @@ import android.view.View;
 import com.flyco.tablayout.CommonTabLayout;
 import com.flyco.tablayout.listener.CustomTabEntity;
 import com.flyco.tablayout.listener.OnTabSelectListener;
-import com.zoctan.smarthub.App;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseActivity;
 
@@ -57,7 +56,7 @@ public class HubDetailActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 onBackPressed();
             }
         });
@@ -73,26 +72,26 @@ public class HubDetailActivity extends BaseActivity {
     private void setListener() {
         mTabLayout.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
-            public void onTabSelect(int position) {
+            public void onTabSelect(final int position) {
                 mViewPager.setCurrentItem(position);
             }
 
             @Override
-            public void onTabReselect(int position) {
+            public void onTabReselect(final int position) {
             }
         });
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            public void onPageScrolled(final int position, final float positionOffset, final int positionOffsetPixels) {
             }
 
             @Override
-            public void onPageSelected(int position) {
+            public void onPageSelected(final int position) {
                 mTabLayout.setCurrentTab(position);
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) {
+            public void onPageScrollStateChanged(final int state) {
             }
         });
     }
@@ -107,13 +106,13 @@ public class HubDetailActivity extends BaseActivity {
 class HubDetailViewPagerAdapter extends FragmentPagerAdapter {
     private final Fragment[] mList;
 
-    HubDetailViewPagerAdapter(FragmentManager fragmentManager, Fragment[] fragments) {
+    HubDetailViewPagerAdapter(final FragmentManager fragmentManager, final Fragment[] fragments) {
         super(fragmentManager);
         mList = fragments;
     }
 
     @Override
-    public Fragment getItem(int position) {
+    public Fragment getItem(final int position) {
         return mList[position];
     }
 
@@ -128,7 +127,7 @@ class TabEntity implements CustomTabEntity {
     private final int selectedIcon;
     private final int unSelectedIcon;
 
-    TabEntity(String title, int selectedIcon, int unSelectedIcon) {
+    TabEntity(final String title, final int selectedIcon, final int unSelectedIcon) {
         this.title = title;
         this.selectedIcon = selectedIcon;
         this.unSelectedIcon = unSelectedIcon;

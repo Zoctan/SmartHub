@@ -17,7 +17,7 @@ import java.util.List;
 public class HubListModelImpl implements HubListModel {
 
     @Override
-    public void loadHubList(final String token, final OnLoadHubListListener listener) {
+    public void loadHubList(final String token, final Listener listener) {
         final String url = HubUrls.HUBS;
         final String headerKey = "Authorization";
         final String headerValue = "Smart " + token;
@@ -41,8 +41,6 @@ public class HubListModelImpl implements HubListModel {
                         if (responseList.getMsg().equals("ok")) {
                             final List<HubBean> hubList = responseList.getResult();
                             listener.onSuccess(hubList);
-                        } else {
-                            listener.onSuccess(null);
                         }
                     }
                 });
@@ -50,7 +48,7 @@ public class HubListModelImpl implements HubListModel {
 
     @Override
     public void hubOpenClose(final String oneNetId, final String order,
-                             final String token, final OnListener listener) {
+                             final String token, final Listener listener) {
         final String headerKey = "Authorization";
         final String headerValue = "Smart " + token;
         int status = 1;
@@ -81,7 +79,7 @@ public class HubListModelImpl implements HubListModel {
 
     @Override
     public void doHub(final String action, final String token,
-                      final HubBean hub, final OnListener listener) {
+                      final HubBean hub, final Listener listener) {
         String url = HubUrls.HUBS;
         int requestType = RequestType.POST;
         final String msg;

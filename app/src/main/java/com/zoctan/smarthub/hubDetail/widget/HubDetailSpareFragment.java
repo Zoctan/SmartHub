@@ -22,7 +22,7 @@ import com.github.mikephil.charting.utils.Utils;
 import com.wang.avi.AVLoadingIndicatorView;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
-import com.zoctan.smarthub.hubDetail.presenter.HubDetailSparePresenter;
+import com.zoctan.smarthub.hubDetail.presenter.HubDetailPresenter;
 import com.zoctan.smarthub.hubDetail.view.HubDetailSpareView;
 import com.zoctan.smarthub.utils.AlerterUtil;
 
@@ -47,7 +47,7 @@ public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpa
     GridLayout mGridLayout;
     @BindView(R.id.ProgressBar_hub_detail_spare)
     AVLoadingIndicatorView mProgressBar;
-    private final HubDetailSparePresenter mHubDetailSparePresenter = new HubDetailSparePresenter(this);
+    private final HubDetailPresenter mPresenter = new HubDetailPresenter(this);
 
     public static HubDetailSpareFragment newInstance() {
         return new HubDetailSpareFragment();
@@ -82,7 +82,7 @@ public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpa
         for (int i = 0; i < 4; i++) {
             params.put(keys[i], values[i]);
         }
-        mHubDetailSparePresenter.loadHubSpareList(
+        mPresenter.loadHubSpareList(
                 mSPUtil.getString("hub_onenet_id"),
                 "W",
                 params);
