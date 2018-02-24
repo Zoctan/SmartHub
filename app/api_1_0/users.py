@@ -40,9 +40,10 @@ def add_user():
 @decorators.composed(decorators.route('/api/users/avatar', methods=['PUT']), decorators.json_required)
 def update_user_avatar():
     avatar = request.json.get('avatar')
-    if not avatar:
+    if not avatar or avatar == '':
         return jsonify({'msg': 'no', 'error': '图片链接不能为空'})
-    g.current_user.avatar = avatar
+    user = User.query.filter_by(id=g.current_user.id).first()
+    user.avatar = avatar
     return jsonify({'msg': 'ok', 'result': '头像修改成功'})
 
 
@@ -51,7 +52,8 @@ def update_user_password():
     password = request.json.get('password')
     if not password:
         return jsonify({'msg': 'no', 'error': '密码不能为空'})
-    g.current_user.password = password
+    user = User.query.filter_by(id=g.current_user.id).first()
+    user.password = password
     return jsonify({'msg': 'ok', 'result': '密码修改成功'})
 
 
@@ -64,6 +66,7 @@ def update_user():
     user = User.query.filter_by(username=username).first()
     if user:
         return jsonify({'msg': 'no', 'error': '用户名已存在'})
-    g.current_user.phone = phone
-    g.current_user.username = username
+    user = User.query.filter_by(id=g.current_user.id).first()
+    user.phone = phone
+    user.username = username
     return jsonify({'msg': 'ok', 'result': '信息修改成功'})
