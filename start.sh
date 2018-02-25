@@ -2,4 +2,4 @@
 
 git pull
 nohup ./manage.py runserver &
-nohup ./redis_timers.py &
+nohup ./app/redis_timers.py &
