@@ -335,6 +335,7 @@ public class HubListFragment extends BaseFragment implements HubListView {
     @Override
     public void showSuccessMsg(final String msg) {
         AlerterUtil.showInfo(getHoldingActivity(), msg);
+        refreshHubList();
     }
 
     @Override
