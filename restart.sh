@@ -12,9 +12,10 @@ function check_error() {
   done
 }
 
-git pull &&
 
 echo '[*] git pull' &&
+
+git pull &&
 
 ps -ef | grep '[.]/manage.py runserver' | awk '{print $2}' | xargs kill -9 ;
 

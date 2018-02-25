@@ -54,7 +54,7 @@ def add_hub():
     if not onenet_id or not mac:
         return jsonify({'msg': 'no', 'error': '缺少参数: 设备号 MAC地址'})
     if Hub.query.filter_by(onenet_id=onenet_id).first():
-        return jsonify({'msg': 'no', 'error': '插座已存在'})
+        return jsonify({'msg': 'no', 'error': '插座已被添加'})
     hub = Hub(user_id=g.current_user.id, mac=mac, onenet_id=onenet_id)
     db.session.add(hub)
     return jsonify({'msg': 'ok', 'result': '插座添加成功'})
