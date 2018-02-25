@@ -29,7 +29,7 @@ rm /tmp/${prefix}* &&
 
 echo '[*] rm log' &&
 
-nohup ./manage.py runserver  2>/tmp/${prefix}err 1>/tmp/${prefix}out &
+nohup ./manage.py runserver  2>/tmp/${prefix}out &
 
 echo '[*] start api' &&
 
