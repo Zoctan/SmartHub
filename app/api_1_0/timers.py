@@ -58,8 +58,11 @@ def update_timer(device_id):
     timer.repeat = request.json.get('repeat')
     timer.time = request.json.get('time')
     timer.status = request.json.get('status')
-    RedisTimer(id=timer.id, hub_id=device_id, repeat=timer.repeat, time=timer.time, power=timer.power,
-            status=timer.status).update()
+    if timer.status == 0:
+        RedisTimer(id=timer.id, hub_id=timer.hub_id).delete()
+    else:
+        RedisTimer(id=timer.id, hub_id=device_id, repeat=timer.repeat,
+                time=timer.time, power=timer.power, status=timer.status).update()
     return jsonify({'msg': 'ok', 'result': '定时器修改成功'})
 
 
