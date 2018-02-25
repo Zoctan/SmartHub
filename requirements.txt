@@ -1,3 +1,5 @@
+django-scheduler
+redis
 alembic==0.9.5
 amqp==2.2.2
 billiard==3.5.0.3
