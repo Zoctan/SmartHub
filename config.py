@@ -5,8 +5,7 @@ import os
 
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or \
-                 'the quick brown fox jumps over the lazy dog'
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'the quick brown fox jumps over the lazy dog'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
     @staticmethod
@@ -16,19 +15,16 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
-                              'mysql+pymysql://root:root@127.0.0.1:3306/smart?charset=utf8'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or 'mysql+pymysql://root:root@127.0.0.1:3306/smart?charset=utf8'
 
 
 class TestingConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
-                              'mysql+pymysql://root:root@127.0.0.1:3306/testsmart?charset=utf8'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or 'mysql+pymysql://root:root@127.0.0.1:3306/testsmart?charset=utf8'
 
 
 class ProductionConfig(Config):
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-                              'mysql+pymysql://root:root@127.0.0.1:3306/smart?charset=utf8'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'mysql+pymysql://root:root@127.0.0.1:3306/smart?charset=utf8'
 
 
 config = {
