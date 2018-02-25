@@ -99,12 +99,17 @@ public class HubDetailPresenter {
         }
 
         @Override
-        public void onSuccess(final String msg) {
+        public void onNowSuccess(final String msg) {
             mNowView.showSuccessMsg(msg);
         }
 
         @Override
-        public void onSuccess(final DeviceBean deviceBean) {
+        public void onTimerSuccess(final String msg) {
+            mTimerView.showSuccessMsg(msg);
+        }
+
+        @Override
+        public void onNowSuccess(final DeviceBean deviceBean) {
             mNowView.setDevice(deviceBean);
         }
 
@@ -123,7 +128,7 @@ public class HubDetailPresenter {
         }
 
         @Override
-        public void onSuccess(final OneNetDataPointsBean oneNetDataPoints) {
+        public void onSpareSuccess(final OneNetDataPointsBean oneNetDataPoints) {
             final List<OneNetDataPointListBean> oneNetDataPointList = oneNetDataPoints.getDatastreams();
             List<OneNetDataPointBean> dataWPointList = null;
             for (final OneNetDataPointListBean bean : oneNetDataPointList) {
@@ -150,9 +155,19 @@ public class HubDetailPresenter {
         }
 
         @Override
-        public void onFailure(final String msg) {
+        public void onNowFailure(final String msg) {
+            mNowView.showFailedMsg(msg);
+        }
+
+        @Override
+        public void onSpareFailure(final String msg) {
             mSpareView.hideLoading();
             mSpareView.showFailedMsg(msg);
+        }
+
+        @Override
+        public void onTimerFailure(final String msg) {
+            mTimerView.showFailedMsg(msg);
         }
     }
 }

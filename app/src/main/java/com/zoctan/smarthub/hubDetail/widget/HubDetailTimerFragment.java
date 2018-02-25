@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -134,7 +135,7 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
         showTimerDialog(timer);
     }
 
-    public void showTimerDialog(final TimerBean timer) {
+    private void showTimerDialog(final TimerBean timer) {
         @SuppressLint("InflateParams") final View view = getLayoutInflater().inflate(R.layout.dialog_timer, null);
 
         final TextInputEditText mEtTimerName = view.findViewById(R.id.EditText_timer_name);
@@ -192,13 +193,16 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
 
         // 时间选择器
         final TimePicker mTimePicker = view.findViewById(R.id.TimePicker_timer);
-        calendar.setTimeInMillis(System.currentTimeMillis());
         mTimePicker.setIs24HourView(true);
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = Calendar.MINUTE;
+        final int hour;
+        final int minute;
         if (timer.getTime() != null) {
             hour = Integer.parseInt(timer.getTime().split(":")[0]);
             minute = Integer.parseInt(timer.getTime().split(":")[1]);
+        } else {
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            hour = calendar.get(Calendar.HOUR_OF_DAY);
+            minute = Calendar.MINUTE;
         }
         mTimePicker.setHour(hour);
         mTimePicker.setMinute(minute);
@@ -215,7 +219,10 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
                     public void onClick(final View v) {
                         if (mEtTimerName.getText().length() > 0
                                 && mLayoutTimerName.getError() == null) {
-                            timer.setTime(mTimePicker.getHour() + ":" + mTimePicker.getMinute());
+                            // 补零
+                            final String hour = String.format(Locale.CHINA, "%02d", mTimePicker.getHour());
+                            final String minute = String.format(Locale.CHINA, "%02d", mTimePicker.getMinute());
+                            timer.setTime(String.format("%s:%s", hour, minute));
                             timer.setName(mEtTimerName.getText().toString());
                             mPresenter.doHubTimer(
                                     mSPUtil.getString("user_password"),

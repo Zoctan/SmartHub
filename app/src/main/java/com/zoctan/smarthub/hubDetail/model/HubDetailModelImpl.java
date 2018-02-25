@@ -48,7 +48,7 @@ public class HubDetailModelImpl implements HubDetailModel {
                     @Override
                     public void onFailure(final HttpInfo info) throws IOException {
                         final String response = info.getRetDetail();
-                        listener.onFailure(response);
+                        listener.onNowFailure(response);
                     }
 
                     @Override
@@ -76,18 +76,18 @@ public class HubDetailModelImpl implements HubDetailModel {
                     @Override
                     public void onFailure(final HttpInfo info) throws IOException {
                         final String response = info.getRetDetail();
-                        listener.onFailure(response);
+                        listener.onNowFailure(response);
                     }
 
                     @Override
                     public void onSuccess(final HttpInfo info) throws IOException {
                         final ResponseDevice responseDevice = JsonUtil.getObjectFromHttpInfo(info, ResponseDevice.class);
                         if (responseDevice.getMsg().equals("ok")) {
-                            listener.onSuccess(responseDevice.getResult());
+                            listener.onNowSuccess(responseDevice.getResult());
                         } else {
                             final DeviceBean deviceBean = new DeviceBean();
                             deviceBean.setName(responseDevice.getError());
-                            listener.onSuccess(deviceBean);
+                            listener.onNowSuccess(deviceBean);
                         }
                     }
                 });
@@ -113,7 +113,7 @@ public class HubDetailModelImpl implements HubDetailModel {
                     @Override
                     public void onFailure(final HttpInfo info) throws IOException {
                         final String response = info.getRetDetail();
-                        listener.onFailure(response);
+                        listener.onNowFailure(response);
                     }
 
                     @Override
@@ -122,7 +122,7 @@ public class HubDetailModelImpl implements HubDetailModel {
                         if (response.getMsg().equals("ok")) {
                             listener.onDoDeviceSuccess(response.getResult());
                         } else {
-                            listener.onFailure(response.getError());
+                            listener.onNowFailure(response.getError());
                         }
                     }
                 });
@@ -143,13 +143,13 @@ public class HubDetailModelImpl implements HubDetailModel {
                     @Override
                     public void onFailure(final HttpInfo info) throws IOException {
                         final String response = info.getRetDetail();
-                        listener.onFailure(response);
+                        listener.onNowFailure(response);
                     }
 
                     @Override
                     public void onSuccess(final HttpInfo info) throws IOException {
                         final Response response = JsonUtil.getObjectFromHttpInfo(info, Response.class);
-                        listener.onSuccess(response.getMsg());
+                        listener.onNowSuccess(response.getMsg());
                     }
                 });
     }
@@ -170,7 +170,7 @@ public class HubDetailModelImpl implements HubDetailModel {
                     @Override
                     public void onFailure(final HttpInfo info) throws IOException {
                         final String response = info.getRetDetail();
-                        listener.onFailure(response);
+                        listener.onSpareFailure(response);
                     }
 
                     @Override
@@ -178,9 +178,9 @@ public class HubDetailModelImpl implements HubDetailModel {
                         final ResponseOneNetDataPoints responseOneNetDataPoints = JsonUtil.getObjectFromHttpInfo(info, ResponseOneNetDataPoints.class);
                         if (responseOneNetDataPoints.getError().equals("succ")) {
                             final OneNetDataPointsBean oneNetDataPoints = responseOneNetDataPoints.getData();
-                            listener.onSuccess(oneNetDataPoints);
+                            listener.onSpareSuccess(oneNetDataPoints);
                         } else {
-                            listener.onFailure(responseOneNetDataPoints.getError());
+                            listener.onSpareFailure(responseOneNetDataPoints.getError());
                         }
                     }
                 });
@@ -201,7 +201,7 @@ public class HubDetailModelImpl implements HubDetailModel {
                     @Override
                     public void onFailure(final HttpInfo info) throws IOException {
                         final String response = info.getRetDetail();
-                        listener.onFailure(response);
+                        listener.onTimerFailure(response);
                     }
 
                     @Override
@@ -244,16 +244,16 @@ public class HubDetailModelImpl implements HubDetailModel {
                     @Override
                     public void onFailure(final HttpInfo info) throws IOException {
                         final String response = info.getRetDetail();
-                        listener.onFailure(response);
+                        listener.onTimerFailure(response);
                     }
 
                     @Override
                     public void onSuccess(final HttpInfo info) throws IOException {
                         final Response response = JsonUtil.getObjectFromHttpInfo(info, Response.class);
                         if (response.getMsg().equals("ok")) {
-                            listener.onSuccess(response.getResult());
+                            listener.onTimerSuccess(response.getResult());
                         } else {
-                            listener.onFailure(response.getError());
+                            listener.onTimerFailure(response.getError());
                         }
                     }
                 });

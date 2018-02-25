@@ -21,7 +21,6 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.blankj.utilcode.util.ToastUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
@@ -38,6 +37,7 @@ import com.zoctan.smarthub.utils.NiftyDialogUtil;
 import com.zoctan.smarthub.zxing.activity.CaptureActivity;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import butterknife.BindView;
@@ -283,14 +283,15 @@ public class HubListFragment extends BaseFragment implements HubListView {
                 final String scanResult = bundle.getString("qr_scan_result");
                 // 扫描出的信息
                 if (scanResult != null) {
-                    ToastUtils.showShort(scanResult);
-                    /*
-                    String[] result = scanResult.split(" ");
-                    HubBean hub = new HubBean();
+                    final byte[] decodeBytes = Base64.getDecoder().decode(scanResult);
+                    String decode = new String(decodeBytes, "utf-8"));
+                    final String[] result = decode.split(" ");
+                    AlerterUtil.showInfo(getHoldingActivity(),
+                            String.format("Onenet:%s\nMac:%s", result[0], result[1]));
+                    final HubBean hub = new HubBean();
                     hub.setOnenet_id(result[0]);
                     hub.setMac(result[1]);
                     showAddDialog(hub);
-                    */
                 }
             }
         }

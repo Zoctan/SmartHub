@@ -37,16 +37,22 @@ public interface HubDetailModel {
     interface Listener {
         void onDoDeviceSuccess(String msg);
 
-        void onSuccess(String msg);
+        void onNowSuccess(String msg);
 
-        void onSuccess(DeviceBean deviceBean);
+        void onTimerSuccess(String msg);
+
+        void onNowSuccess(DeviceBean deviceBean);
 
         void onTimerListSuccess(List<TimerBean> timerBean);
 
         void onOneNetDataStreamSuccess(List<OneNetDataStreamsBean> oneNetDataStreamList);
 
-        void onSuccess(OneNetDataPointsBean oneNetDataPoints);
+        void onSpareSuccess(OneNetDataPointsBean oneNetDataPoints);
 
-        void onFailure(String msg);
+        void onNowFailure(String msg);
+
+        void onSpareFailure(String msg);
+
+        void onTimerFailure(String msg);
     }
 }
