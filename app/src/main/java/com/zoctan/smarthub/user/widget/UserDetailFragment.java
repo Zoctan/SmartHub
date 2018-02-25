@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.ImageUtils;
+import com.blankj.utilcode.util.RegexUtils;
 import com.bumptech.glide.Glide;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
@@ -174,13 +175,17 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
                                 && mEtUserInfo[1].getText().length() > 0) {
                             userName = mEtUserInfo[0].getText().toString();
                             userPhone = mEtUserInfo[1].getText().toString();
-                            final UserBean user = new UserBean();
-                            user.setUsername(userName);
-                            user.setPhone(userPhone);
-                            mSPUtil.put("user_name", userName);
-                            mSPUtil.put("user_phone", userPhone);
-                            mUserDetailPresenter.update("info", user, mSPUtil.getString("user_token"));
-                            dialog.dismiss();
+                            if (RegexUtils.isMobileSimple(userPhone)) {
+                                final UserBean user = new UserBean();
+                                user.setUsername(userName);
+                                user.setPhone(userPhone);
+                                mSPUtil.put("user_name", userName);
+                                mSPUtil.put("user_phone", userPhone);
+                                mUserDetailPresenter.update("info", user, mSPUtil.getString("user_token"));
+                                dialog.dismiss();
+                            } else {
+                                AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_phone_error);
+                            }
                         }
                     }
                 })

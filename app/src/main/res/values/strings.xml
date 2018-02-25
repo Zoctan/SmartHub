@@ -28,6 +28,7 @@
     <string name="user_hint_input_password_again">请再次输入密码</string>
     <string name="user_hint_input_username">请输入用户名</string>
     <string name="user_hint_input_phone">请输入手机号</string>
+    <string name="msg_phone_error">请输入手机号</string>
 
     <string name="main_drawer_open">open</string>
     <string name="main_drawer_close">close</string>
@@ -93,7 +94,7 @@
     <string name="about_app_function">功能介绍</string>
     <string name="about_app_function_introduction">
         1.遵循 Material Design 风格\n
-        2.兼容 4.X-7.0 及各种分辨率\n
+        2.兼容 7.0-8.1 及各种分辨率\n
         3.支持扫码添加插座\n
         4.支持对插座的状态、日用电量查看、设置定时开关\n
         5.多时间段用电量\n
