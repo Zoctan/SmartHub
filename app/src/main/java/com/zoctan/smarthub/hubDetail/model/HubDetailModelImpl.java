@@ -95,7 +95,7 @@ public class HubDetailModelImpl implements HubDetailModel {
 
     @Override
     public void doDevice(final DeviceBean deviceBean, final String token, final String action, final Listener listener) {
-        final String url = HubUrls.HUBS + "/device/" + deviceBean.getOnenet_id();
+        final String url = HubUrls.HUBS + "/device/" + deviceBean.getHub_id();
         final String headerKey = "Authorization";
         final String headerValue = "Smart " + token;
         int requestType = RequestType.POST;
@@ -291,7 +291,7 @@ public class HubDetailModelImpl implements HubDetailModel {
     @Override
     public void uploadImg(final DeviceBean deviceBean, final String token, final String qiNiuToken, final String photoPath, final UploadListener listener) {
         final UploadManager uploadManager = new UploadManager();
-        final String url = DeviceUrls.IMG + "/" + deviceBean.getOnenet_id();
+        final String url = DeviceUrls.IMG + "/" + deviceBean.getHub_id();
         uploadManager.put(photoPath, deviceBean.getImg(), qiNiuToken, new UpCompletionHandler() {
             @Override
             public void complete(final String key, final ResponseInfo info, final JSONObject res) {

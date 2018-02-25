@@ -175,7 +175,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                             final DeviceBean deviceBean = new DeviceBean();
                             deviceBean.setId(mSPUtil.getString("device_id"));
                             deviceBean.setName(name);
-                            deviceBean.setOnenet_id(mSPUtil.getString("hub_onenet_id"));
+                            deviceBean.setHub_id(mSPUtil.getString("hub_onenet_id"));
                             mPresenter.doDevice(deviceBean, mSPUtil.getString("user_token"), "update");
                             dialog.dismiss();
                         }
@@ -243,8 +243,8 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                                     Bitmap.CompressFormat.PNG);
                             final DeviceBean deviceBean = new DeviceBean();
                             deviceBean.setId(mSPUtil.getString("device_id"));
-                            deviceBean.setOnenet_id(mSPUtil.getString("device_onenet_id"));
-                            deviceBean.setImg(mSPUtil.getString("device_id") + mSPUtil.getString("device_onenet_id") + ".png");
+                            deviceBean.setHub_id(mSPUtil.getString("device_hub_id"));
+                            deviceBean.setImg(mSPUtil.getString("device_id") + mSPUtil.getString("device_hub_id") + ".png");
                             final UserBean userBean = new UserBean();
                             userBean.setToken(mSPUtil.getString("user_token"));
                             // 上传图片
@@ -300,7 +300,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                             final String name = mEtDeviceName.getText().toString();
                             final DeviceBean deviceBean = new DeviceBean();
                             deviceBean.setName(name);
-                            deviceBean.setOnenet_id(mSPUtil.getString("hub_onenet_id"));
+                            deviceBean.setHub_id(mSPUtil.getString("hub_onenet_id"));
                             mPresenter.doDevice(deviceBean, mSPUtil.getString("user_token"), "add");
                             dialog.dismiss();
                         }
@@ -317,7 +317,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
         mTvAppliances.setText(device.getName());
         mSPUtil.put("device_id", device.getId());
         mSPUtil.put("device_name", device.getName());
-        mSPUtil.put("device_onenet_id", device.getOnenet_id());
+        mSPUtil.put("device_hub_id", device.getHub_id());
         mSPUtil.put("device_img", device.getImg());
     }
 
