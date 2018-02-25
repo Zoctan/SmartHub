@@ -6,7 +6,7 @@ import schedule
 import time
 import pymysql
 import threading
-from .hubs import send_order
+from app.onenet import send_order
 
 
 class RedisTimer:
