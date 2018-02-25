@@ -5,7 +5,7 @@ from flask import request, jsonify
 from app import db
 from app.models import Timer, Hub
 from . import decorators
-from ..redis_timers import RedisTimer
+from .redis_timers import RedisTimer
 
 
 @decorators.composed(decorators.route('/api/hubs/timers/<device_id>', methods=['POST']), decorators.json_required)
