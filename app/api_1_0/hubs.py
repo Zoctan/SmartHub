@@ -6,7 +6,7 @@ from flask import jsonify, g, request
 from app import db
 from . import decorators
 from ..models import Hub, Device
-from ..onenet import send_order
+from ..tools.onenet import send_order
 
 headers = {'api-key': 'nJVyiaj5Y297Fc6Q=bUYVWnz2=0='}
 
