@@ -6,7 +6,7 @@ import schedule
 import time
 import pymysql
 import threading
-from app.api_1_0.hubs import send_order
+from .api_1_0.hubs import send_order
 
 
 class RedisTimer:
