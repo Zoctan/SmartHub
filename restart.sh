@@ -12,8 +12,8 @@ function check_error() {
   done
 }
 
-ps -ef | grep '[.]/manage.py runserver' | awk '{print $2}' | xargs kill -9 &&
-ps -ef | grep '[.]/run_redis_timers.py' | awk '{print $2}' | xargs kill -9 &&
+ps -ef | grep '[.]/manage.py runserver' | awk '{print $2}' | xargs kill -9 ;
+ps -ef | grep '[.]/run_redis_timers.py' | awk '{print $2}' | xargs kill -9 ;
 
 rm /tmp/${prefix}* &&
 
