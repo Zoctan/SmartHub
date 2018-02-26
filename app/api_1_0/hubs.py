@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import requests
+import time
 from flask import jsonify, g, request
 
 from app import db
 from . import decorators
-from ..models import Hub, Device
+from ..models import Hub, Device, MonthSpare, HourSpare
 from ..tools.onenet import send_order
 
 headers = {'api-key': 'nJVyiaj5Y297Fc6Q=bUYVWnz2=0='}
@@ -57,6 +58,15 @@ def add_hub():
         return jsonify({'msg': 'no', 'error': '插座已被添加'})
     hub = Hub(user_id=g.current_user.id, mac=mac, onenet_id=onenet_id)
     db.session.add(hub)
+    db.session.flush()
+    # 相应地建立月用电和小时用电表
+    month = MonthSpare()
+    month.hub_id = onenet_id
+    month.current_month = int(time.strftime('%m', time.localtime(time.time())))
+    db.session.add(month)
+    hour = HourSpare()
+    hour.hub_id = onenet_id
+    db.session.add(hour)
     return jsonify({'msg': 'ok', 'result': '插座添加成功'})
 
 

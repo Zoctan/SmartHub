@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import datetime
+
 import schedule
 import time
-import pymysql
 import threading
 from app.tools.onenet import send_order
-from app.tools.redis_timers import *
+from app.tools.mysql import Mysql
+from app.tools.redis import Redis
 
 
 class Job:
@@ -16,14 +18,14 @@ class Job:
         # print("check_db_timers ", datetime.datetime.now())
         timer_list = Mysql().get_all_timer_by_status(1)
         for timer in timer_list:
-            if not Redis().exists_with_prefix(timer.id + timer.hub_id):
+            if not Redis().exists_with_prefix(timer.id + timer.hub_id, 'timers_'):
                 # print('add to redis')
                 timer.set()
 
     # 每2秒检查redis中的定时器
     def check_redis_timers(self):
         # print("check_redis_timers Begin: ", datetime.datetime.now())
-        for key in Redis().get_all_key():
+        for key in Redis().get_all_key('timers_'):
             # get_all_key拿出来的都是带前缀的key
             timer = Redis().get(key)
             if timer is None:
@@ -52,9 +54,10 @@ class Job:
                 Redis().set(key, timer)
         # print("check_redis_timers End: ", datetime.datetime.now())
 
-    # 每24小时重置定时器的标志位isExecute
+    # 每天0点重置定时器的标志位isExecute
     def reset_redis_timers(self):
-        for key in Redis().get_all_key():
+        print("reset redis timers:", datetime.datetime.now())
+        for key in Redis().get_all_key('timers_'):
             timer = Redis().get(key)
             if timer is None:
                 continue
@@ -69,59 +72,15 @@ class Job:
     def run(self):
         schedule.every(5).minutes.do(self.run_thread, self.check_db_timers)
         schedule.every(2).seconds.do(self.run_thread, self.check_redis_timers)
-        schedule.every(24).hours.do(self.run_thread, self.reset_redis_timers)
+        schedule.every().day.at('00:00').do(self.run_thread, self.reset_redis_timers)
 
         while True:
             schedule.run_pending()
 
 
-class Mysql:
-    def __init__(self):
-        # 打开数据库连接
-        self.db = pymysql.connect("localhost", "root", "root", "smart", charset='utf8')
-        # 使用 cursor() 方法创建一个游标对象 cursor
-        self.cursor = self.db.cursor()
-
-    def update_timer_status(self, id, hub_id, status):
-        sql = "UPDATE smart_timers SET status = '{}' WHERE id = '{}' AND hub_id = '{}'".format(status, id, hub_id)
-        try:
-            self.cursor.execute(sql)
-            self.db.commit()
-        except:
-            # 发生错误时回滚
-            self.db.rollback()
-
-    def get_all_timer_by_status(self, status):
-        sql = "SELECT * FROM smart_timers WHERE status = '{}'".format(status)
-        try:
-            self.cursor.execute(sql)
-            results = self.cursor.fetchall()
-            timer_list = []
-            for row in results:
-                id = row[0]
-                hub_id = row[1]
-                name = row[2]
-                power = row[3]
-                repeat = row[4]
-                time = row[5]
-                status = row[6]
-                timer = RedisTimer(id=id, hub_id=hub_id, repeat=repeat, time=time, power=power, status=status)
-                timer_list.append(timer)
-                # print("id=%s, hub_id=%s, name=%d, power=%s, repeat=%d, time=%d, status=%d" % (id, hub_id, name, power, repeat, time, status))
-            return timer_list
-        except:
-            # print("Error: unable to fetch data")
-            return
-
-    def __del__(self):
-        # 关闭数据库连接
-        self.db.close()
-
-
 if __name__ == '__main__':
     Job().run()
     """
-    Mysql().update_timer_status(2, 19959358, 0)
     for i in range(5):
         RedisTimer().set_repeat().set_power().set_time().set_status().set()
     for key in Redis().get_all_key():

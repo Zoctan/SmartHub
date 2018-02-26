@@ -5,4 +5,4 @@ from flask import Blueprint
 
 smart = Blueprint('smart_1_0', __name__)
 
-from . import index, errors, onenet, devices, crontabs, help
+from . import index, errors, devices, crontabs, help
