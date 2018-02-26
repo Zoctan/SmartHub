@@ -59,7 +59,7 @@ def add_hub():
     hub = Hub(user_id=g.current_user.id, mac=mac, onenet_id=onenet_id)
     db.session.add(hub)
     db.session.flush()
-    # 相应地建立月用电和小时用电表
+    # 相应的建立月用电和小时用电表
     month = MonthSpare()
     month.hub_id = onenet_id
     month.current_month = int(time.strftime('%m', time.localtime(time.time())))

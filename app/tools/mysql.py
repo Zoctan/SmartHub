@@ -60,7 +60,8 @@ class Mysql:
             results = self.cursor.fetchone()
             # 列名从id开始到zero偏移2
             watt = results[int(current_hour) + 2]
-        except:
+        except Exception as e:
+            print(e)
             return
         # 顺便更新当前月份
         current_month = int(time.strftime('%m', time.localtime(time.time())))
@@ -69,7 +70,8 @@ class Mysql:
         try:
             self.cursor.execute(sql)
             self.db.commit()
-        except:
+        except Exception as e:
+            print(e)
             self.db.rollback()
 
     def get_all_timer_by_status(self, status):

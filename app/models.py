@@ -182,12 +182,14 @@ class MonthSpare(db.Model):
     current_month = db.Column(db.SmallInteger, nullable=False)
 
     def to_json(self):
+        hour = HourSpare.query.filter_by(hub_id=self.hub_id).first()
         json = {
             'id': self.id,
             'hub_id': self.hub_id,
             'price': self.price,
             'watt': self.watt,
-            'current_month': self.current_month
+            'current_month': self.current_month,
+            'hour': hour.to_list()
         }
         return json
 
@@ -224,36 +226,14 @@ class HourSpare(db.Model):
     twenty_two = db.Column(db.Float, server_default='0.0', default='0.0')
     twenty_three = db.Column(db.Float, server_default='0.0', default='0.0')
 
-    def to_json(self):
-        json = {
-            'id': self.id,
-            'month_id': self.month_id,
-            '00': self.zero,
-            '01': self.one,
-            '02': self.two,
-            '03': self.three,
-            '04': self.four,
-            '05': self.five,
-            '06': self.six,
-            '07': self.seven,
-            '08': self.eight,
-            '09': self.nine,
-            '10': self.ten,
-            '11': self.eleven,
-            '12': self.twelve,
-            '13': self.thirteen,
-            '14': self.fourteen,
-            '15': self.fifteen,
-            '16': self.sixteen,
-            '17': self.seventeen,
-            '18': self.eighteen,
-            '19': self.nineteen,
-            '20': self.twenty,
-            '21': self.twenty_one,
-            '22': self.twenty_two,
-            '23': self.twenty_three
-        }
-        return json
+    def to_list(self):
+        l = [
+            self.zero, self.one, self.two, self.three, self.four, self.five, self.six, self.seven, self.eight,
+            self.nine, self.ten, self.eleven, self.twelve, self.thirteen, self.fourteen, self.fifteen, self.sixteen,
+            self.seventeen, self.eighteen, self.nineteen, self.twenty, self.twenty_one, self.twenty_two,
+            self.twenty_three
+        ]
+        return l
 
     def __repr__(self):
         return '<HourSpare(month_id={})>'.format(self.month_id)
