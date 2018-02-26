@@ -21,7 +21,7 @@ class Job:
             hub_id = redis_watt.dev_id
             Mysql().update_hour_spare(hub_id=hub_id, column=column, value=value)
 
-    # 每1小时从redis更新到数据库对应的月表
+    # 每30分钟从redis更新到数据库对应的月表
     def update_watt_to_db_month(self):
         # print("check_redis_timers Begin: ", datetime.datetime.now())
         for key in Redis().get_all_key('watt_'):
@@ -46,7 +46,7 @@ class Job:
 
     def run(self):
         schedule.every(5).minutes.do(self.run_thread, self.update_redis_watt_to_db)
-        schedule.every().hour.do(self.run_thread, self.update_watt_to_db_month)
+        schedule.every(30).minutes.do(self.run_thread, self.update_watt_to_db_month)
         schedule.every().day.at('00:00').do(self.run_thread, self.reset_db_hour_spare)
 
         while True:
