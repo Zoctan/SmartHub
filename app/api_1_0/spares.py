@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from flask import jsonify
+from flask import jsonify, g
 from . import decorators
 from ..models import MonthSpare
 
