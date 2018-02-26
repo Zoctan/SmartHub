@@ -9,7 +9,7 @@ from . import decorators
 
 
 # 接收onenet发过来的数据
-@decorators.route('/onenet', methods=['GET', 'POST'])
+@decorators.route('/api/onenet', methods=['GET', 'POST'])
 def onenet():
     # GET请求是一开始的第三方平台验证
     if request.method == 'GET':

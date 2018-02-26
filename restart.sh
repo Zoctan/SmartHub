@@ -37,13 +37,13 @@ nohup ./manage.py runserver  2>/tmp/${prefix}out &
 
 echo '[*] start api' &&
 
-sleep 0.2 &&
+sleep 0.5 &&
 
 nohup ./run_redis_timers.py 2>/tmp/${prefix}timers_err 1>/tmp/${prefix}timers_out &
 
 echo '[*] start redis timers' &&
 
-sleep 0.2 &&
+sleep 0.5 &&
 
 nohup ./run_redis_watt.py 2>/tmp/${prefix}watt_err 1>/tmp/${prefix}watt_out &
 
