@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import time
-from flask import request, jsonify
+from flask import request
 import base64
 import hashlib
 from ..tools.redis_watt import RedisWatt
