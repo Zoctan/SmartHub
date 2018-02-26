@@ -2,7 +2,7 @@
 
 基于 Material Design 和 MVP 开发模式的智能插座客户端
 
-支持：Android 4.4 及以上
+支持：Android 7.0 及以上
 
 目前 APP 处于快速更迭状态，可能界面略显粗糙
 
@@ -47,6 +47,13 @@
 
 <!--<img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/blob/app/screenshot/"/>-->
 </div>
+
+# 功能
+
+1. 支持扫码添加插座
+2. 支持对插座的状态、日用电量查看、设置定时开关
+4. 支持日夜间模式
+5. 目前基本功能已完成
 
 # 命名规范
 
