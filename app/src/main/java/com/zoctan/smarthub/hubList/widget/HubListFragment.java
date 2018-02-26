@@ -37,7 +37,6 @@ import com.zoctan.smarthub.utils.NiftyDialog;
 import com.zoctan.smarthub.utils.NiftyDialogUtil;
 import com.zoctan.smarthub.zxing.activity.CaptureActivity;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -284,17 +283,38 @@ public class HubListFragment extends BaseFragment implements HubListView {
                 final String scanResult = bundle.getString("qr_scan_result");
                 // 扫描出的信息
                 if (scanResult != null) {
-                    final byte[] decodeBytes = EncodeUtils.base64Decode(scanResult);
+                    boolean isValidateQR = true;
                     try {
+                        // 二维码base64解密
+                        final byte[] decodeBytes = EncodeUtils.base64Decode(scanResult);
                         final String decode = new String(decodeBytes, "utf-8");
                         final String[] result = decode.split(" ");
-                        AlerterUtil.showInfo(getHoldingActivity(),
-                                String.format("Onenet:%s\nMac:%s", result[0], result[1]));
-                        final HubBean hub = new HubBean();
-                        hub.setOnenet_id(result[0]);
-                        hub.setMac(result[1]);
-                        showAddDialog(hub);
-                    } catch (final UnsupportedEncodingException ignored) {
+                        final String onenetId = result[0];
+                        final String mac = result[1]; // aa:bb:cc:dd:ee:cc
+                        // 扫描出的字符串只有两个信息
+                        if (result.length != 2) {
+                            isValidateQR = false;
+                        } else {
+                            AlerterUtil.showInfo(getHoldingActivity(), String.format("Onenet:%s\nMac:%s", onenetId, mac));
+                            // onenet的id是一串数字，如果扫出来前半段不是数字会抛错
+                            //noinspection ResultOfMethodCallIgnored
+                            Long.parseLong(onenetId);
+                            // 正则匹配后半段mac地址，如果不对也是无法扫描
+                            final String trueMacAddress = "([A-Fa-f0-9]{2}:){5}[A-Fa-f0-9]{2}";
+                            if (!mac.matches(trueMacAddress)) {
+                                isValidateQR = false;
+                            } else {
+                                final HubBean hub = new HubBean();
+                                hub.setOnenet_id(onenetId);
+                                hub.setMac(mac);
+                                showAddDialog(hub);
+                            }
+                        }
+                    } catch (final Exception e) {
+                        isValidateQR = false;
+                    }
+                    if (!isValidateQR) {
+                        AlerterUtil.showDanger(getHoldingActivity(), "请扫描正确的插座二维码哦~");
                     }
                 }
             }
