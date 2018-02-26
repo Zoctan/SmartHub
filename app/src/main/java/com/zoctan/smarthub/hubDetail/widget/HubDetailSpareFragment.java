@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.GridLayout;
@@ -26,19 +27,16 @@ import com.zoctan.smarthub.hubDetail.presenter.HubDetailPresenter;
 import com.zoctan.smarthub.hubDetail.view.HubDetailSpareView;
 import com.zoctan.smarthub.utils.AlerterUtil;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import butterknife.BindView;
-
-import static com.blankj.utilcode.util.TimeUtils.getNowString;
 
 public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpareView {
     @BindView(R.id.TextView_hub_detail_spare_electrical_degree)
     TextView mTvDegree;
+    @BindView(R.id.TextView_hub_detail_spare_electrical_bill_tip)
+    TextView mTvBillTip;
     @BindView(R.id.TextView_hub_detail_spare_electrical_bill)
     TextView mTvBill;
     @BindView(R.id.LineChart_hub_detail_spare)
@@ -47,6 +45,7 @@ public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpa
     GridLayout mGridLayout;
     @BindView(R.id.ProgressBar_hub_detail_spare)
     AVLoadingIndicatorView mProgressBar;
+    private final Handler handler = new Handler();
     private final HubDetailPresenter mPresenter = new HubDetailPresenter(this);
 
     public static HubDetailSpareFragment newInstance() {
@@ -61,32 +60,26 @@ public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpa
     @Override
     protected void initView(final View view, final Bundle savedInstanceState) {
         initLineChart();
-        loadLineChartData();
+        // 插座在线即查询实时数据
+        if (mSPUtil.getBoolean("hub_connected")) {
+            handler.postDelayed(runnable, 1000);
+        }
     }
 
-    private void loadLineChartData() {
-        final Map<String, String> params = new HashMap<>();
-        final String[] keys = new String[]{
-                "start",
-                "end",
-                "duration",
-                "limit"};
-        // "2017-12-01T08:00:35"
-        final String[] values = new String[]{
-                getNowString(new SimpleDateFormat(
-                        "YYYY-MM-DD", Locale.getDefault())) + "T00:00",
-                getNowString(new SimpleDateFormat(
-                        "YYYY-MM-DD'T'hh:mm:ss", Locale.getDefault())),
-                "3600",
-                "24"};
-        for (int i = 0; i < 4; i++) {
-            params.put(keys[i], values[i]);
+    private final Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            updateDetail();
+            // 间隔5分钟
+            handler.postDelayed(this, 5 * 60 * 1000);
         }
-        mPresenter.loadHubSpareList(
-                mSPUtil.getString("hub_onenet_id"),
-                "W",
-                params);
-    }
+
+        void updateDetail() {
+            mPresenter.loadHubSpareList(
+                    mSPUtil.getString("hub_onenet_id"),
+                    mSPUtil.getString("user_token"));
+        }
+    };
 
     private void initLineChart() {
         // 创建描述信息
@@ -139,6 +132,14 @@ public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpa
     }
 
     @Override
+    public void setSpareData(final String electricalDegree, final String electricalBill, final int currentMonth) {
+        mTvDegree.setText(electricalDegree);
+        final String billTip = String.format(Locale.CHINA, "%d月份%s", currentMonth, getString(R.string.hub_detail_spare_electrical_bill));
+        mTvBillTip.setText(billTip);
+        mTvBill.setText(electricalBill);
+    }
+
+    @Override
     public void setLineChartData(final String[] x, final ArrayList<Entry> y) {
         // LineDataSet每一个对象就是一条连接线
         final LineDataSet lineDataSet;
@@ -154,7 +155,7 @@ public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpa
         } else {
             mLineChart.getXAxis().setValueFormatter(new MyValueFormatter(x));
             // y轴数据集  参数1：数据源 参数2：数据曲线名称
-            lineDataSet = new LineDataSet(y, "电度");
+            lineDataSet = new LineDataSet(y, "瓦数");
             lineDataSet.setColor(R.color.primary);
             lineDataSet.setCircleColor(R.color.accent);
             // 改变折线样式，用曲线

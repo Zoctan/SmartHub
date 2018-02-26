@@ -11,7 +11,7 @@ import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UpProgressHandler;
 import com.qiniu.android.storage.UploadManager;
 import com.qiniu.android.storage.UploadOptions;
-import com.zoctan.smarthub.api.QiNiuUrls;
+import com.zoctan.smarthub.api.HubUrls;
 import com.zoctan.smarthub.api.UserUrls;
 import com.zoctan.smarthub.beans.UserBean;
 import com.zoctan.smarthub.response.Response;
@@ -95,7 +95,7 @@ public class UserModelImpl implements UserModel {
 
     @Override
     public void getQiNiuToken(final UserBean userBean, final Listener listener) {
-        final String url = QiNiuUrls.QiNiu + "/" + userBean.getUsername();
+        final String url = HubUrls.QiNiu + "/" + userBean.getUsername();
         final String headerKey = "Authorization";
         final String headerValue = "Smart " + userBean.getToken();
         OkHttpUtil.getDefault(this).doAsync(

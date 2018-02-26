@@ -1,13 +1,12 @@
 package com.zoctan.smarthub.hubDetail.model;
 
 import com.zoctan.smarthub.beans.DeviceBean;
-import com.zoctan.smarthub.beans.OneNetDataPointsBean;
+import com.zoctan.smarthub.beans.MonthSpareBean;
 import com.zoctan.smarthub.beans.OneNetDataStreamsBean;
 import com.zoctan.smarthub.beans.TimerBean;
 import com.zoctan.smarthub.beans.UserBean;
 
 import java.util.List;
-import java.util.Map;
 
 public interface HubDetailModel {
     void loadHubDevice(String oneNetId, String token, Listener listener);
@@ -16,7 +15,7 @@ public interface HubDetailModel {
 
     void loadHubNowList(String oneNetId, String dataStreamIds, Listener listener);
 
-    void loadHubSpareList(String oneNetId, String dataStreamIds, Map params, Listener listener);
+    void loadHubSpareList(String oneNetId, String token, Listener listener);
 
     void loadHubTimerList(String token, String hubOneNetId, Listener listener);
 
@@ -47,7 +46,7 @@ public interface HubDetailModel {
 
         void onOneNetDataStreamSuccess(List<OneNetDataStreamsBean> oneNetDataStreamList);
 
-        void onSpareSuccess(OneNetDataPointsBean oneNetDataPoints);
+        void onSpareSuccess(MonthSpareBean monthSpareBean);
 
         void onNowFailure(String msg);
 

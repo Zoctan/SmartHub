@@ -66,6 +66,11 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
     }
 
     @Override
+    protected int bindLayout() {
+        return R.layout.fragment_hub_detail_now;
+    }
+
+    @Override
     protected void initView(final View view, final Bundle savedInstanceState) {
         // 插座在线即查询实时数据
         if (mSPUtil.getBoolean("hub_connected")) {
@@ -107,11 +112,6 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                 return false;
             }
         });
-    }
-
-    @Override
-    protected int bindLayout() {
-        return R.layout.fragment_hub_detail_now;
     }
 
     private final Runnable runnable = new Runnable() {
@@ -315,10 +315,12 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
             Glide.with(this).load(device.getImg()).into(mIvAppliances);
         }
         mTvAppliances.setText(device.getName());
-        mSPUtil.put("device_id", device.getId());
-        mSPUtil.put("device_name", device.getName());
-        mSPUtil.put("device_hub_id", device.getHub_id());
-        mSPUtil.put("device_img", device.getImg());
+        if (device.getHub_id() != null) {
+            mSPUtil.put("device_id", device.getId());
+            mSPUtil.put("device_name", device.getName());
+            mSPUtil.put("device_hub_id", device.getHub_id());
+            mSPUtil.put("device_img", device.getImg());
+        }
     }
 
     @Override

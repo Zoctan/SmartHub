@@ -14,14 +14,12 @@ import com.qiniu.android.storage.UploadOptions;
 import com.zoctan.smarthub.api.DeviceUrls;
 import com.zoctan.smarthub.api.HubUrls;
 import com.zoctan.smarthub.api.OneNetUrls;
-import com.zoctan.smarthub.api.QiNiuUrls;
 import com.zoctan.smarthub.beans.DeviceBean;
-import com.zoctan.smarthub.beans.OneNetDataPointsBean;
 import com.zoctan.smarthub.beans.TimerBean;
 import com.zoctan.smarthub.beans.UserBean;
 import com.zoctan.smarthub.response.Response;
 import com.zoctan.smarthub.response.ResponseDevice;
-import com.zoctan.smarthub.response.ResponseOneNetDataPoints;
+import com.zoctan.smarthub.response.ResponseMonthSpare;
 import com.zoctan.smarthub.response.ResponseOneNetDataStreams;
 import com.zoctan.smarthub.response.ResponseTimerList;
 import com.zoctan.smarthub.utils.JsonUtil;
@@ -29,7 +27,6 @@ import com.zoctan.smarthub.utils.JsonUtil;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.Map;
 
 public class HubDetailModelImpl implements HubDetailModel {
     @Override
@@ -155,10 +152,10 @@ public class HubDetailModelImpl implements HubDetailModel {
     }
 
     @Override
-    public void loadHubSpareList(final String oneNetId, final String dataStreamIds, final Map params, final Listener listener) {
-        final String headerKey = "api-key";
-        final String headerValue = "nJVyiaj5Y297Fc6Q=bUYVWnz2=0=";
-        final String url = OneNetUrls.buildDataPointsGet(oneNetId, dataStreamIds, params);
+    public void loadHubSpareList(final String oneNetId, final String token, final Listener listener) {
+        final String headerKey = "Authorization";
+        final String headerValue = "Smart " + token;
+        final String url = HubUrls.SPARES + "/" + oneNetId;
 
         OkHttpUtil.getDefault(this).doAsync(
                 HttpInfo.Builder()
@@ -175,12 +172,11 @@ public class HubDetailModelImpl implements HubDetailModel {
 
                     @Override
                     public void onSuccess(final HttpInfo info) throws IOException {
-                        final ResponseOneNetDataPoints responseOneNetDataPoints = JsonUtil.getObjectFromHttpInfo(info, ResponseOneNetDataPoints.class);
-                        if (responseOneNetDataPoints.getError().equals("succ")) {
-                            final OneNetDataPointsBean oneNetDataPoints = responseOneNetDataPoints.getData();
-                            listener.onSpareSuccess(oneNetDataPoints);
+                        final ResponseMonthSpare responseMonthSpare = JsonUtil.getObjectFromHttpInfo(info, ResponseMonthSpare.class);
+                        if (responseMonthSpare.getMsg().equals("ok")) {
+                            listener.onSpareSuccess(responseMonthSpare.getResult());
                         } else {
-                            listener.onSpareFailure(responseOneNetDataPoints.getError());
+                            listener.onSpareFailure(responseMonthSpare.getError());
                         }
                     }
                 });
@@ -261,7 +257,7 @@ public class HubDetailModelImpl implements HubDetailModel {
 
     @Override
     public void getQiNiuToken(final UserBean userBean, final DeviceBean deviceBean, final UploadListener listener) {
-        final String url = QiNiuUrls.QiNiu + "/" + deviceBean.getImg();
+        final String url = HubUrls.QiNiu + "/" + deviceBean.getImg();
         final String headerKey = "Authorization";
         final String headerValue = "Smart " + userBean.getToken();
         OkHttpUtil.getDefault(this).doAsync(

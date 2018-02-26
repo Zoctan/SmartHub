@@ -2,9 +2,7 @@ package com.zoctan.smarthub.hubDetail.presenter;
 
 import com.github.mikephil.charting.data.Entry;
 import com.zoctan.smarthub.beans.DeviceBean;
-import com.zoctan.smarthub.beans.OneNetDataPointBean;
-import com.zoctan.smarthub.beans.OneNetDataPointListBean;
-import com.zoctan.smarthub.beans.OneNetDataPointsBean;
+import com.zoctan.smarthub.beans.MonthSpareBean;
 import com.zoctan.smarthub.beans.OneNetDataStreamsBean;
 import com.zoctan.smarthub.beans.TimerBean;
 import com.zoctan.smarthub.beans.UserBean;
@@ -17,6 +15,7 @@ import com.zoctan.smarthub.hubDetail.view.HubDetailTimerView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class HubDetailPresenter {
@@ -53,9 +52,9 @@ public class HubDetailPresenter {
         this.mHubModel.resetHub(hubOneNetId, token, new HubDetailPresenter.Listener());
     }
 
-    public void loadHubSpareList(final String hubOneNetId, final String dataStreamIds, final Map params) {
+    public void loadHubSpareList(final String hubOneNetId, final String token) {
         mSpareView.showLoading();
-        mHubModel.loadHubSpareList(hubOneNetId, dataStreamIds, params, new HubDetailPresenter.Listener());
+        mHubModel.loadHubSpareList(hubOneNetId, token, new HubDetailPresenter.Listener());
     }
 
 
@@ -128,29 +127,22 @@ public class HubDetailPresenter {
         }
 
         @Override
-        public void onSpareSuccess(final OneNetDataPointsBean oneNetDataPoints) {
-            final List<OneNetDataPointListBean> oneNetDataPointList = oneNetDataPoints.getDatastreams();
-            List<OneNetDataPointBean> dataWPointList = null;
-            for (final OneNetDataPointListBean bean : oneNetDataPointList) {
-                if (bean.getId().equals("W")) {
-                    dataWPointList = bean.getDatapoints();
-                    break;
-                }
-            }
-            if (dataWPointList == null) {
+        public void onSpareSuccess(final MonthSpareBean monthSpareBean) {
+            if (monthSpareBean == null) {
                 return;
             }
-            final int size = dataWPointList.size();
-            // x轴的数据, y轴的数据
-            final String[] x = new String[size];
+            final Double kwh = monthSpareBean.getWatt() / 1000.0;
+            final Double bill = kwh * monthSpareBean.getPrice();
+            // x轴、y轴的数据
+            final String[] x = new String[24];
             final ArrayList<Entry> y = new ArrayList<>();
-            OneNetDataPointBean bean;
-            for (int i = 0; i < size; i++) {
-                bean = dataWPointList.get(i);
-                x[i] = bean.getHour();
-                y.add(new Entry(i, bean.getValue()));
+            for (Integer i = 0; i < 24; i++) {
+                x[i] = i.toString();
+                y.add(new Entry(i, monthSpareBean.getHour().get(i)));
             }
             mSpareView.hideLoading();
+            mSpareView.setSpareData(String.format(Locale.CHINA, "%.3f", kwh),
+                    String.format(Locale.CHINA, "%.2f", bill), monthSpareBean.getCurrent_month());
             mSpareView.setLineChartData(x, y);
         }
 
