@@ -33,7 +33,8 @@ ps -ef | grep '[.]/run_redis_watt.py' | awk '{print $2}' | xargs kill -9 ;
 
 echo '[*] kill redis watt' &&
 
-nohup ./manage.py runserver  2>/tmp/${prefix}out 1>/tmp/${prefix}out &
+#nohup ./manage.py runserver  2>/tmp/${prefix}out 1>/tmp/${prefix}out &
+nohup ./manage.py runserver  2>/dev/null 1>/dev/null &
 
 echo '[*] start api' &&
 
