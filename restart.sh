@@ -23,7 +23,11 @@ echo '[*] kill api' &&
 
 ps -ef | grep '[.]/run_redis_timers.py' | awk '{print $2}' | xargs kill -9 ;
 
-echo '[*] kill redis timers'
+echo '[*] kill redis timers' &&
+
+ps -ef | grep '[.]/run_redis_watt.py' | awk '{print $2}' | xargs kill -9 ;
+
+echo '[*] kill redis watt' &&
 
 rm /tmp/${prefix}* &&
 
@@ -33,13 +37,17 @@ nohup ./manage.py runserver  2>/tmp/${prefix}out &
 
 echo '[*] start api' &&
 
-sleep 0.5 &&
+sleep 0.2 &&
 
 nohup ./run_redis_timers.py 2>/tmp/${prefix}timers_err 1>/tmp/${prefix}timers_out &
 
 echo '[*] start redis timers' &&
 
-sleep 0.5 &&
+sleep 0.2 &&
+
+nohup ./run_redis_watt.py 2>/tmp/${prefix}watt_err 1>/tmp/${prefix}watt_out &
+
+echo '[*] start redis timers' &&
 
 echo '[*] start check error' &&
 
