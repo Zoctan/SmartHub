@@ -12,7 +12,6 @@ from . import decorators
 @decorators.route('/api/onenet', methods=['GET', 'POST'])
 def onenet():
     # GET请求是一开始的第三方平台验证
-    print(request.args)
     if request.method == 'GET':
         nonce = request.args.get('nonce')
         signature = request.args.get('signature')

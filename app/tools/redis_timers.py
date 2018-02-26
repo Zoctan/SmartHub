@@ -4,6 +4,8 @@ from .redis import Redis
 
 
 class RedisTimer:
+    default_prefix = 'timers_'
+
     def __init__(self, id=-1, hub_id=-1, repeat='每天', time='00:00', power=0, status=0):
         self.id = str(id)
         self.hub_id = str(hub_id)
@@ -18,10 +20,10 @@ class RedisTimer:
     def set(self):
         # 存RedisTimer这个对象
         # 定时器id和对应的插座id拼接，确保key无重复，以及便于删除
-        Redis().set_with_prefix(self.id + self.hub_id, self, 'timers_')
+        Redis().set_with_prefix(key=self.id + self.hub_id, value=self, key_prefix=self.default_prefix)
 
     def delete(self):
-        Redis().delete_with_prefix(self.id + self.hub_id, 'timers_')
+        Redis().delete_with_prefix(key=self.id + self.hub_id, key_prefix=self.default_prefix)
 
     def update(self):
         self.delete()

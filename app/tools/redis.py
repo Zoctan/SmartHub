@@ -19,7 +19,8 @@ class Redis:
         if self.__redis.exists(key):
             return pickle.loads(self.__redis.get(key))
 
-    def get_with_prefix(self, key, key_prefix='{}'):
+    def get_with_prefix(self, key, key_prefix=''):
+        key_prefix += '{}'
         key = key_prefix.format(key)
         key = self.default_prefix.format(key)
         return self.get(key)
@@ -29,7 +30,8 @@ class Redis:
         self.__redis.set(key, pickle.dumps(value))
 
     # 存的时候key加前缀
-    def set_with_prefix(self, key, value, key_prefix='{}'):
+    def set_with_prefix(self, key, value, key_prefix=''):
+        key_prefix += '{}'
         key = key_prefix.format(key)
         key = self.default_prefix.format(key)
         self.set(key, value)
@@ -37,7 +39,8 @@ class Redis:
     def delete(self, key):
         return self.__redis.delete(key)
 
-    def delete_with_prefix(self, key, key_prefix='{}'):
+    def delete_with_prefix(self, key, key_prefix=''):
+        key_prefix += '{}'
         key = key_prefix.format(key)
         key = self.default_prefix.format(key)
         return self.delete(key)
@@ -47,5 +50,4 @@ class Redis:
         return self.__redis.keys('{}*'.format(key_prefix))
 
     def delete_all_key(self, key_prefix=''):
-        key_prefix = self.default_prefix.format(key_prefix)
         return self.__redis.delete(*self.get_all_key(key_prefix))

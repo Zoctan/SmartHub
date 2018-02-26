@@ -55,3 +55,16 @@ class Job:
 
 if __name__ == '__main__':
     Job().run()
+    """
+    from app.tools.redis_watt import RedisWatt
+    from app.tools.redis_timers import RedisTimer
+
+    for i in range(1, 5):
+        RedisWatt(dev_id=i).update()
+        RedisTimer(id=-1, hub_id=i).set()
+    for w in Redis().get_all_key('watt_'):
+        print(w)
+    print(Redis().delete_all_key('watt_'))
+    for t in Redis().get_all_key('timers_'):
+        print(t)
+    """
