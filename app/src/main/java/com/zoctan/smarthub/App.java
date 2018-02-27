@@ -24,27 +24,12 @@ import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
-import com.tencent.tinker.lib.listener.DefaultPatchListener;
-import com.tencent.tinker.lib.patch.UpgradePatch;
-import com.tencent.tinker.lib.reporter.DefaultLoadReporter;
-import com.tencent.tinker.lib.reporter.DefaultPatchReporter;
-import com.tencent.tinker.lib.service.PatchResult;
-import com.tencent.tinker.loader.app.ApplicationLike;
-import com.tinkerpatch.sdk.TinkerPatch;
-import com.tinkerpatch.sdk.loader.TinkerPatchApplicationLike;
-import com.tinkerpatch.sdk.server.callback.ConfigRequestCallback;
-import com.tinkerpatch.sdk.server.callback.RollbackCallBack;
-import com.tinkerpatch.sdk.server.callback.TinkerPatchRequestCallback;
-import com.tinkerpatch.sdk.tinker.callback.ResultCallBack;
-import com.tinkerpatch.sdk.tinker.service.TinkerServerResultService;
 
 import java.io.File;
-import java.util.HashMap;
 
 public class App extends Application {
 
     private static App instance;
-    private ApplicationLike tinkerApplicationLike;
 
     public static App getInstance() {
         return instance;
@@ -57,145 +42,43 @@ public class App extends Application {
         Utils.init(instance);
         CrashUtils.init();
         initOkHttpUtil(instance);
-        registerActivityLifecycleCallbacks(mCallbacks);
-        initTinkerPatch();
-    }
-
-    /**
-     * 我们需要确保至少对主进程跟patch进程初始化 TinkerPatch
-     */
-    private void initTinkerPatch() {
-        // 我们可以从这里获得Tinker加载过程的信息
-        if (BuildConfig.TINKER_ENABLE) {
-            tinkerApplicationLike = TinkerPatchApplicationLike.getTinkerPatchApplicationLike();
-            // 初始化TinkerPatch SDK
-            TinkerPatch.init(tinkerApplicationLike)
-                    .reflectPatchLibrary()
-                    .setPatchRollbackOnScreenOff(true)
-                    .setPatchRestartOnSrceenOff(true)
-                    .setFetchPatchIntervalByHours(3)
-            ;
-            // 获取当前的补丁版本
-            LogUtils.d("Current patch version is " + TinkerPatch.with().getPatchVersion());
-
-            // fetchPatchUpdateAndPollWithInterval 与 fetchPatchUpdate(false)
-            // 不同的是，会通过handler的方式去轮询
-            TinkerPatch.with().fetchPatchUpdateAndPollWithInterval();
-        }
-    }
-
-    /**
-     * 在这里给出TinkerPatch的所有接口解释
-     * 更详细的解释请参考:http://tinkerpatch.com/Docs/api
-     */
-    private void useSample() {
-        TinkerPatch.init(tinkerApplicationLike)
-                //是否自动反射Library路径,无须手动加载补丁中的So文件
-                //注意,调用在反射接口之后才能生效,你也可以使用Tinker的方式加载Library
-                .reflectPatchLibrary()
-                //向后台获取是否有补丁包更新,默认的访问间隔为3个小时
-                //若参数为true,即每次调用都会真正的访问后台配置
-                .fetchPatchUpdate(false)
-                //设置访问后台补丁包更新配置的时间间隔,默认为3个小时
-                .setFetchPatchIntervalByHours(3)
-                //向后台获得动态配置,默认的访问间隔为3个小时
-                //若参数为true,即每次调用都会真正的访问后台配置
-                .fetchDynamicConfig(new ConfigRequestCallback() {
-                    @Override
-                    public void onSuccess(HashMap<String, String> hashMap) {
-
-                    }
-
-                    @Override
-                    public void onFail(Exception e) {
-
-                    }
-                }, false)
-                //设置访问后台动态配置的时间间隔,默认为3个小时
-                .setFetchDynamicConfigIntervalByHours(3)
-                //设置当前渠道号,对于某些渠道我们可能会想屏蔽补丁功能
-                //设置渠道后,我们就可以使用后台的条件控制渠道更新
-                .setAppChannel("default")
-                //屏蔽部分渠道的补丁功能
-                .addIgnoreAppChannel("googleplay")
-                //设置tinkerpatch平台的条件下发参数
-                .setPatchCondition("test", "1")
-                //设置补丁合成成功后,锁屏重启程序
-                //默认是等应用自然重启
-                .setPatchRestartOnSrceenOff(true)
-                //我们可以通过ResultCallBack设置对合成后的回调
-                //例如弹框什么
-                //注意，setPatchResultCallback 的回调是运行在 intentService 的线程中
-                .setPatchResultCallback(new ResultCallBack() {
-                    @Override
-                    public void onPatchResult(PatchResult patchResult) {
-                        LogUtils.d("onPatchResult callback here");
-                    }
-                })
-                //设置收到后台回退要求时,锁屏清除补丁
-                //默认是等主进程重启时自动清除
-                .setPatchRollbackOnScreenOff(true)
-                //我们可以通过RollbackCallBack设置对回退时的回调
-                .setPatchRollBackCallback(new RollbackCallBack() {
-                    @Override
-                    public void onPatchRollback() {
-                        LogUtils.d("onPatchRollback callback here");
-                    }
-                });
-    }
-
-    /**
-     * 自定义Tinker类的高级用法, 使用更灵活，但是需要对tinker有更进一步的了解
-     * 更详细的解释请参考:http://tinkerpatch.com/Docs/api
-     */
-    private void complexSample() {
-        //修改tinker的构造函数,自定义类
-        TinkerPatch.Builder builder = new TinkerPatch.Builder(tinkerApplicationLike)
-                .listener(new DefaultPatchListener(this))
-                .loadReporter(new DefaultLoadReporter(this))
-                .patchReporter(new DefaultPatchReporter(this))
-                .resultServiceClass(TinkerServerResultService.class)
-                .upgradePatch(new UpgradePatch())
-                .patchRequestCallback(new TinkerPatchRequestCallback());
-        //.requestLoader(new OkHttpLoader());
-
-        TinkerPatch.init(builder.build());
+        //registerActivityLifecycleCallbacks(mCallbacks);
     }
 
     private static final ActivityLifecycleCallbacks mCallbacks = new ActivityLifecycleCallbacks() {
 
         @Override
-        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+        public void onActivityCreated(final Activity activity, final Bundle savedInstanceState) {
             LogUtils.d("onActivityCreated() called with: activity = [" + activity + "], savedInstanceState = [" + savedInstanceState + "]");
         }
 
         @Override
-        public void onActivityStarted(Activity activity) {
+        public void onActivityStarted(final Activity activity) {
             LogUtils.d("onActivityStarted() called with: activity = [" + activity + "]");
         }
 
         @Override
-        public void onActivityResumed(Activity activity) {
+        public void onActivityResumed(final Activity activity) {
             LogUtils.d("onActivityResumed() called with: activity = [" + activity + "]");
         }
 
         @Override
-        public void onActivityPaused(Activity activity) {
+        public void onActivityPaused(final Activity activity) {
             LogUtils.d("onActivityPaused() called with: activity = [" + activity + "]");
         }
 
         @Override
-        public void onActivityStopped(Activity activity) {
+        public void onActivityStopped(final Activity activity) {
             LogUtils.d("onActivityStopped() called with: activity = [" + activity + "]");
         }
 
         @Override
-        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+        public void onActivitySaveInstanceState(final Activity activity, final Bundle outState) {
             LogUtils.d("onActivitySaveInstanceState() called with: activity = [" + activity + "], outState = [" + outState + "]");
         }
 
         @Override
-        public void onActivityDestroyed(Activity activity) {
+        public void onActivityDestroyed(final Activity activity) {
             LogUtils.d("onActivityDestroyed() called with: activity = [" + activity + "]");
         }
     };
@@ -206,7 +89,7 @@ public class App extends Application {
         SmartRefreshLayout.setDefaultRefreshHeaderCreater(new DefaultRefreshHeaderCreater() {
             @NonNull
             @Override
-            public RefreshHeader createRefreshHeader(Context context, RefreshLayout layout) {
+            public RefreshHeader createRefreshHeader(final Context context, final RefreshLayout layout) {
                 // 全局设置主题颜色
                 layout.setPrimaryColorsId(R.color.primary, android.R.color.white);
                 // 指定为经典Header，默认是贝塞尔雷达Header
@@ -218,16 +101,16 @@ public class App extends Application {
         SmartRefreshLayout.setDefaultRefreshFooterCreater(new DefaultRefreshFooterCreater() {
             @NonNull
             @Override
-            public RefreshFooter createRefreshFooter(Context context, RefreshLayout layout) {
+            public RefreshFooter createRefreshFooter(final Context context, final RefreshLayout layout) {
                 // 指定为经典Footer，默认是 BallPulseFooter
                 return new ClassicsFooter(context).setDrawableSize(20);
             }
         });
     }
 
-    private static void initOkHttpUtil(Application instance) {
-        String downloadFileDir = Environment.getExternalStorageDirectory().getPath() + "/smarthub_download/";
-        String cacheDir = Environment.getExternalStorageDirectory().getPath() + "/smarthub_cache";
+    private static void initOkHttpUtil(final Application instance) {
+        final String downloadFileDir = Environment.getExternalStorageDirectory().getPath() + "/smarthub_download/";
+        final String cacheDir = Environment.getExternalStorageDirectory().getPath() + "/smarthub_cache";
         OkHttpUtil.init(instance)
                 .setConnectTimeout(15)//连接超时时间
                 .setWriteTimeout(15)//写超时时间
@@ -235,7 +118,7 @@ public class App extends Application {
                 .setMaxCacheSize(10 * 1024 * 1024)//缓存空间大小
                 .setCacheType(CacheType.FORCE_NETWORK)//缓存类型
                 .setHttpLogTAG(">> OkHttpUtilLog >>")//设置请求日志标识
-                .setIsGzip(false)//Gzip压缩，需要服务端支持
+                .setIsGzip(true)//Gzip压缩，需要服务端支持
                 .setShowHttpLog(true)//显示请求日志
                 .setShowLifecycleLog(false)//显示Activity销毁日志
                 .setRetryOnConnectionFailure(false)//失败后不自动重连

@@ -25,7 +25,6 @@ import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
 import com.zoctan.smarthub.hubDetail.presenter.HubDetailPresenter;
 import com.zoctan.smarthub.hubDetail.view.HubDetailSpareView;
-import com.zoctan.smarthub.utils.AlerterUtil;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -222,17 +221,19 @@ public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpa
 
     @Override
     public void showLoading() {
-        mProgressBar.smoothToShow();
+        //fixme null pointer ??
+        //mProgressBar.smoothToShow();
     }
 
     @Override
     public void hideLoading() {
-        mProgressBar.smoothToHide();
+        //fixme null pointer ??
+        //mProgressBar.smoothToHide();
     }
 
     @Override
     public void showFailedMsg(final String msg) {
-        AlerterUtil.showDanger(getHoldingActivity(), msg);
+        //AlerterUtil.showDanger(getHoldingActivity(), msg);
     }
 
     private static class MyValueFormatter implements IAxisValueFormatter {

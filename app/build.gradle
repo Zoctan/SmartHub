@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply from: 'tinkerpatch.gradle'
 
 android {
     // 编译SDK的版本
@@ -69,10 +68,6 @@ dependencies {
     compile 'com.android.support:cardview-v7:27.0.2'
     compile 'com.android.support:support-v4:27.0.2'
     compile "com.android.support:multidex:1.0.2"
-    // 若使用annotation需要单独引用,对于tinker的其他库都无需再引用
-    annotationProcessor("com.tinkerpatch.tinker:tinker-android-anno:1.9.2")
-    compileOnly("com.tinkerpatch.tinker:tinker-android-anno:1.9.2")
-    implementation("com.tinkerpatch.sdk:tinkerpatch-android-sdk:1.2.2")
     // 转换Java对象和Json对象
     compile 'com.google.code.gson:gson:2.8.2'
     compile 'com.zhousf.lib:okhttp3:2.9.3'
