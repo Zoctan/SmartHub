@@ -20,7 +20,7 @@ db.session.add(user)
 db.session.flush()
 hub = models.Hub()
 hub.name='可识别智能插座测试机'
-hub.mac='AB:CD:EF:GH:IJ:KL'
+hub.mac='2e:3a:e8:3e:7b:f8'
 hub.user_id=1
 hub.onenet_id='19959358'
 db.session.add(hub)
@@ -102,6 +102,9 @@ class Hub(db.Model):
     name = db.Column(db.Unicode(64, collation='utf8_bin'), server_default='插座', default='插座')
     mac = db.Column(db.Unicode(64, collation='utf8_bin'), nullable=False)
     timers = db.relationship('Timer', backref='Hub', lazy='dynamic', cascade='all, delete-orphan')
+    devices = db.relationship('Device', backref='Hub', lazy='dynamic', cascade='all, delete-orphan')
+    month_spare = db.relationship('MonthSpare', backref='Hub', lazy='dynamic', cascade='all, delete-orphan')
+    hour_spare = db.relationship('HourSpare', backref='Hub', lazy='dynamic', cascade='all, delete-orphan')
 
     def to_json(self):
         json = {
