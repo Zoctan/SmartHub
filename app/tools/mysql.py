@@ -57,9 +57,7 @@ class Mysql:
         select_hour_sql = "SELECT `{}` FROM smart_hour_spare WHERE `hub_id` = '{}'".format(column, hub_id)
         try:
             self.cursor.execute(select_hour_sql)
-            results = self.cursor.fetchone()
-            # 列名从id开始到zero偏移2
-            watt = results[int(current_hour) + 2]
+            watt = self.cursor.fetchone()[0]
         except Exception as e:
             print(e)
             return

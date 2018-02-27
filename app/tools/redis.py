@@ -29,12 +29,23 @@ class Redis:
         # 序列化后再存进redis
         self.__redis.set(key, pickle.dumps(value))
 
+    def set_expire(self, key, value, expire=86400):
+        # 序列化后再存进redis
+        self.__redis.set(key, pickle.dumps(value))
+        self.__redis.expire(key, expire)
+
     # 存的时候key加前缀
     def set_with_prefix(self, key, value, key_prefix=''):
         key_prefix += '{}'
         key = key_prefix.format(key)
         key = self.default_prefix.format(key)
         self.set(key, value)
+
+    def set_with_prefix_expire(self, key, value, key_prefix='', expire=86400):
+        key_prefix += '{}'
+        key = key_prefix.format(key)
+        key = self.default_prefix.format(key)
+        self.set_expire(key, value, expire)
 
     def delete(self, key):
         return self.__redis.delete(key)

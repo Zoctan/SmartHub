@@ -18,7 +18,8 @@ class RedisWatt:
         last = Redis().get_with_prefix(key=self.dev_id, key_prefix=self.default_prefix)
         if last is not None:
             self.watt = (last.watt + self.watt) / 2.0
-        Redis().set_with_prefix(key=self.dev_id, value=self, key_prefix=self.default_prefix)
+        # 1小时过期
+        Redis().set_with_prefix_expire(key=self.dev_id, value=self, key_prefix=self.default_prefix, expire=3600)
 
     def delete(self):
         Redis().delete_with_prefix(key=self.dev_id, key_prefix=self.default_prefix)
