@@ -138,7 +138,7 @@ public class HubDetailPresenter {
             final ArrayList<Entry> y = new ArrayList<>();
             for (Integer i = 0; i < 24; i++) {
                 x[i] = i.toString();
-                y.add(new Entry(i, monthSpareBean.getHour().get(i)));
+                y.add(new Entry(i, Float.parseFloat(String.format(Locale.CHINA, "%.1f", monthSpareBean.getHour().get(i)))));
             }
             mSpareView.hideLoading();
             mSpareView.setSpareData(String.format(Locale.CHINA, "%.3f", kwh),

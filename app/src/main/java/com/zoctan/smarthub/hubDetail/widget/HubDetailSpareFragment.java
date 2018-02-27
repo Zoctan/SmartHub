@@ -63,23 +63,25 @@ public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpa
         // 插座在线即查询实时数据
         if (mSPUtil.getBoolean("hub_connected")) {
             handler.postDelayed(runnable, 1000);
+        } else {
+            setLineChart();
         }
     }
 
     private final Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            updateDetail();
+            setLineChart();
             // 间隔5分钟
             handler.postDelayed(this, 5 * 60 * 1000);
         }
-
-        void updateDetail() {
-            mPresenter.loadHubSpareList(
-                    mSPUtil.getString("hub_onenet_id"),
-                    mSPUtil.getString("user_token"));
-        }
     };
+
+    private void setLineChart() {
+        mPresenter.loadHubSpareList(
+                mSPUtil.getString("hub_onenet_id"),
+                mSPUtil.getString("user_token"));
+    }
 
     private void initLineChart() {
         // 创建描述信息
