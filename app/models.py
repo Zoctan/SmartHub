@@ -27,19 +27,14 @@ db.session.add(hub)
 db.session.flush()
 month = models.MonthSpare()
 month.hub_id='19959358'
-month.current_month=1
-month.watt=68
+month.current_month=2
 db.session.add(month)
 hour = models.HourSpare()
 hour.hub_id='19959358'
-hour.zero=12
-hour.thirteen=6
-hour.fourteen=3
-hour.twenty_three=23
 db.session.add(hour)
-timer = models.Timer(hub_id='19959358', name='test', power=1, repeat='每天', time='16:55', status=1)
+timer = models.Timer(hub_id='19959358', name='test', power=1, repeat='每天', time='16:55', status=0)
 db.session.add(timer)
-timer = models.Timer(hub_id='19959358', name='test2', power=0, repeat='一次性', time='16:54', status=1)
+timer = models.Timer(hub_id='19959358', name='test2', power=0, repeat='一次性', time='16:54', status=0)
 db.session.add(timer)
 db.session.commit()
 """
