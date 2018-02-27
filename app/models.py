@@ -50,7 +50,8 @@ class User(db.Model):
     username = db.Column(db.Unicode(32, collation='utf8_bin'), nullable=False, unique=True, index=True)
     password_hash = db.Column(db.Unicode(256, collation='utf8_bin'), nullable=False)
     avatar = db.Column(db.Unicode(256, collation='utf8_bin'),
-            server_default="http://p0qgwnuel.bkt.clouddn.com/server_default.png")
+            server_default="http://p0qgwnuel.bkt.clouddn.com/default.png",
+            default="http://p0qgwnuel.bkt.clouddn.com/default.png")
     hubs = db.relationship('Hub', backref='User', lazy='dynamic', cascade='all, delete-orphan')
     phone = db.Column(db.Unicode(20, collation='utf8_bin'))
 
