@@ -58,10 +58,11 @@ def get_device(device_id):
     url = 'http://api.heclouds.com/devices/{}/datastreams/list'.format(device_id)
     response = requests.get(url, headers=headers)
     eigenvalue = response.json()['data']['current_value']
-    if eigenvalue != -1:
+    # 0：无效或不能识别当前用电器
+    if eigenvalue != 0:
         # 先从数据库找
         device = Device.query.filter_by(eigenvalue=eigenvalue).first()
         if device:
             return jsonify({'msg': 'ok', 'result': device.to_json()})
     # 提示用户进行用电器添加
-    return jsonify({'msg': 'no', 'error': '无法确认当前用电器'})
+    return jsonify({'msg': 'no', 'error': '无法确认当前用电器，请手动添加该用电器'})
