@@ -30,7 +30,8 @@ def send_order(device_id, order, status):
         return '命令错误'
     else:
         response = requests.post(cmd_url, data=data, headers=headers)
-        sleep(3)
+        # 3秒收一次数据，只能延迟高点查询插座状态
+        sleep(4)
         query_url = url + '/' + response.json()['data']['cmd_uuid']
         query_response = requests.get(query_url, headers=headers)
         status = query_response.json()['data']['status']
