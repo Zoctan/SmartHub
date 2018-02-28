@@ -31,7 +31,7 @@ def send_order(device_id, order, status):
     else:
         response = requests.post(cmd_url, data=data, headers=headers)
         # 3秒收一次数据，只能延迟高点查询插座状态
-        sleep(3.5)
+        sleep(3)
         query_url = url + '/' + response.json()['data']['cmd_uuid']
         query_response = requests.get(query_url, headers=headers)
         status = query_response.json()['data']['status']
