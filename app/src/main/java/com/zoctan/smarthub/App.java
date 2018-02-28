@@ -118,7 +118,7 @@ public class App extends Application {
                 .setMaxCacheSize(10 * 1024 * 1024)//缓存空间大小
                 .setCacheType(CacheType.FORCE_NETWORK)//缓存类型
                 .setHttpLogTAG(">> OkHttpUtilLog >>")//设置请求日志标识
-                .setIsGzip(true)//Gzip压缩，需要服务端支持
+                .setIsGzip(false)//Gzip压缩，需要服务端支持
                 .setShowHttpLog(true)//显示请求日志
                 .setShowLifecycleLog(false)//显示Activity销毁日志
                 .setRetryOnConnectionFailure(false)//失败后不自动重连

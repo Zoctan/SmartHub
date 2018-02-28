@@ -9,6 +9,10 @@ public interface HubDetailNowView {
 
     void setData(Map<String, String> data);
 
+    void showLoading();
+
+    void hideLoading();
+
     void showUpdateImgSuccessMsg(String url, String msg);
 
     void showDoDeviceSuccessMsg(String msg);

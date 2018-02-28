@@ -28,6 +28,7 @@ public class UserDetailPresenter {
             @Override
             public void onSuccess(final String msg) {
                 mUserDetailView.showUpdateSuccessMsg(msg);
+                mUserDetailView.hideLoading();
             }
 
             @Override
@@ -38,9 +39,9 @@ public class UserDetailPresenter {
             @Override
             public void onFailure(final String msg) {
                 mUserDetailView.showFailedMsg(msg);
+                mUserDetailView.hideLoading();
             }
         });
-        mUserDetailView.hideLoading();
     }
 
     // 图片上传至七牛云
@@ -53,11 +54,13 @@ public class UserDetailPresenter {
                     @Override
                     public void onSuccess(final String avatarUrl, final String msg) {
                         mUserDetailView.showUpdateAvatarSuccessMsg(avatarUrl, msg);
+                        mUserDetailView.hideLoading();
                     }
 
                     @Override
                     public void onFailure(final String msg) {
                         mUserDetailView.showFailedMsg(msg);
+                        mUserDetailView.hideLoading();
                     }
                 });
             }
@@ -70,8 +73,8 @@ public class UserDetailPresenter {
             @Override
             public void onFailure(final String msg) {
                 mUserDetailView.showFailedMsg(msg);
+                mUserDetailView.hideLoading();
             }
         });
-        mUserDetailView.hideLoading();
     }
 }

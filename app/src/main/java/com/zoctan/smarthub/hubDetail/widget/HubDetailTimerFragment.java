@@ -23,6 +23,7 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.vansuita.library.Icon;
+import com.wang.avi.AVLoadingIndicatorView;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
 import com.zoctan.smarthub.beans.TimerBean;
@@ -51,6 +52,8 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
     RecyclerView mRecyclerView;
     @BindView(R.id.SmartRefreshLayout_timer_list)
     SmartRefreshLayout mSmartRefreshLayout;
+    @BindView(R.id.ProgressBar_timer_list)
+    AVLoadingIndicatorView mProgressBar;
     private final Calendar calendar = Calendar.getInstance();
     private final HubDetailPresenter mPresenter = new HubDetailPresenter(this);
     private HubDetailTimerListAdapter mAdapter;
@@ -251,6 +254,16 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
             mAdapter.setData(mData);
         }
         mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showLoading() {
+        mProgressBar.show();
+    }
+
+    @Override
+    public void hideLoading() {
+        mProgressBar.hide();
     }
 
     @Override

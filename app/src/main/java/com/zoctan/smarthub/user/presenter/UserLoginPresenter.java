@@ -26,14 +26,14 @@ public class UserLoginPresenter {
 
             @Override
             public void onSuccess(final UserBean userBean) {
-                mUserLoginView.hideLoading();
                 mUserLoginView.showSuccessMsg(userBean);
+                mUserLoginView.hideLoading();
             }
 
             @Override
             public void onFailure(final String msg) {
-                mUserLoginView.hideLoading();
                 mUserLoginView.showFailedMsg(msg);
+                mUserLoginView.hideLoading();
             }
         });
     }

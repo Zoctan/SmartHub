@@ -242,12 +242,12 @@ public class UserLoginActivity extends BaseActivity implements UserLoginView {
 
     @Override
     public void showLoading() {
-        mProgressBar.smoothToShow();
+        mProgressBar.show();
     }
 
     @Override
     public void hideLoading() {
-        mProgressBar.smoothToHide();
+        mProgressBar.hide();
     }
 
     @Override

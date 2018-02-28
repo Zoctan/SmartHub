@@ -7,6 +7,10 @@ import java.util.List;
 public interface HubListView {
     void loadHubList(List<HubBean> hubList);
 
+    void showLoading();
+
+    void hideLoading();
+
     void showSuccessMsg(String msg);
 
     void showFailedMsg(String msg);

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
@@ -27,6 +28,7 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.vansuita.library.Icon;
+import com.wang.avi.AVLoadingIndicatorView;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
 import com.zoctan.smarthub.beans.HubBean;
@@ -60,6 +62,8 @@ public class HubListFragment extends BaseFragment implements HubListView {
     SmartRefreshLayout mSmartRefreshLayout;
     @BindView(R.id.FloatingActionButton_hub_list)
     FloatingActionButton mFloatingButton;
+    @BindView(R.id.ProgressBar_hub_list)
+    AVLoadingIndicatorView mProgressBar;
     private HubListAdapter mAdapter;
     private List<HubBean> mData;
     //打开扫描界面请求码
@@ -353,9 +357,24 @@ public class HubListFragment extends BaseFragment implements HubListView {
     }
 
     @Override
+    public void showLoading() {
+        mProgressBar.show();
+    }
+
+    @Override
+    public void hideLoading() {
+        mProgressBar.hide();
+    }
+
+    @Override
     public void showSuccessMsg(final String msg) {
-        AlerterUtil.showInfo(getHoldingActivity(), msg);
-        refreshHubList();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                refreshHubList();
+                AlerterUtil.showInfo(getHoldingActivity(), msg);
+            }
+        }, 1500);
     }
 
     @Override

@@ -46,7 +46,7 @@
             android:layout_marginTop="5dp"
             android:text="@string/app"
             android:textColor="@color/third_text"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
     </LinearLayout>
 
 
@@ -232,5 +232,5 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="24dp"
         android:visibility="gone"
-        app:indicatorName="BallPulseIndicator" />
+        app:indicatorName="BallScale" />
 </RelativeLayout>

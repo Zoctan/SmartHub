@@ -37,6 +37,17 @@
 
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/ProgressBar_timer_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="24dp"
+        android:visibility="gone"
+        app:indicatorName="BallPulseIndicator"
+        app:indicatorColor="@color/primary" />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/FloatingActionButton_timer_list"
         android:layout_width="wrap_content"

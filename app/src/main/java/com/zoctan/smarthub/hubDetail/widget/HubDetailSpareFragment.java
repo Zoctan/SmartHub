@@ -20,11 +20,11 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.Utils;
-import com.wang.avi.AVLoadingIndicatorView;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
 import com.zoctan.smarthub.hubDetail.presenter.HubDetailPresenter;
 import com.zoctan.smarthub.hubDetail.view.HubDetailSpareView;
+import com.zoctan.smarthub.utils.AlerterUtil;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -42,8 +42,6 @@ public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpa
     LineChart mLineChart;
     @BindView(R.id.GridLayout_hub_detail_spare)
     GridLayout mGridLayout;
-    @BindView(R.id.ProgressBar_hub_detail_spare)
-    AVLoadingIndicatorView mProgressBar;
     private final Handler handler = new Handler();
     private final HubDetailPresenter mPresenter = new HubDetailPresenter(this);
 
@@ -220,20 +218,8 @@ public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpa
     }
 
     @Override
-    public void showLoading() {
-        //fixme null pointer ??
-        //mProgressBar.smoothToShow();
-    }
-
-    @Override
-    public void hideLoading() {
-        //fixme null pointer ??
-        //mProgressBar.smoothToHide();
-    }
-
-    @Override
     public void showFailedMsg(final String msg) {
-        //AlerterUtil.showDanger(getHoldingActivity(), msg);
+        AlerterUtil.showDanger(getHoldingActivity(), msg);
     }
 
     private static class MyValueFormatter implements IAxisValueFormatter {

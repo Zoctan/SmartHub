@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.ImageUtils;
 import com.bumptech.glide.Glide;
+import com.wang.avi.AVLoadingIndicatorView;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
 import com.zoctan.smarthub.beans.DeviceBean;
@@ -54,6 +55,8 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
     TextView mTvPower;
     @BindView(R.id.FabSpeedDial_hub_detail)
     FabSpeedDial mFabSpeedDial;
+    @BindView(R.id.ProgressBar_hub_detail_now)
+    AVLoadingIndicatorView mProgressBar;
     private final Handler handler = new Handler();
     private final HubDetailPresenter mPresenter = new HubDetailPresenter(this);
     protected static final int CHOOSE_PICTURE = 0;
@@ -344,6 +347,16 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                 mSPUtil.getString("hub_onenet_id"),
                 mSPUtil.getString("user_token")
         );
+    }
+
+    @Override
+    public void showLoading() {
+        mProgressBar.show();
+    }
+
+    @Override
+    public void hideLoading() {
+        mProgressBar.hide();
     }
 
     @Override

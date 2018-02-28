@@ -16,33 +16,38 @@ public class HubListPresenter {
         this.mHubView = hublistView;
     }
 
-    public void doHub(final String action, final String token,
-                      final HubBean hub) {
+    public void doHub(final String action, final String token, final HubBean hub) {
+        mHubView.showLoading();
         this.mHubModel.doHub(action, token, hub, new HubListPresenter.Listener());
     }
 
     public void hubOpenClose(final String oneNetId, final String order, final String token) {
+        mHubView.showLoading();
         this.mHubModel.hubOpenClose(oneNetId, order, token, new HubListPresenter.Listener());
     }
 
     public void loadHubList(final String token) {
+        mHubView.showLoading();
         this.mHubModel.loadHubList(token, new HubListPresenter.Listener());
     }
 
     private class Listener implements HubListModel.Listener {
         @Override
         public void onSuccess(final String msg) {
-            HubListPresenter.this.mHubView.showSuccessMsg(msg);
+            mHubView.showSuccessMsg(msg);
+            mHubView.hideLoading();
         }
 
         @Override
         public void onSuccess(final List<HubBean> list) {
-            HubListPresenter.this.mHubView.loadHubList(list);
+            mHubView.loadHubList(list);
+            mHubView.hideLoading();
         }
 
         @Override
         public void onFailure(final String msg) {
-            HubListPresenter.this.mHubView.showFailedMsg(msg);
+            mHubView.showFailedMsg(msg);
+            mHubView.hideLoading();
         }
     }
 }

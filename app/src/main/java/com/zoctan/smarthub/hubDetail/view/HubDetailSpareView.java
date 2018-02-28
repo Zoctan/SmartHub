@@ -9,9 +9,5 @@ public interface HubDetailSpareView {
 
     void setLineChartData(String[] x, ArrayList<Entry> y);
 
-    void showLoading();
-
-    void hideLoading();
-
     void showFailedMsg(String msg);
 }

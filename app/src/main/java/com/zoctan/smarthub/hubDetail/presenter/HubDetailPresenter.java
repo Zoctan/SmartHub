@@ -37,32 +37,37 @@ public class HubDetailPresenter {
     }
 
     public void loadHubNowList(final String hubOneNetId, final String dataStreamIds) {
+        mNowView.showLoading();
         this.mHubModel.loadHubNowList(hubOneNetId, dataStreamIds, new HubDetailPresenter.Listener());
     }
 
     public void loadHubDevice(final String hubOneNetId, final String token) {
+        mNowView.showLoading();
         this.mHubModel.loadHubDevice(hubOneNetId, token, new HubDetailPresenter.Listener());
     }
 
     public void doDevice(final DeviceBean deviceBean, final String token, final String action) {
+        mNowView.showLoading();
         this.mHubModel.doDevice(deviceBean, token, action, new HubDetailPresenter.Listener());
     }
 
     public void resetHub(final String hubOneNetId, final String token) {
+        mNowView.showLoading();
         this.mHubModel.resetHub(hubOneNetId, token, new HubDetailPresenter.Listener());
     }
 
     public void loadHubSpareList(final String hubOneNetId, final String token) {
-        mSpareView.showLoading();
         mHubModel.loadHubSpareList(hubOneNetId, token, new HubDetailPresenter.Listener());
     }
 
 
     public void loadHubTimerList(final String token, final String hubOneNetId) {
+        mTimerView.showLoading();
         mHubModel.loadHubTimerList(token, hubOneNetId, new HubDetailPresenter.Listener());
     }
 
     public void doHubTimer(final String token, final TimerBean timer) {
+        mTimerView.showLoading();
         mHubModel.doHubTimer(token, timer, new HubDetailPresenter.Listener());
     }
 
@@ -75,11 +80,13 @@ public class HubDetailPresenter {
                     @Override
                     public void onSuccess(final String msg) {
                         mNowView.showUpdateImgSuccessMsg(deviceBean.getImg(), msg);
+                        mNowView.hideLoading();
                     }
 
                     @Override
                     public void onFailure(final String msg) {
                         mNowView.showFailedMsg(msg);
+                        mNowView.hideLoading();
                     }
                 });
             }
@@ -87,6 +94,7 @@ public class HubDetailPresenter {
             @Override
             public void onFailure(final String msg) {
                 mNowView.showFailedMsg(msg);
+                mNowView.hideLoading();
             }
         });
     }
@@ -95,26 +103,31 @@ public class HubDetailPresenter {
         @Override
         public void onDoDeviceSuccess(final String msg) {
             mNowView.showDoDeviceSuccessMsg(msg);
+            mNowView.hideLoading();
         }
 
         @Override
         public void onNowSuccess(final String msg) {
             mNowView.showSuccessMsg(msg);
+            mNowView.hideLoading();
         }
 
         @Override
         public void onTimerSuccess(final String msg) {
             mTimerView.showSuccessMsg(msg);
+            mTimerView.hideLoading();
         }
 
         @Override
         public void onNowSuccess(final DeviceBean deviceBean) {
             mNowView.setDevice(deviceBean);
+            mNowView.hideLoading();
         }
 
         @Override
         public void onTimerListSuccess(final List<TimerBean> timerBean) {
             mTimerView.loadTimerList(timerBean);
+            mTimerView.hideLoading();
         }
 
         @Override
@@ -124,6 +137,7 @@ public class HubDetailPresenter {
                 streams.put(bean.getId(), bean.getCurrent_value());
             }
             mNowView.setData(streams);
+            mNowView.hideLoading();
         }
 
         @Override
@@ -140,7 +154,6 @@ public class HubDetailPresenter {
                 x[i] = i.toString();
                 y.add(new Entry(i, Float.parseFloat(String.format(Locale.CHINA, "%.1f", monthSpareBean.getHour().get(i)))));
             }
-            mSpareView.hideLoading();
             mSpareView.setSpareData(String.format(Locale.CHINA, "%.3f", kwh),
                     String.format(Locale.CHINA, "%.2f", bill), monthSpareBean.getCurrent_month());
             mSpareView.setLineChartData(x, y);
@@ -149,17 +162,18 @@ public class HubDetailPresenter {
         @Override
         public void onNowFailure(final String msg) {
             mNowView.showFailedMsg(msg);
+            mNowView.hideLoading();
         }
 
         @Override
         public void onSpareFailure(final String msg) {
-            mSpareView.hideLoading();
             mSpareView.showFailedMsg(msg);
         }
 
         @Override
         public void onTimerFailure(final String msg) {
             mTimerView.showFailedMsg(msg);
+            mTimerView.hideLoading();
         }
     }
 }
