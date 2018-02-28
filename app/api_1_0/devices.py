@@ -25,7 +25,7 @@ def add_device(device_id):
     # 识别的用电器的特征值
     eigenvalue = response.json()['data']['current_value']
     # 有可能上次保存了特征值，但是没识别成功
-    if eigenvalue != 0:
+    if eigenvalue != 100:
         device = Device(eigenvalue=eigenvalue, hub_id=device_id, name=name)
         db.session.add(device)
         return jsonify({'msg': 'ok', 'result': '用电器添加成功'})
@@ -87,8 +87,8 @@ def get_device(device_id):
     url = 'http://api.heclouds.com/devices/{}/datastreams/list'.format(device_id)
     response = requests.get(url, headers=headers)
     eigenvalue = response.json()['data']['current_value']
-    # 0：无效或不能识别当前用电器
-    if eigenvalue != 0:
+    # 100：无效或不能识别当前用电器
+    if eigenvalue != 100:
         # 先从数据库找
         device = Device.query.filter_by(eigenvalue=eigenvalue).first()
         if device:
