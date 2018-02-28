@@ -3,7 +3,7 @@
 
 import requests
 from flask import jsonify, request
-
+from time import sleep
 from app import db
 from . import decorators
 from .hubs import send_order
@@ -18,9 +18,10 @@ def add_device(device_id):
     if name is None:
         return jsonify({'msg': 'no', 'error': '用电器名不能为空'})
     # 如果数据库没有，即还没保存该用电器，先让插座flash存下来，再本地数据库存
-    send_order(device_id, 'store', 1)
+    send_order(device_id, 'store', 1, 0.5)
     # match更新list
-    send_order(device_id, 'match', 1)
+    send_order(device_id, 'match', 1, 0.5)
+    sleep(2)
     # 识别的用电器的特征值
     url = 'http://api.heclouds.com/devices/{}/datastreams/list'.format(device_id)
     response = requests.get(url, headers=headers)
