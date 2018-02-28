@@ -58,7 +58,7 @@ def get_device(device_id):
     url = 'http://api.heclouds.com/devices/{}/datastreams/list'.format(device_id)
     response = requests.get(url, headers=headers)
     eigenvalue = response.json()['data']['current_value']
-    if eigenvalue != 0:
+    if eigenvalue != -1:
         # 先从数据库找
         device = Device.query.filter_by(eigenvalue=eigenvalue).first()
         if device:
