@@ -8,7 +8,7 @@ headers = {'api-key': 'nJVyiaj5Y297Fc6Q=bUYVWnz2=0='}
 
 # https://open.iot.10086.cn/doc/art257.html#68
 # 发送命令
-def send_order(device_id, order, status, sleep_time=3):
+def send_order(device_id, order, status):
     # https://open.iot.10086.cn/doc/art257.html#68
     url = 'http://api.heclouds.com/cmds'
     cmd_url = url + '?device_id={}&qos=1&timeout=100&type=0'.format(device_id)
@@ -30,7 +30,7 @@ def send_order(device_id, order, status, sleep_time=3):
         return '命令错误'
     else:
         response = requests.post(cmd_url, data=data, headers=headers)
-        sleep(sleep_time)
+        sleep(3)
         query_url = url + '/' + response.json()['data']['cmd_uuid']
         query_response = requests.get(query_url, headers=headers)
         status = query_response.json()['data']['status']
@@ -48,4 +48,4 @@ def send_order(device_id, order, status, sleep_time=3):
             msg = '命令执行超时'
         else:
             msg = '设备响应消息过长'
-        return msg
+        return msg, query_url

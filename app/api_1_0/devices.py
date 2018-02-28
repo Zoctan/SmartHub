@@ -18,10 +18,21 @@ def add_device(device_id):
     if name is None:
         return jsonify({'msg': 'no', 'error': '用电器名不能为空'})
     # 如果数据库没有，即还没保存该用电器，先让插座flash存下来，再本地数据库存
-    send_order(device_id, 'store', 1, 0.5)
+    msg, query_url = send_order(device_id, 'store', 1)
+    if msg != '设备正常响应':
+        sleep(3)
+        query_response = requests.get(query_url, headers=headers)
+        status = query_response.json()['data']['status']
+        if status != 4:
+            return jsonify({'msg': 'no', 'result': '用电器添加失败'})
     # match更新list
-    send_order(device_id, 'match', 1, 0.5)
-    sleep(2)
+    msg, query_url = send_order(device_id, 'match', 1)
+    if msg != '设备正常响应':
+        sleep(3)
+        query_response = requests.get(query_url, headers=headers)
+        status = query_response.json()['data']['status']
+        if status != 4:
+            return jsonify({'msg': 'no', 'result': '用电器添加失败'})
     # 识别的用电器的特征值
     url = 'http://api.heclouds.com/devices/{}/datastreams/list'.format(device_id)
     response = requests.get(url, headers=headers)

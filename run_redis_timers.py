@@ -42,8 +42,7 @@ class Job:
             week_1_5_day = ['Monday', 'Tuesday', 'Wednesday', 'Thurday', 'Friday']
             if (timer.repeat == '每周1-5' and current_week_of_day in week_1_5_day) \
                     or timer.repeat == '每天' or timer.repeat == '一次性':
-                msg = send_order(timer.hub_id, 'turn', timer.power)
-                # print('执行Timer: ', msg)
+                send_order(timer.hub_id, 'turn', timer.power)
             if timer.repeat == '一次性':
                 # 一次性的执行完redis就删掉，并且数据库的status置为0
                 Redis().delete(key)
