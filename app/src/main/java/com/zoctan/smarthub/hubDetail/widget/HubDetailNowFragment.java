@@ -143,6 +143,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                     @Override
                     public void onClick(final View v) {
                         mPresenter.resetHub(mSPUtil.getString("hub_onenet_id"), mSPUtil.getString("user_token"));
+                        dialog.dismiss();
                     }
                 })
                 .show();
