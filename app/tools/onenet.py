@@ -34,9 +34,11 @@ def send_order(device_id, order, status, sleep_time=4):
         sleep(sleep_time)
         if order == 'STORE' or order == 'match':
             if order == 'STORE':
+                sleep(2)
                 url = 'http://api.heclouds.com/devices/{}/datastreams/STORE'.format(device_id)
             if order == 'match':
                 url = 'http://api.heclouds.com/devices/{}/datastreams/list'.format(device_id)
+            sleep(2)
             response = requests.get(url, headers=headers)
             return response.json()['data']['current_value'], None
         query_url = url + '/' + response.json()['data']['cmd_uuid']
