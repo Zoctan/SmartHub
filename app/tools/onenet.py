@@ -8,7 +8,7 @@ headers = {'api-key': 'nJVyiaj5Y297Fc6Q=bUYVWnz2=0='}
 
 # https://open.iot.10086.cn/doc/art257.html#68
 # 发送命令
-def send_order(device_id, order, status, sleep_time=3):
+def send_order(device_id, order, status, sleep_time=4):
     # https://open.iot.10086.cn/doc/art257.html#68
     url = 'http://api.heclouds.com/cmds'
     cmd_url = url + '?device_id={}&qos=1&timeout=100&type=0'.format(device_id)
