@@ -30,8 +30,15 @@ def send_order(device_id, order, status, sleep_time=4):
         return '命令错误'
     else:
         response = requests.post(cmd_url, data=data, headers=headers)
-        # 3秒收一次数据，只能延迟高点查询插座状态
+        # 4秒收一次数据，只能延迟高点查询插座状态
         sleep(sleep_time)
+        if order == 'store' or order == 'match':
+            if order == 'store':
+                url = 'http://api.heclouds.com/devices/{}/datastreams/store'.format(device_id)
+            if order == 'match':
+                url = 'http://api.heclouds.com/devices/{}/datastreams/match'.format(device_id)
+            response = requests.get(url, headers=headers)
+            return response.json()['data']['current_value'], None
         query_url = url + '/' + response.json()['data']['cmd_uuid']
         query_response = requests.get(query_url, headers=headers)
         status = query_response.json()['data']['status']
