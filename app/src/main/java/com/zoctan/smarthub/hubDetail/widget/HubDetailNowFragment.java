@@ -90,20 +90,30 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                     mSPUtil.getString("user_token")
             );
         }
+        // 空载不允许添加
+        final boolean flag2 = Integer.parseInt(mTvAmpere.getText().toString()) == 0;
         mFabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
             public boolean onMenuItemSelected(final MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.action_add_device:
                         if (flag) {
-                            addDevice();
+                            if (!flag2) {
+                                addDevice();
+                            } else {
+                                AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_do_when_none);
+                            }
                         } else {
                             AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_do_when_no_electric);
                         }
                         break;
                     case R.id.action_update_device:
                         if (flag) {
-                            updateDevice();
+                            if (!flag2) {
+                                updateDevice();
+                            } else {
+                                AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_do_when_none);
+                            }
                         } else {
                             AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_do_when_no_electric);
                         }
@@ -318,12 +328,16 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
         if (device.getImg() != null) {
             Glide.with(this).load(device.getImg()).into(mIvAppliances);
         }
-        mTvAppliances.setText(device.getName());
         if (device.getHub_id() != null) {
             mSPUtil.put("device_id", device.getId());
             mSPUtil.put("device_name", device.getName());
             mSPUtil.put("device_hub_id", device.getHub_id());
             mSPUtil.put("device_img", device.getImg());
+        }
+        if (Integer.parseInt(mTvAmpere.getText().toString()) != 0) {
+            mTvAppliances.setText(device.getName());
+        } else {
+            mTvAppliances.setText(R.string.none_device);
         }
     }
 

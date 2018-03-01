@@ -65,12 +65,15 @@
     <string name="hub_delete">删除插座</string>
     <string name="hub_delete_msg">确定删除插座吗？</string>
 
+    <string name="find_device">正在查询当前用电器…</string>
+    <string name="none_device">空载</string>
     <string name="hub_hint_input_device">请输入用电器名</string>
     <string name="hub_detail_add_device">添加当前用电器</string>
     <string name="hub_detail_update_device">更新当前用电器</string>
     <string name="hub_detail_update_device_img">更新当前用电器图片</string>
     <string name="hub_detail_reset_hub">清除存储的所有用电器特征值</string>
     <string name="msg_do_when_no_electric">继电器已断电，请通电后再设置</string>
+    <string name="msg_do_when_none">空载，请插上用电器后再设置</string>
 
     <string name="hub_detail_real_time_info">实时信息</string>
     <string name="hub_detail_energy_used">日用电量</string>

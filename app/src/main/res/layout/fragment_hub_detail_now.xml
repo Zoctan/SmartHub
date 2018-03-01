@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/ImageView_hub_detail_now_appliances"
             android:gravity="center"
-            android:text="@string/none"
+            android:text="@string/find_device"
             android:textColor="@color/third_text" />
 
         <io.github.yavski.fabspeeddial.FabSpeedDial
