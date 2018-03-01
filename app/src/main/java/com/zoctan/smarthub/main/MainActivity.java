@@ -89,9 +89,8 @@ public class MainActivity extends BaseActivity {
     }
 
     private void setBroadcastReceiver() {
-        // 接收来自用户登录/退出/修改头像广播
+        // 接收来自用户修改广播
         final IntentFilter mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction("user_login");
         mIntentFilter.addAction("update_user_info_or_avatar");
         // 动态注册广播
         registerReceiver(broadcastReceiver, mIntentFilter);
@@ -104,10 +103,6 @@ public class MainActivity extends BaseActivity {
             // 修改了用户名或头像都要更新主界面侧滑栏
             if (Objects.equals(intent.getAction(), "update_user_info_or_avatar")) {
                 setHeaderUser();
-            }
-            // 用户登出需要重新登录
-            if (Objects.equals(intent.getAction(), "user_login")) {
-                startActivity(intent);
             }
         }
     };

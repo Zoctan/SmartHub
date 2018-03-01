@@ -7,7 +7,7 @@ public class DeviceBean implements Serializable {
     private String hub_id;
     private String name;
     private String img;
-    private String eigenvalue;
+    private int eigenvalue;
 
     public String getId() {
         return this.id;
@@ -25,11 +25,11 @@ public class DeviceBean implements Serializable {
         this.name = name;
     }
 
-    public String getEigenvalue() {
+    public int getEigenvalue() {
         return this.eigenvalue;
     }
 
-    public void setEigenvalue(final String eigenvalue) {
+    public void setEigenvalue(final int eigenvalue) {
         this.eigenvalue = eigenvalue;
     }
 

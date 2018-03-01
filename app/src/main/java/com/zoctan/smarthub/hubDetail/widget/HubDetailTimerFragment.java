@@ -23,11 +23,10 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.vansuita.library.Icon;
-import com.wang.avi.AVLoadingIndicatorView;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
 import com.zoctan.smarthub.beans.TimerBean;
-import com.zoctan.smarthub.hubDetail.presenter.HubDetailPresenter;
+import com.zoctan.smarthub.hubDetail.presenter.HubDetailTimerPresenter;
 import com.zoctan.smarthub.hubDetail.view.HubDetailTimerView;
 import com.zoctan.smarthub.utils.AlerterUtil;
 import com.zoctan.smarthub.utils.NiftyDialog;
@@ -52,12 +51,20 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
     RecyclerView mRecyclerView;
     @BindView(R.id.SmartRefreshLayout_timer_list)
     SmartRefreshLayout mSmartRefreshLayout;
-    @BindView(R.id.ProgressBar_timer_list)
-    AVLoadingIndicatorView mProgressBar;
     private final Calendar calendar = Calendar.getInstance();
-    private final HubDetailPresenter mPresenter = new HubDetailPresenter(this);
+    private final HubDetailTimerPresenter mPresenter = new HubDetailTimerPresenter(this);
     private HubDetailTimerListAdapter mAdapter;
     private List<TimerBean> mData;
+
+    public static HubDetailTimerFragment newInstance() {
+        return new HubDetailTimerFragment();
+    }
+
+    @Override
+    protected int bindLayout() {
+        return R.layout.fragment_hub_detail_timer;
+    }
+
     private final HubDetailTimerListAdapter.OnItemClickListener mOnItemClickListener = new HubDetailTimerListAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(final String action, final View view, final int position) {
@@ -88,15 +95,6 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
             }
         }
     };
-
-    public static HubDetailTimerFragment newInstance() {
-        return new HubDetailTimerFragment();
-    }
-
-    @Override
-    protected int bindLayout() {
-        return R.layout.fragment_hub_detail_timer;
-    }
 
     @Override
     protected void initView(final View view, final Bundle savedInstanceState) {
@@ -258,13 +256,14 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
 
     @Override
     public void showLoading() {
-        mProgressBar.show();
+        AlerterUtil.showLoading(getActivity());
     }
 
     @Override
     public void hideLoading() {
-        mProgressBar.hide();
+        AlerterUtil.hideLoading();
     }
+
 
     @Override
     public void showSuccessMsg(final String msg) {

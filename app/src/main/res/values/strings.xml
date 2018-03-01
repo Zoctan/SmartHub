@@ -5,6 +5,8 @@
 
     <string name="tip_add_hub">添加一个「插座」吧~</string>
 
+    <string name="msg_loading">请稍等…</string>
+
     <string name="user_register">注 册</string>
     <string name="user_login">登 录</string>
     <string name="user_register_success">注册成功</string>
@@ -68,6 +70,10 @@
     <string name="find_device">正在查询当前用电器…</string>
     <string name="none_device">空载</string>
     <string name="hub_hint_input_device">请输入用电器名</string>
+    <string name="hub_detail_store_device">存储</string>
+    <string name="hub_detail_store_tip">存储值：</string>
+    <string name="hub_detail_match_device">匹配</string>
+    <string name="hub_detail_match_tip">匹配值：</string>
     <string name="hub_detail_add_device">添加当前用电器</string>
     <string name="hub_detail_update_device">更新当前用电器</string>
     <string name="hub_detail_update_device_img">更新当前用电器图片</string>

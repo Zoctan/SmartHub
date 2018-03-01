@@ -2,17 +2,17 @@ package com.zoctan.smarthub.user.presenter;
 
 import com.zoctan.smarthub.api.UserUrls;
 import com.zoctan.smarthub.beans.UserBean;
-import com.zoctan.smarthub.user.model.UserModel;
-import com.zoctan.smarthub.user.model.UserModelImpl;
+import com.zoctan.smarthub.user.model.UserDetailModel;
+import com.zoctan.smarthub.user.model.impl.UserDetailModelImpl;
 import com.zoctan.smarthub.user.view.UserDetailView;
 
 public class UserDetailPresenter {
     private final UserDetailView mUserDetailView;
-    private final UserModel mUserModel;
+    private final UserDetailModel mUserModel;
 
     public UserDetailPresenter(final UserDetailView userDetailView) {
         this.mUserDetailView = userDetailView;
-        this.mUserModel = new UserModelImpl();
+        this.mUserModel = new UserDetailModelImpl();
     }
 
     public void update(final String action, final UserBean user, final String token) {
@@ -24,16 +24,11 @@ public class UserDetailPresenter {
             // 修改密码
             url = UserUrls.PASSWORD;
         }
-        mUserModel.update(url, user, token, new UserModel.Listener() {
+        mUserModel.update(url, user, token, new UserDetailModel.Listener() {
             @Override
             public void onSuccess(final String msg) {
                 mUserDetailView.showUpdateSuccessMsg(msg);
                 mUserDetailView.hideLoading();
-            }
-
-            @Override
-            public void onSuccess(final UserBean userBean) {
-
             }
 
             @Override
@@ -47,10 +42,10 @@ public class UserDetailPresenter {
     // 图片上传至七牛云
     public void uploadAvatar(final UserBean userBean, final String photoPath) {
         mUserDetailView.showLoading();
-        mUserModel.getQiNiuToken(userBean, new UserModel.Listener() {
+        mUserModel.getQiNiuToken(userBean, new UserDetailModel.Listener() {
             @Override
             public void onSuccess(final String token) {
-                mUserModel.uploadAvatar(userBean, token, photoPath, new UserModel.UploadAvatarListener() {
+                mUserModel.uploadAvatar(userBean, token, photoPath, new UserDetailModel.UploadAvatarListener() {
                     @Override
                     public void onSuccess(final String avatarUrl, final String msg) {
                         mUserDetailView.showUpdateAvatarSuccessMsg(avatarUrl, msg);
@@ -63,11 +58,6 @@ public class UserDetailPresenter {
                         mUserDetailView.hideLoading();
                     }
                 });
-            }
-
-            @Override
-            public void onSuccess(final UserBean userBean) {
-
             }
 
             @Override

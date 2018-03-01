@@ -2,7 +2,7 @@ package com.zoctan.smarthub.hubList.presenter;
 
 import com.zoctan.smarthub.beans.HubBean;
 import com.zoctan.smarthub.hubList.model.HubListModel;
-import com.zoctan.smarthub.hubList.model.HubListModelImpl;
+import com.zoctan.smarthub.hubList.model.impl.HubListModelImpl;
 import com.zoctan.smarthub.hubList.view.HubListView;
 
 import java.util.List;
@@ -12,23 +12,23 @@ public class HubListPresenter {
     private final HubListModel mHubModel;
 
     public HubListPresenter(final HubListView hublistView) {
-        this.mHubModel = new HubListModelImpl();
-        this.mHubView = hublistView;
+        mHubModel = new HubListModelImpl();
+        mHubView = hublistView;
     }
 
     public void doHub(final String action, final String token, final HubBean hub) {
         mHubView.showLoading();
-        this.mHubModel.doHub(action, token, hub, new HubListPresenter.Listener());
+        mHubModel.doHub(action, token, hub, new HubListPresenter.Listener());
     }
 
     public void hubOpenClose(final String oneNetId, final String order, final String token) {
         mHubView.showLoading();
-        this.mHubModel.hubOpenClose(oneNetId, order, token, new HubListPresenter.Listener());
+        mHubModel.hubOpenClose(oneNetId, order, token, new HubListPresenter.Listener());
     }
 
     public void loadHubList(final String token) {
         mHubView.showLoading();
-        this.mHubModel.loadHubList(token, new HubListPresenter.Listener());
+        mHubModel.loadHubList(token, new HubListPresenter.Listener());
     }
 
     private class Listener implements HubListModel.Listener {

@@ -5,6 +5,10 @@ import com.zoctan.smarthub.beans.DeviceBean;
 import java.util.Map;
 
 public interface HubDetailNowView {
+    void setHubStore(boolean flag);
+
+    void setHubMatch(String list);
+
     void setDevice(DeviceBean device);
 
     void setData(Map<String, String> data);

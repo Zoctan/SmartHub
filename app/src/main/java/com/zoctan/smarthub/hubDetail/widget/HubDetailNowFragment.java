@@ -19,12 +19,11 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.ImageUtils;
 import com.bumptech.glide.Glide;
-import com.wang.avi.AVLoadingIndicatorView;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
 import com.zoctan.smarthub.beans.DeviceBean;
 import com.zoctan.smarthub.beans.UserBean;
-import com.zoctan.smarthub.hubDetail.presenter.HubDetailPresenter;
+import com.zoctan.smarthub.hubDetail.presenter.HubDetailNowPresenter;
 import com.zoctan.smarthub.hubDetail.view.HubDetailNowView;
 import com.zoctan.smarthub.utils.AlerterUtil;
 import com.zoctan.smarthub.utils.NiftyDialog;
@@ -55,10 +54,8 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
     TextView mTvPower;
     @BindView(R.id.FabSpeedDial_hub_detail)
     FabSpeedDial mFabSpeedDial;
-    @BindView(R.id.ProgressBar_hub_detail_now)
-    AVLoadingIndicatorView mProgressBar;
     private final Handler handler = new Handler();
-    private final HubDetailPresenter mPresenter = new HubDetailPresenter(this);
+    private final HubDetailNowPresenter mPresenter = new HubDetailNowPresenter(this);
     protected static final int CHOOSE_PICTURE = 0;
     protected static final int TAKE_PICTURE = 1;
     private static final int CROP_SMALL_PICTURE = 2;
@@ -90,18 +87,21 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                     mSPUtil.getString("user_token")
             );
         }
-        // 空载不允许添加
-        final boolean flag2 = Integer.parseInt(mTvAmpere.getText().toString()) == 0;
         mFabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
             public boolean onMenuItemSelected(final MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.action_add_device:
+                        // 空载不允许添加
                         if (flag) {
-                            if (!flag2) {
-                                addDevice();
+                            if (!mTvAppliances.getText().equals(getString(R.string.find_device))) {
+                                if (mTvAppliances.getText().equals(getString(R.string.none_device))) {
+                                    AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_do_when_none);
+                                } else {
+                                    addDevice();
+                                }
                             } else {
-                                AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_do_when_none);
+                                AlerterUtil.showDanger(getHoldingActivity(), R.string.find_device);
                             }
                         } else {
                             AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_do_when_no_electric);
@@ -109,10 +109,14 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                         break;
                     case R.id.action_update_device:
                         if (flag) {
-                            if (!flag2) {
-                                updateDevice();
+                            if (!mTvAppliances.getText().equals(getString(R.string.find_device))) {
+                                if (mTvAppliances.getText().equals(getString(R.string.none_device))) {
+                                    AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_do_when_none);
+                                } else {
+                                    updateDevice();
+                                }
                             } else {
-                                AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_do_when_none);
+                                AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_do_when_no_electric);
                             }
                         } else {
                             AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_do_when_no_electric);
@@ -152,7 +156,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                 .setButton1Click(new View.OnClickListener() {
                     @Override
                     public void onClick(final View v) {
-                        mPresenter.resetHub(mSPUtil.getString("hub_onenet_id"), mSPUtil.getString("user_token"));
+                        mPresenter.sendOrder(mSPUtil.getString("hub_onenet_id"), mSPUtil.getString("user_token"), "reset");
                         dialog.dismiss();
                     }
                 })
@@ -296,9 +300,31 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
         }
     }
 
+    private TextView mTvStore = null;
+    private TextView mTvMatch = null;
+    private int list = 0;
+
     public void addDevice() {
         @SuppressLint("InflateParams") final View view = getLayoutInflater().inflate(R.layout.dialog_new_device, null);
         final TextInputEditText mEtDeviceName = view.findViewById(R.id.EditText_device_name);
+        mTvStore = view.findViewById(R.id.TextView_store);
+        mTvMatch = view.findViewById(R.id.TextView_match);
+        final Button mBtnStore = view.findViewById(R.id.Button_store_device);
+        final Button mBtnMatch = view.findViewById(R.id.Button_match_device);
+
+        mBtnStore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                mPresenter.sendOrder(mSPUtil.getString("hub_onenet_id"), mSPUtil.getString("user_token"), "store");
+            }
+        });
+
+        mBtnMatch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                mPresenter.sendOrder(mSPUtil.getString("hub_onenet_id"), mSPUtil.getString("user_token"), "match");
+            }
+        });
 
         final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
                 .init(R.string.hub_detail_add_device,
@@ -310,13 +336,20 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                 .setButton1Click(new View.OnClickListener() {
                     @Override
                     public void onClick(final View v) {
-                        if (mEtDeviceName.getText().length() > 0) {
-                            final String name = mEtDeviceName.getText().toString();
-                            final DeviceBean deviceBean = new DeviceBean();
-                            deviceBean.setName(name);
-                            deviceBean.setHub_id(mSPUtil.getString("hub_onenet_id"));
-                            mPresenter.doDevice(deviceBean, mSPUtil.getString("user_token"), "add");
-                            dialog.dismiss();
+                        try {
+                            if (mEtDeviceName.getText().length() > 0
+                                    && mTvStore.getText().toString().equals("有效")
+                                    && mTvMatch.getText().toString().equals("有效")
+                                    && list != 0) {
+                                final String name = mEtDeviceName.getText().toString();
+                                final DeviceBean deviceBean = new DeviceBean();
+                                deviceBean.setName(name);
+                                deviceBean.setEigenvalue(list);
+                                deviceBean.setHub_id(mSPUtil.getString("hub_onenet_id"));
+                                mPresenter.doDevice(deviceBean, mSPUtil.getString("user_token"), "add");
+                                dialog.dismiss();
+                            }
+                        } catch (final NullPointerException ignored) {
                         }
                     }
                 })
@@ -324,20 +357,35 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
     }
 
     @Override
+    public void setHubStore(final boolean flag) {
+        if (flag) {
+            mTvStore.setText("有效");
+        } else {
+            mTvStore.setText("无效");
+        }
+    }
+
+    @Override
+    public void setHubMatch(final String list) {
+        this.list = Integer.parseInt(list);
+        if (this.list != 0) {
+            mTvMatch.setText("有效");
+        } else {
+            mTvMatch.setText("无效");
+        }
+    }
+
+    @Override
     public void setDevice(final DeviceBean device) {
         if (device.getImg() != null) {
             Glide.with(this).load(device.getImg()).into(mIvAppliances);
         }
+        mTvAppliances.setText(device.getName());
         if (device.getHub_id() != null) {
             mSPUtil.put("device_id", device.getId());
             mSPUtil.put("device_name", device.getName());
             mSPUtil.put("device_hub_id", device.getHub_id());
             mSPUtil.put("device_img", device.getImg());
-        }
-        if (Integer.parseInt(mTvAmpere.getText().toString()) != 0) {
-            mTvAppliances.setText(device.getName());
-        } else {
-            mTvAppliances.setText(R.string.none_device);
         }
     }
 
@@ -366,12 +414,12 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
 
     @Override
     public void showLoading() {
-        mProgressBar.show();
+        AlerterUtil.showLoading(getActivity());
     }
 
     @Override
     public void hideLoading() {
-        mProgressBar.hide();
+        AlerterUtil.hideLoading();
     }
 
     @Override

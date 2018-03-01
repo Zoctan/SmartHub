@@ -1,4 +1,4 @@
-package com.zoctan.smarthub.hubList.model;
+package com.zoctan.smarthub.hubList.model.impl;
 
 import com.google.gson.Gson;
 import com.okhttplib.HttpInfo;
@@ -7,6 +7,7 @@ import com.okhttplib.annotation.RequestType;
 import com.okhttplib.callback.Callback;
 import com.zoctan.smarthub.api.HubUrls;
 import com.zoctan.smarthub.beans.HubBean;
+import com.zoctan.smarthub.hubList.model.HubListModel;
 import com.zoctan.smarthub.response.Response;
 import com.zoctan.smarthub.response.ResponseHubList;
 import com.zoctan.smarthub.utils.JsonUtil;

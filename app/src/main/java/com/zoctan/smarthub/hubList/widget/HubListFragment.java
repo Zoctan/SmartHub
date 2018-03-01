@@ -28,7 +28,6 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.vansuita.library.Icon;
-import com.wang.avi.AVLoadingIndicatorView;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
 import com.zoctan.smarthub.beans.HubBean;
@@ -62,8 +61,6 @@ public class HubListFragment extends BaseFragment implements HubListView {
     SmartRefreshLayout mSmartRefreshLayout;
     @BindView(R.id.FloatingActionButton_hub_list)
     FloatingActionButton mFloatingButton;
-    @BindView(R.id.ProgressBar_hub_list)
-    AVLoadingIndicatorView mProgressBar;
     private HubListAdapter mAdapter;
     private List<HubBean> mData;
     //打开扫描界面请求码
@@ -358,12 +355,12 @@ public class HubListFragment extends BaseFragment implements HubListView {
 
     @Override
     public void showLoading() {
-        mProgressBar.show();
+        AlerterUtil.showLoading(getActivity());
     }
 
     @Override
     public void hideLoading() {
-        mProgressBar.hide();
+        AlerterUtil.hideLoading();
     }
 
     @Override

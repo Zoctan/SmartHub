@@ -112,9 +112,9 @@ public class App extends Application {
         final String downloadFileDir = Environment.getExternalStorageDirectory().getPath() + "/smarthub_download/";
         final String cacheDir = Environment.getExternalStorageDirectory().getPath() + "/smarthub_cache";
         OkHttpUtil.init(instance)
-                .setConnectTimeout(15)//连接超时时间
-                .setWriteTimeout(15)//写超时时间
-                .setReadTimeout(15)//读超时时间
+                .setConnectTimeout(35)//连接超时时间
+                .setWriteTimeout(35)//写超时时间
+                .setReadTimeout(35)//读超时时间
                 .setMaxCacheSize(10 * 1024 * 1024)//缓存空间大小
                 .setCacheType(CacheType.FORCE_NETWORK)//缓存类型
                 .setHttpLogTAG(">> OkHttpUtilLog >>")//设置请求日志标识

@@ -18,10 +18,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.CacheUtils;
 import com.blankj.utilcode.util.ImageUtils;
 import com.blankj.utilcode.util.RegexUtils;
 import com.bumptech.glide.Glide;
-import com.wang.avi.AVLoadingIndicatorView;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
 import com.zoctan.smarthub.beans.UserBean;
@@ -51,8 +51,6 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
     TextView mTvUserPhone;
     @BindView(R.id.FabSpeedDial_user_detail)
     FabSpeedDial mFabSpeedDial;
-    @BindView(R.id.ProgressBar_user_detail)
-    AVLoadingIndicatorView mProgressBar;
     protected static final int CHOOSE_PICTURE = 0;
     protected static final int TAKE_PICTURE = 1;
     private static final int CROP_SMALL_PICTURE = 2;
@@ -293,9 +291,17 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
 
     // 用户登出
     private void userLogout() {
-        mSPUtil.put("login", false);
-        //noinspection ConstantConditions
-        getHoldingActivity().sendBroadcast(new Intent("user_login"));
+        mSPUtil.clear();
+        mSPUtil.put("first_open", true);
+        final CacheUtils mCacheUtil = CacheUtils.getInstance();
+        mCacheUtil.clear();
+        // 重启APP
+        final Intent intent = getHoldingActivity().getPackageManager()
+                .getLaunchIntentForPackage(getHoldingActivity().getPackageName());
+        if (intent != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -325,11 +331,12 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
 
     @Override
     public void showLoading() {
-        mProgressBar.show();
+        AlerterUtil.showLoading(getActivity());
     }
 
     @Override
     public void hideLoading() {
-        mProgressBar.hide();
+        AlerterUtil.hideLoading();
     }
+
 }

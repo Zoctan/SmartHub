@@ -22,7 +22,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.Utils;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
-import com.zoctan.smarthub.hubDetail.presenter.HubDetailPresenter;
+import com.zoctan.smarthub.hubDetail.presenter.HubDetailSparePresenter;
 import com.zoctan.smarthub.hubDetail.view.HubDetailSpareView;
 import com.zoctan.smarthub.utils.AlerterUtil;
 
@@ -43,7 +43,7 @@ public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpa
     @BindView(R.id.GridLayout_hub_detail_spare)
     GridLayout mGridLayout;
     private final Handler handler = new Handler();
-    private final HubDetailPresenter mPresenter = new HubDetailPresenter(this);
+    private final HubDetailSparePresenter mPresenter = new HubDetailSparePresenter(this);
 
     public static HubDetailSpareFragment newInstance() {
         return new HubDetailSpareFragment();

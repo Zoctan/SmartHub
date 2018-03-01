@@ -1,4 +1,4 @@
-package com.zoctan.smarthub.user.model;
+package com.zoctan.smarthub.user.model.impl;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.google.gson.Gson;
@@ -15,52 +15,14 @@ import com.zoctan.smarthub.api.HubUrls;
 import com.zoctan.smarthub.api.UserUrls;
 import com.zoctan.smarthub.beans.UserBean;
 import com.zoctan.smarthub.response.Response;
-import com.zoctan.smarthub.response.ResponseUser;
+import com.zoctan.smarthub.user.model.UserDetailModel;
 import com.zoctan.smarthub.utils.JsonUtil;
 
 import org.json.JSONObject;
 
 import java.io.IOException;
 
-
-public class UserModelImpl implements UserModel {
-    @Override
-    public void loginOrRegister(final Boolean login, final UserBean user,
-                                final Listener listener) {
-        String url = UserUrls.TOKENS;
-        if (!login) {
-            url = UserUrls.USERS;
-        }
-        OkHttpUtil.getDefault(this).doAsync(
-                HttpInfo.Builder()
-                        .setUrl(url)
-                        .setRequestType(RequestType.POST)
-                        .addParamJson(new Gson().toJson(user))
-                        .build(),
-                new Callback() {
-                    @Override
-                    public void onFailure(final HttpInfo info) throws IOException {
-                        final String response = info.getRetDetail();
-                        listener.onFailure(response);
-                    }
-
-                    @Override
-                    public void onSuccess(final HttpInfo info) throws IOException {
-                        // 将Json对象转换为User实体
-                        final ResponseUser responseUser = JsonUtil.getObjectFromHttpInfo(info, ResponseUser.class);
-                        if (responseUser.getMsg().equals("ok")) {
-                            user.setId(responseUser.getResult().getId());
-                            user.setAvatar(responseUser.getResult().getAvatar());
-                            user.setToken(responseUser.getResult().getToken());
-                            user.setPhone(responseUser.getResult().getPhone());
-                            listener.onSuccess(user);
-                        } else {
-                            listener.onFailure(responseUser.getError());
-                        }
-                    }
-                });
-    }
-
+public class UserDetailModelImpl implements UserDetailModel {
     @Override
     public void update(final String url, final UserBean user,
                        final String token,

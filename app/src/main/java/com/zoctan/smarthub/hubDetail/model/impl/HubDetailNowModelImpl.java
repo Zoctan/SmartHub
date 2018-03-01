@@ -1,4 +1,4 @@
-package com.zoctan.smarthub.hubDetail.model;
+package com.zoctan.smarthub.hubDetail.model.impl;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.google.gson.Gson;
@@ -15,20 +15,18 @@ import com.zoctan.smarthub.api.DeviceUrls;
 import com.zoctan.smarthub.api.HubUrls;
 import com.zoctan.smarthub.api.OneNetUrls;
 import com.zoctan.smarthub.beans.DeviceBean;
-import com.zoctan.smarthub.beans.TimerBean;
 import com.zoctan.smarthub.beans.UserBean;
+import com.zoctan.smarthub.hubDetail.model.HubDetailNowModel;
 import com.zoctan.smarthub.response.Response;
 import com.zoctan.smarthub.response.ResponseDevice;
-import com.zoctan.smarthub.response.ResponseMonthSpare;
 import com.zoctan.smarthub.response.ResponseOneNetDataStreams;
-import com.zoctan.smarthub.response.ResponseTimerList;
 import com.zoctan.smarthub.utils.JsonUtil;
 
 import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class HubDetailModelImpl implements HubDetailModel {
+public class HubDetailNowModelImpl implements HubDetailNowModel {
     @Override
     public void loadHubNowList(final String oneNetId, final String dataStreamIds, final Listener listener) {
         final String headerKey = "api-key";
@@ -126,10 +124,10 @@ public class HubDetailModelImpl implements HubDetailModel {
     }
 
     @Override
-    public void resetHub(final String oneNetId, final String token, final Listener listener) {
+    public void sendOrder(final String oneNetId, final String token, final String order, final sendOrderListener listener) {
         final String headerKey = "Authorization";
         final String headerValue = "Smart " + token;
-        final String url = HubUrls.HUBS + "/" + oneNetId + "/order?order=reset&status=1";
+        final String url = HubUrls.HUBS + "/" + oneNetId + "/order?order=" + order + "&status=1";
         OkHttpUtil.getDefault(this).doAsync(
                 HttpInfo.Builder()
                         .setUrl(url)
@@ -146,110 +144,16 @@ public class HubDetailModelImpl implements HubDetailModel {
                     @Override
                     public void onSuccess(final HttpInfo info) throws IOException {
                         final Response response = JsonUtil.getObjectFromHttpInfo(info, Response.class);
-                        listener.onNowSuccess(response.getMsg());
-                    }
-                });
-    }
-
-    @Override
-    public void loadHubSpareList(final String oneNetId, final String token, final Listener listener) {
-        final String headerKey = "Authorization";
-        final String headerValue = "Smart " + token;
-        final String url = HubUrls.SPARES + "/" + oneNetId;
-
-        OkHttpUtil.getDefault(this).doAsync(
-                HttpInfo.Builder()
-                        .setUrl(url)
-                        .setRequestType(RequestType.GET)
-                        .addHead(headerKey, headerValue)
-                        .build(),
-                new Callback() {
-                    @Override
-                    public void onFailure(final HttpInfo info) throws IOException {
-                        final String response = info.getRetDetail();
-                        listener.onSpareFailure(response);
-                    }
-
-                    @Override
-                    public void onSuccess(final HttpInfo info) throws IOException {
-                        final ResponseMonthSpare responseMonthSpare = JsonUtil.getObjectFromHttpInfo(info, ResponseMonthSpare.class);
-                        if (responseMonthSpare.getMsg().equals("ok")) {
-                            listener.onSpareSuccess(responseMonthSpare.getResult());
-                        } else {
-                            listener.onSpareFailure(responseMonthSpare.getError());
-                        }
-                    }
-                });
-    }
-
-    @Override
-    public void loadHubTimerList(final String token, final String hubOneNetId, final Listener listener) {
-        final String url = HubUrls.TIMERS + "/" + hubOneNetId;
-        final String headerKey = "Authorization";
-        final String headerValue = "Smart " + token;
-        OkHttpUtil.getDefault(this).doAsync(
-                HttpInfo.Builder()
-                        .setUrl(url)
-                        .setRequestType(RequestType.GET)
-                        .addHead(headerKey, headerValue)
-                        .build(),
-                new Callback() {
-                    @Override
-                    public void onFailure(final HttpInfo info) throws IOException {
-                        final String response = info.getRetDetail();
-                        listener.onTimerFailure(response);
-                    }
-
-                    @Override
-                    public void onSuccess(final HttpInfo info) throws IOException {
-                        final ResponseTimerList responseList = JsonUtil.getObjectFromHttpInfo(info, ResponseTimerList.class);
-                        if (responseList.getMsg().equals("ok")) {
-                            listener.onTimerListSuccess(responseList.getResult());
-                        }
-                    }
-                });
-    }
-
-    @Override
-    public void doHubTimer(final String token, final TimerBean timer, final Listener listener) {
-        final String url = HubUrls.TIMERS + "/" + timer.getHub_id();
-        final String headerKey = "Authorization";
-        final String headerValue = "Smart " + token;
-        final int requestType;
-        switch (timer.getAction()) {
-            case "add":
-                requestType = RequestType.POST;
-                break;
-            case "close":
-            case "open":
-            case "update":
-                requestType = RequestType.PUT;
-                break;
-            default:
-                requestType = RequestType.DELETE;
-                break;
-        }
-        OkHttpUtil.getDefault(this).doAsync(
-                HttpInfo.Builder()
-                        .setUrl(url)
-                        .setRequestType(requestType)
-                        .addHead(headerKey, headerValue)
-                        .addParamJson(new Gson().toJson(timer))
-                        .build(),
-                new Callback() {
-                    @Override
-                    public void onFailure(final HttpInfo info) throws IOException {
-                        final String response = info.getRetDetail();
-                        listener.onTimerFailure(response);
-                    }
-
-                    @Override
-                    public void onSuccess(final HttpInfo info) throws IOException {
-                        final Response response = JsonUtil.getObjectFromHttpInfo(info, Response.class);
-                        if (response.getMsg().equals("ok")) {
-                            listener.onTimerSuccess(response.getResult());
-                        } else {
-                            listener.onTimerFailure(response.getError());
+                        switch (order) {
+                            case "store":
+                                listener.setHubStore(response.getResult().equals("1"));
+                                break;
+                            case "match":
+                                listener.setHubMatch(response.getResult());
+                                break;
+                            default:
+                                listener.onNowSuccess(response.getResult());
+                                break;
                         }
                     }
                 });
