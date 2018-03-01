@@ -124,7 +124,7 @@ class Device(db.Model):
     hub_id = db.Column(db.Unicode(64, collation='utf8_bin'), db.ForeignKey('smart_hubs.onenet_id'))
     name = db.Column(db.Unicode(256, collation='utf8_bin'), nullable=False)
     img = db.Column(db.Unicode(256, collation='utf8_bin'))
-    eigenvalue = db.Column(db.Unicode(128, collation='utf8_bin'), nullable=False)
+    eigenvalue = db.Column(db.Integer, nullable=False)
 
     def to_json(self):
         json = {
