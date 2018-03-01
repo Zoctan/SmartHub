@@ -101,10 +101,11 @@ def get_device(device_id):
     if eigenvalue == 100:
         return jsonify({'msg': 'no', 'error': '空载'})
     # 0：无效或不能识别当前用电器
-    if eigenvalue == 0:
+    if eigenvalue != 0:
+        # 先从数据库找
+        device = Device.query.filter_by(eigenvalue=eigenvalue).first()
+        if device:
+            return jsonify({'msg': 'ok', 'result': device.to_json()})
+    else:
         # 提示用户进行用电器添加
         return jsonify({'msg': 'no', 'error': '无法确认当前用电器，请手动添加该用电器'})
-    # 先从数据库找
-    device = Device.query.filter_by(eigenvalue=eigenvalue).first()
-    if device:
-        return jsonify({'msg': 'ok', 'result': device.to_json()})
