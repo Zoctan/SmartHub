@@ -24,8 +24,11 @@ def add_device(device_id):
     response = requests.get(url, headers=headers)
     # 识别的用电器的特征值
     eigenvalue = response.json()['data']['current_value']
+    # 100: 空载
+    if eigenvalue == 100:
+        return jsonify({'msg': 'no', 'error': '空载'})
     # 有可能上次保存了特征值，但是没识别成功
-    if eigenvalue != 100:
+    if eigenvalue != 0:
         device = Device.query.filter_by(eigenvalue=eigenvalue, hub_id=device_id).first()
         if device:
             return jsonify({'msg': 'no', 'result': '请勿重复添加相同的用电器'})
@@ -94,11 +97,14 @@ def get_device(device_id):
     response = requests.get(url, headers=headers)
     # 识别的用电器的特征值
     eigenvalue = response.json()['data']['current_value']
-    # 100：无效或不能识别当前用电器
-    if eigenvalue != 100:
-        # 先从数据库找
-        device = Device.query.filter_by(eigenvalue=eigenvalue).first()
-        if device:
-            return jsonify({'msg': 'ok', 'result': device.to_json()})
-    # 提示用户进行用电器添加
-    return jsonify({'msg': 'no', 'error': '无法确认当前用电器，请手动添加该用电器'})
+    # 100: 空载
+    if eigenvalue == 100:
+        return jsonify({'msg': 'no', 'error': '空载'})
+    # 0：无效或不能识别当前用电器
+    if eigenvalue == 0:
+        # 提示用户进行用电器添加
+        return jsonify({'msg': 'no', 'error': '无法确认当前用电器，请手动添加该用电器'})
+    # 先从数据库找
+    device = Device.query.filter_by(eigenvalue=eigenvalue).first()
+    if device:
+        return jsonify({'msg': 'ok', 'result': device.to_json()})
