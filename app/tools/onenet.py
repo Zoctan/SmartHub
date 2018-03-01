@@ -32,11 +32,11 @@ def send_order(device_id, order, status, sleep_time=4):
         response = requests.post(cmd_url, data=data, headers=headers)
         # 4秒收一次数据，只能延迟高点查询插座状态
         sleep(sleep_time)
-        if order == 'store' or order == 'match':
-            if order == 'store':
-                url = 'http://api.heclouds.com/devices/{}/datastreams/store'.format(device_id)
+        if order == 'STORE' or order == 'match':
+            if order == 'STORE':
+                url = 'http://api.heclouds.com/devices/{}/datastreams/STORE'.format(device_id)
             if order == 'match':
-                url = 'http://api.heclouds.com/devices/{}/datastreams/match'.format(device_id)
+                url = 'http://api.heclouds.com/devices/{}/datastreams/list'.format(device_id)
             response = requests.get(url, headers=headers)
             return response.json()['data']['current_value'], None
         query_url = url + '/' + response.json()['data']['cmd_uuid']
