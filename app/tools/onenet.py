@@ -33,8 +33,7 @@ def send_order(device_id, order, status, sleep_time=4):
         # 4秒收一次数据，只能延迟高点查询插座状态
         sleep(sleep_time)
         if order == 'STORE' or order == 'match':
-            if order == 'STORE':
-                sleep(2)
+            if order == 'store':
                 url = 'http://api.heclouds.com/devices/{}/datastreams/STORE'.format(device_id)
             if order == 'match':
                 url = 'http://api.heclouds.com/devices/{}/datastreams/list'.format(device_id)
