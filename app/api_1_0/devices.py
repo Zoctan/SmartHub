@@ -106,6 +106,9 @@ def get_device(device_id):
         device = Device.query.filter_by(eigenvalue=eigenvalue).first()
         if device:
             return jsonify({'msg': 'ok', 'result': device.to_json()})
+        else:
+            # 提示用户进行用电器添加
+            return jsonify({'msg': 'no', 'error': '无法确认当前用电器，请手动添加该用电器'})
     else:
         # 提示用户进行用电器添加
         return jsonify({'msg': 'no', 'error': '无法确认当前用电器，请手动添加该用电器'})
