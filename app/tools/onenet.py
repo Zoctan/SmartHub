@@ -8,7 +8,7 @@ headers = {'api-key': 'nJVyiaj5Y297Fc6Q=bUYVWnz2=0='}
 
 # https://open.iot.10086.cn/doc/art257.html#68
 # 发送命令
-def send_order(device_id, order, status):
+def send_order(device_id, order, status, sleep_time=3):
     # https://open.iot.10086.cn/doc/art257.html#68
     url = 'http://api.heclouds.com/cmds'
     cmd_url = url + '?device_id={}&qos=1&timeout=100&type=0'.format(device_id)
@@ -31,7 +31,7 @@ def send_order(device_id, order, status):
     else:
         response = requests.post(cmd_url, data=data, headers=headers)
         # 3秒收一次数据，只能延迟高点查询插座状态
-        sleep(3)
+        sleep(sleep_time)
         query_url = url + '/' + response.json()['data']['cmd_uuid']
         query_response = requests.get(query_url, headers=headers)
         status = query_response.json()['data']['status']

@@ -26,14 +26,18 @@ def add_device(device_id):
     eigenvalue = response.json()['data']['current_value']
     # 有可能上次保存了特征值，但是没识别成功
     if eigenvalue != 100:
-        device = Device(eigenvalue=eigenvalue, hub_id=device_id, name=name)
-        db.session.add(device)
+        device = Device.query.filter_by(eigenvalue=eigenvalue, hub_id=device_id).first()
+        if device:
+            return jsonify({'msg': 'no', 'result': '请勿重复添加相同的用电器'})
+        else:
+            device = Device(eigenvalue=eigenvalue, hub_id=device_id, name=name)
+            db.session.add(device)
         return jsonify({'msg': 'ok', 'result': '用电器添加成功'})
     else:
         device = Device.query.filter_by(eigenvalue=eigenvalue, hub_id=device_id).first()
         if device:
             return jsonify({'msg': 'no', 'result': '请勿重复添加相同的用电器'})
-        # 如果仍为0：无效或不能识别当前用电器
+        # 如果仍为100：无效或不能识别当前用电器
         # 保存该用电器，先让插座Flash存下来，再本地数据库存
         msg, query_url = send_order(device_id, 'store', 1)
         if msg != '设备正常响应':
@@ -83,9 +87,12 @@ def get_device(device_id):
     hub = Hub.query.filter_by(onenet_id=device_id).first()
     if not hub:
         return jsonify({'msg': 'no', 'error': '插座不存在'})
-    # 识别的用电器的特征值
+    # 先尝试识别当前用电器
+    send_order(device_id, 'match', 1, 0)
+    sleep(3.5)
     url = 'http://api.heclouds.com/devices/{}/datastreams/list'.format(device_id)
     response = requests.get(url, headers=headers)
+    # 识别的用电器的特征值
     eigenvalue = response.json()['data']['current_value']
     # 100：无效或不能识别当前用电器
     if eigenvalue != 100:
