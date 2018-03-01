@@ -50,7 +50,7 @@ def add_device(device_id):
             if status != 4:
                 return jsonify({'msg': 'no', 'error': '插座Flash可能未保存成功'})
         # match更新list
-        msg, query_url = send_order(device_id, 'match', 1)
+        msg, query_url = send_order(device_id, 'match', 1, 6)
         if msg != '设备正常响应':
             sleep(1)
             query_response = requests.get(query_url, headers=headers)
