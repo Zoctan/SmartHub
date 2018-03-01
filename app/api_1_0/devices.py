@@ -31,7 +31,7 @@ def add_device(device_id):
     if eigenvalue != 0:
         device = Device.query.filter_by(eigenvalue=eigenvalue, hub_id=device_id).first()
         if device:
-            return jsonify({'msg': 'no', 'result': '请勿重复添加相同的用电器'})
+            return jsonify({'msg': 'no', 'error': '请勿重复添加相同的用电器'})
         else:
             device = Device(eigenvalue=eigenvalue, hub_id=device_id, name=name)
             db.session.add(device)
@@ -39,7 +39,7 @@ def add_device(device_id):
     else:
         device = Device.query.filter_by(eigenvalue=eigenvalue, hub_id=device_id).first()
         if device:
-            return jsonify({'msg': 'no', 'result': '请勿重复添加相同的用电器'})
+            return jsonify({'msg': 'no', 'error': '请勿重复添加相同的用电器'})
         # 如果仍为100：无效或不能识别当前用电器
         # 保存该用电器，先让插座Flash存下来，再本地数据库存
         msg, query_url = send_order(device_id, 'store', 1)
@@ -48,7 +48,7 @@ def add_device(device_id):
             query_response = requests.get(query_url, headers=headers)
             status = query_response.json()['data']['status']
             if status != 4:
-                return jsonify({'msg': 'no', 'result': '插座Flash可能未保存成功'})
+                return jsonify({'msg': 'no', 'error': '插座Flash可能未保存成功'})
         # match更新list
         msg, query_url = send_order(device_id, 'match', 1)
         if msg != '设备正常响应':
@@ -56,7 +56,7 @@ def add_device(device_id):
             query_response = requests.get(query_url, headers=headers)
             status = query_response.json()['data']['status']
             if status != 4:
-                return jsonify({'msg': 'no', 'result': '识别失败，请重新添加用电器'})
+                return jsonify({'msg': 'no', 'error': '识别失败，请重新添加用电器'})
         url = 'http://api.heclouds.com/devices/{}/datastreams/list'.format(device_id)
         response = requests.get(url, headers=headers)
         eigenvalue = response.json()['data']['current_value']
