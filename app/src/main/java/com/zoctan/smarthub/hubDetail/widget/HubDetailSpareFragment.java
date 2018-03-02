@@ -218,6 +218,13 @@ public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpa
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // 停止刷新
+        handler.removeCallbacks(runnable);
+    }
+
+    @Override
     public void showFailedMsg(final String msg) {
         AlerterUtil.showDanger(getHoldingActivity(), msg);
     }

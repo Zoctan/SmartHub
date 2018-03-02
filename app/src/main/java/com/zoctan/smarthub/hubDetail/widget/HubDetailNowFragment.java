@@ -80,6 +80,9 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
         final boolean flag;
         if (!mSPUtil.getBoolean("hub_is_electric")) {
             flag = false;
+            final DeviceBean deviceBean = new DeviceBean();
+            deviceBean.setName("继电器已断电，无法查询当前用电器");
+            setDevice(deviceBean);
         } else {
             flag = true;
             mPresenter.loadHubDevice(
@@ -377,8 +380,12 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
 
     @Override
     public void setDevice(final DeviceBean device) {
-        if (device.getImg() != null) {
-            Glide.with(this).load(device.getImg()).into(mIvAppliances);
+        try {
+            if (device.getImg() != null) {
+                Glide.with(this).load(device.getImg()).into(mIvAppliances);
+            }
+        } catch (final NullPointerException ignored) {
+
         }
         mTvAppliances.setText(device.getName());
         if (device.getHub_id() != null) {

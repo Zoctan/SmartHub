@@ -27,7 +27,6 @@ public class HubListPresenter {
     }
 
     public void loadHubList(final String token) {
-        mHubView.showLoading();
         mHubModel.loadHubList(token, new HubListPresenter.Listener());
     }
 
@@ -41,7 +40,6 @@ public class HubListPresenter {
         @Override
         public void onSuccess(final List<HubBean> list) {
             mHubView.loadHubList(list);
-            mHubView.hideLoading();
         }
 
         @Override

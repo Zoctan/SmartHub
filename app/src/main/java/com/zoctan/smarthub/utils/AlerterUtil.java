@@ -42,6 +42,7 @@ public class AlerterUtil {
                 .setText(msg)
                 .setIcon(defaultIcon)
                 .setBackgroundColorRes(color)
+                .setDuration(6 * 1000)
                 .show();
     }
 

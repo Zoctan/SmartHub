@@ -17,7 +17,6 @@ public class HubDetailTimerPresenter {
     }
 
     public void loadHubTimerList(final String token, final String hubOneNetId) {
-        mTimerView.showLoading();
         mHubModel.loadHubTimerList(token, hubOneNetId, new HubDetailTimerPresenter.Listener());
     }
 
@@ -36,7 +35,6 @@ public class HubDetailTimerPresenter {
         @Override
         public void onTimerListSuccess(final List<TimerBean> timerBean) {
             mTimerView.loadTimerList(timerBean);
-            mTimerView.hideLoading();
         }
 
         @Override

@@ -21,7 +21,6 @@ public class HubDetailNowPresenter {
     }
 
     public void loadHubNowList(final String hubOneNetId, final String dataStreamIds) {
-        mNowView.showLoading();
         mHubModel.loadHubNowList(hubOneNetId, dataStreamIds, new HubDetailNowPresenter.Listener());
     }
 

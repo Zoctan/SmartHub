@@ -266,12 +266,12 @@ public class HubListFragment extends BaseFragment implements HubListView {
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     public void permissionDenied() {
-        AlerterUtil.showDanger(getHoldingActivity(), R.string.permission_denied);
+        AlerterUtil.showDanger(getActivity(), R.string.permission_denied);
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     public void permissionDeniedNeverAsk() {
-        AlerterUtil.showDanger(getHoldingActivity(), R.string.permission_denied_never_ask);
+        AlerterUtil.showDanger(getActivity(), R.string.permission_denied_never_ask);
     }
 
     @Override
@@ -315,7 +315,7 @@ public class HubListFragment extends BaseFragment implements HubListView {
                         isValidateQR = false;
                     }
                     if (!isValidateQR) {
-                        AlerterUtil.showDanger(getHoldingActivity(), "请扫描正确的插座二维码哦~");
+                        AlerterUtil.showDanger(getActivity(), "请扫描正确的插座二维码哦~");
                     }
                 }
             }
@@ -348,7 +348,7 @@ public class HubListFragment extends BaseFragment implements HubListView {
             mData.addAll(hubList);
             mAdapter.setData(mData);
         } else {
-            AlerterUtil.showInfo(getHoldingActivity(), R.string.tip_add_hub);
+            AlerterUtil.showInfo(getActivity(), R.string.tip_add_hub);
         }
         mAdapter.notifyDataSetChanged();
     }
@@ -369,14 +369,14 @@ public class HubListFragment extends BaseFragment implements HubListView {
             @Override
             public void run() {
                 refreshHubList();
-                AlerterUtil.showInfo(getHoldingActivity(), msg);
+                AlerterUtil.showInfo(getActivity(), msg);
             }
         }, 1500);
     }
 
     @Override
     public void showFailedMsg(final String msg) {
-        AlerterUtil.showDanger(getHoldingActivity(), msg);
+        AlerterUtil.showDanger(getActivity(), msg);
     }
 }
 
