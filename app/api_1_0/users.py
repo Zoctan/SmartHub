@@ -5,6 +5,7 @@ from flask import request, jsonify, g
 from . import decorators
 from .authentication import verify_password, get_token
 from ..models import User, db
+from .qiniuyun import refresh_cdn
 
 
 @decorators.composed(decorators.route('/api/tokens', methods=['POST']), decorators.json_required)
@@ -43,6 +44,7 @@ def update_user_avatar():
     if not avatar or avatar == '':
         return jsonify({'msg': 'no', 'error': '图片链接不能为空'})
     g.current_user.avatar = avatar
+    refresh_cdn([avatar])
     return jsonify({'msg': 'ok', 'result': '头像修改成功'})
 
 

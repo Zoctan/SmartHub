@@ -3,11 +3,11 @@
 
 import requests
 from flask import jsonify, request
-from time import sleep
 from app import db
 from . import decorators
 from .hubs import send_order
 from ..models import Hub, Device
+from .qiniuyun import refresh_cdn
 
 headers = {'api-key': 'nJVyiaj5Y297Fc6Q=bUYVWnz2=0='}
 
@@ -42,6 +42,7 @@ def update_device_img(device_id):
         return jsonify({'msg': 'no', 'error': '图片链接不能为空'})
     device = Device.query.filter_by(id=request.json.get('id'), hub_id=device_id).first()
     device.img = request.json.get('img')
+    refresh_cdn([device.img])
     return jsonify({'msg': 'ok', 'result': '用电器图片修改成功'})
 
 

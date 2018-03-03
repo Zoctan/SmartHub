@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from flask import jsonify
 from qiniu import Auth
+from qiniu import CdnManager
 
 from . import decorators
 
@@ -20,3 +21,10 @@ def get_qiniu_token(key):
     # 生成上传 Token，可以指定过期时间等
     token = q.upload_token(bucket_name, key, 3600)
     return jsonify({'msg': 'ok', 'result': token})
+
+
+def refresh_cdn(urls):
+    auth = Auth(access_key=access_key, secret_key=secret_key)
+    cdn_manager = CdnManager(auth)
+    # 刷新链接
+    cdn_manager.refresh_urls(urls)

@@ -28,9 +28,14 @@ db.session.flush()
 month = models.MonthSpare()
 month.hub_id='19959358'
 month.current_month=3
+month.watt=24
 db.session.add(month)
 hour = models.HourSpare()
 hour.hub_id='19959358'
+hour.ten=6
+hour.eleven=6
+hour.twelve=3
+hour.fourteen=12
 db.session.add(hour)
 timer = models.Timer(hub_id='19959358', name='test', power=1, repeat='每天', time='16:55', status=0)
 db.session.add(timer)
