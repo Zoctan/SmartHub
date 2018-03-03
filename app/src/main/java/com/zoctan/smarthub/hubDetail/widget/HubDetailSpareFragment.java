@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.GridLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
@@ -24,7 +25,6 @@ import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
 import com.zoctan.smarthub.hubDetail.presenter.HubDetailSparePresenter;
 import com.zoctan.smarthub.hubDetail.view.HubDetailSpareView;
-import com.zoctan.smarthub.utils.AlerterUtil;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -226,7 +226,7 @@ public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpa
 
     @Override
     public void showFailedMsg(final String msg) {
-        AlerterUtil.showDanger(getHoldingActivity(), msg);
+        ToastUtils.showShort(msg);
     }
 
     private static class MyValueFormatter implements IAxisValueFormatter {

@@ -9,7 +9,7 @@ android {
     defaultConfig {
         // 应用的包名
         applicationId "com.zoctan.smartHub"
-        minSdkVersion 24
+        minSdkVersion 22
         targetSdkVersion 27
         versionCode 1
         versionName "1.0.1"
@@ -63,11 +63,11 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile(name: 'gt3geetest_sdk', ext: 'aar')
-    compile 'com.android.support:appcompat-v7:27.0.2'
-    compile 'com.android.support:design:27.0.2'
-    compile 'com.android.support:cardview-v7:27.0.2'
-    compile 'com.android.support:support-v4:27.0.2'
-    compile "com.android.support:multidex:1.0.2"
+    compile 'com.android.support:appcompat-v7:27.1.0'
+    compile 'com.android.support:design:27.1.0'
+    compile 'com.android.support:cardview-v7:27.1.0'
+    compile 'com.android.support:support-v4:27.1.0'
+    compile "com.android.support:multidex:1.0.3"
     // 转换Java对象和Json对象
     compile 'com.google.code.gson:gson:2.8.2'
     compile 'com.zhousf.lib:okhttp3:2.9.3'

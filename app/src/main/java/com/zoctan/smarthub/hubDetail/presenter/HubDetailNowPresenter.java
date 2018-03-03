@@ -44,6 +44,9 @@ public class HubDetailNowPresenter {
         mHubModel.getQiNiuToken(userBean, deviceBean, new HubDetailNowModel.UploadListener() {
             @Override
             public void onSuccess(final String qiNiuToken) {
+                mNowView.hideLoading();
+                mNowView.showSuccessMsg("图片上传成功，正在设置数据库...");
+                mNowView.showLoading();
                 mHubModel.uploadImg(deviceBean, userBean.getToken(), qiNiuToken, photoPath, new HubDetailNowModel.UploadListener() {
                     @Override
                     public void onSuccess(final String msg) {

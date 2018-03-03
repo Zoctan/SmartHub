@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.ImageUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
@@ -235,7 +236,6 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
         builder.create().show();
     }
 
-    // 修改头像对话框操作处理
     @Override
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -382,7 +382,9 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
     public void setDevice(final DeviceBean device) {
         try {
             if (device.getImg() != null) {
-                Glide.with(this).load(device.getImg()).into(mIvAppliances);
+                Glide.with(this)
+                        .load(device.getImg())
+                        .into(mIvAppliances);
             }
         } catch (final NullPointerException ignored) {
 
@@ -406,13 +408,13 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
 
     @Override
     public void showUpdateImgSuccessMsg(final String url, final String msg) {
-        mSPUtil.put("device_img", "http://p0qgwnuel.bkt.clouddn.com/" + url);
-        AlerterUtil.showInfo(getHoldingActivity(), msg);
+        mSPUtil.put("device_img", "http://smarthub.txdna.cn/" + url);
+        AlerterUtil.showInfo(getActivity(), msg);
     }
 
     @Override
     public void showDoDeviceSuccessMsg(final String msg) {
-        AlerterUtil.showInfo(getHoldingActivity(), msg);
+        AlerterUtil.showInfo(getActivity(), msg);
         mPresenter.loadHubDevice(
                 mSPUtil.getString("hub_onenet_id"),
                 mSPUtil.getString("user_token")
@@ -431,12 +433,12 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
 
     @Override
     public void showSuccessMsg(final String msg) {
-        AlerterUtil.showInfo(getHoldingActivity(), msg);
+        ToastUtils.showShort(msg);
     }
 
     @Override
     public void showFailedMsg(final String msg) {
-        AlerterUtil.showDanger(getHoldingActivity(), msg);
+        ToastUtils.showShort(msg);
     }
 
     @Override

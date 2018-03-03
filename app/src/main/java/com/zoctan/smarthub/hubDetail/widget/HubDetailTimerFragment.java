@@ -18,6 +18,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
@@ -267,13 +268,13 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
 
     @Override
     public void showSuccessMsg(final String msg) {
-        AlerterUtil.showInfo(getHoldingActivity(), msg);
+        ToastUtils.showShort(msg);
         refreshTimerList();
     }
 
     @Override
     public void showFailedMsg(final String msg) {
-        AlerterUtil.showDanger(getHoldingActivity(), msg);
+        ToastUtils.showShort(msg);
     }
 }
 

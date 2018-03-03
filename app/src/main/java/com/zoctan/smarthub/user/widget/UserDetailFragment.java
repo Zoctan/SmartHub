@@ -198,7 +198,7 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
         builder.setTitle("设置头像");
         // 指定照片保存路径（应用本身的缓存目录）
         imageUri = Uri.fromFile(new File(getHoldingActivity().getCacheDir(),
-                System.currentTimeMillis() + "avatar.jpg"));
+                System.currentTimeMillis() + "avatar.png"));
         final String[] items = {"选择本地照片", "拍照"};
         builder.setNegativeButton("取消", null);
         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -253,7 +253,7 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
                             final UserBean userBean = new UserBean();
                             userBean.setUsername(userName + ".png");
                             userBean.setToken(mSPUtil.getString("user_token"));
-                            userBean.setAvatar("http://p0qgwnuel.bkt.clouddn.com/" + userName + ".png");
+                            userBean.setAvatar("http://smarthub.txdna.cn/" + userName + ".png");
                             // 上传图片
                             mUserDetailPresenter.uploadAvatar(userBean, imageUri.getPath());
                         }
@@ -310,7 +310,7 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
         mTvUserPhone.setText(userPhone);
         //noinspection ConstantConditions
         getActivity().sendBroadcast(new Intent("update_user_info_or_avatar"));
-        AlerterUtil.showInfo(getHoldingActivity(), msg);
+        AlerterUtil.showInfo(getActivity(), msg);
     }
 
     @Override
@@ -321,12 +321,12 @@ public class UserDetailFragment extends BaseFragment implements UserDetailView {
         Glide.with(this).load(avatarUrl).into(mCircleImageView);
         //noinspection ConstantConditions
         getActivity().sendBroadcast(new Intent("update_user_info_or_avatar"));
-        AlerterUtil.showInfo(getHoldingActivity(), msg);
+        AlerterUtil.showInfo(getActivity(), msg);
     }
 
     @Override
     public void showFailedMsg(final String msg) {
-        AlerterUtil.showDanger(getHoldingActivity(), msg);
+        AlerterUtil.showDanger(getActivity(), msg);
     }
 
     @Override

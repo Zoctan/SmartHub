@@ -296,7 +296,7 @@ public class HubListFragment extends BaseFragment implements HubListView {
                         if (result.length != 2) {
                             isValidateQR = false;
                         } else {
-                            AlerterUtil.showInfo(getHoldingActivity(), String.format("Onenet:%s\nMac:%s", onenetId, mac));
+                            AlerterUtil.showInfo(getActivity(), String.format("Onenet:%s\nMac:%s", onenetId, mac));
                             // onenet的id是一串数字，如果扫出来前半段不是数字会抛错
                             //noinspection ResultOfMethodCallIgnored
                             Long.parseLong(onenetId);

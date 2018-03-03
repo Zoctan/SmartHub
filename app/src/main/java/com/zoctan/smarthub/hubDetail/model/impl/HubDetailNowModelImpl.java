@@ -200,7 +200,7 @@ public class HubDetailNowModelImpl implements HubDetailNowModel {
                     // 上传成功后将key值上传到自己的服务器
                     final String headerKey = "Authorization";
                     final String headerValue = "Smart " + token;
-                    deviceBean.setImg("http://p0qgwnuel.bkt.clouddn.com/" + deviceBean.getImg());
+                    deviceBean.setImg("http://smarthub.txdna.cn/" + deviceBean.getImg());
                     OkHttpUtil.getDefault(this).doAsync(
                             HttpInfo.Builder()
                                     .setUrl(url)
