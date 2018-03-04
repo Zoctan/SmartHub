@@ -9,7 +9,7 @@ android {
     defaultConfig {
         // 应用的包名
         applicationId "com.zoctan.smartHub"
-        minSdkVersion 22
+        minSdkVersion 21
         targetSdkVersion 27
         versionCode 1
         versionName "1.0.1"
