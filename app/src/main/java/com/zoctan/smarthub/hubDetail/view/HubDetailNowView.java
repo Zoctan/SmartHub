@@ -13,11 +13,19 @@ public interface HubDetailNowView {
 
     void setData(Map<String, String> data);
 
+    void showStoreOrMatchLoading();
+
+    void hideStoreOrMatchLoading();
+
+    void showLoadDeviceLoading();
+
+    void hideLoadDeviceLoading();
+
     void showLoading();
 
     void hideLoading();
 
-    void showUpdateImgSuccessMsg(String url, String msg);
+    void showUploadSuccessMsg(String msg);
 
     void showDoDeviceSuccessMsg(String msg);
 

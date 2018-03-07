@@ -2,49 +2,43 @@ package com.zoctan.smarthub.hubDetail.model;
 
 import com.zoctan.smarthub.beans.DeviceBean;
 import com.zoctan.smarthub.beans.OneNetDataStreamsBean;
-import com.zoctan.smarthub.beans.UserBean;
 
 import java.util.List;
 
 public interface HubDetailNowModel {
-    void loadHubDevice(String oneNetId, String token, Listener listener);
+    void loadHubDevice(String oneNetId, String token, onLoadHubDeviceListener listener);
 
     void sendOrder(String oneNetId, String token, String order, sendOrderListener listener);
 
-    void loadHubNowList(String oneNetId, String dataStreamIds, Listener listener);
+    void loadHubNowList(String oneNetId, String dataStreamIds, onLoadHubNowListListener listener);
 
-    void doDevice(DeviceBean deviceBean, String token, String action, Listener listener);
-
-    void uploadImg(DeviceBean deviceBean, String token, String qiNiuToken, String photoPath, UploadListener listener);
-
-    void getQiNiuToken(UserBean userBean, DeviceBean deviceBean, UploadListener listener);
-
-    interface UploadListener {
-        void onSuccess(String msg);
-
-        void onFailure(String msg);
-    }
+    void doDevice(DeviceBean deviceBean, String token, onDoDeviceListener listener);
 
     interface sendOrderListener {
-
-        void onNowSuccess(String msg);
+        void onSuccess(String msg);
 
         void setHubStore(boolean flag);
 
         void setHubMatch(String list);
 
-        void onNowFailure(String msg);
+        void onFailure(String msg);
     }
 
-    interface Listener {
-        void onDoDeviceSuccess(String msg);
+    interface onLoadHubDeviceListener {
+        void onSuccess(DeviceBean deviceBean);
 
-        void onNowSuccess(String msg);
+        void onFailure(String msg);
+    }
 
-        void onNowSuccess(DeviceBean deviceBean);
+    interface onLoadHubNowListListener {
+        void onSuccess(List<OneNetDataStreamsBean> oneNetDataStreamList);
 
-        void onOneNetDataStreamSuccess(List<OneNetDataStreamsBean> oneNetDataStreamList);
+        void onFailure(String msg);
+    }
 
-        void onNowFailure(String msg);
+    interface onDoDeviceListener {
+        void onSuccess(String msg);
+
+        void onFailure(String msg);
     }
 }

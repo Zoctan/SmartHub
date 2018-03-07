@@ -1,10 +1,14 @@
 package com.zoctan.smarthub.user.presenter;
 
-import com.zoctan.smarthub.api.UserUrls;
+import com.zoctan.smarthub.api.SmartApiUrls;
 import com.zoctan.smarthub.beans.UserBean;
 import com.zoctan.smarthub.user.model.UserDetailModel;
 import com.zoctan.smarthub.user.model.impl.UserDetailModelImpl;
 import com.zoctan.smarthub.user.view.UserDetailView;
+import com.zoctan.smarthub.utils.JsonUtil;
+import com.zoctan.smarthub.utils.QiNiu.GetTokenListener;
+import com.zoctan.smarthub.utils.QiNiu.QiNiuUtil;
+import com.zoctan.smarthub.utils.QiNiu.UploadListener;
 
 public class UserDetailPresenter {
     private final UserDetailView mUserDetailView;
@@ -15,19 +19,16 @@ public class UserDetailPresenter {
         this.mUserModel = new UserDetailModelImpl();
     }
 
-    public void update(final String action, final UserBean user, final String token) {
+    public void update(final UserBean user, final String token) {
         mUserDetailView.showLoading();
-        String url = null;
-        if (action.equals("info")) {
-            url = UserUrls.USERS;
-        } else if (action.equals("password")) {
-            // 修改密码
-            url = UserUrls.PASSWORD;
-        }
-        mUserModel.update(url, user, token, new UserDetailModel.Listener() {
+        mUserModel.update(user, token, new UserDetailModel.Listener() {
             @Override
             public void onSuccess(final String msg) {
-                mUserDetailView.showUpdateSuccessMsg(msg);
+                if (user.getAction().equals("password")) {
+                    mUserDetailView.showSuccessMsg(msg);
+                } else {
+                    mUserDetailView.showUpdateInfoSuccessMsg(msg, user);
+                }
                 mUserDetailView.hideLoading();
             }
 
@@ -40,16 +41,40 @@ public class UserDetailPresenter {
     }
 
     // 图片上传至七牛云
-    public void uploadAvatar(final UserBean userBean, final String photoPath) {
+    public void qiNiuUpload(final String userToken,
+                            final UserBean userBean,
+                            final String localFilePath) {
         mUserDetailView.showLoading();
-        mUserModel.getQiNiuToken(userBean, new UserDetailModel.Listener() {
-            @Override
-            public void onSuccess(final String token) {
-                mUserModel.uploadAvatar(userBean, token, photoPath, new UserDetailModel.UploadAvatarListener() {
+        QiNiuUtil.getQiNiuTokenFromSmartApi(
+                userToken,
+                userBean.getAvatar(),
+                new GetTokenListener() {
                     @Override
-                    public void onSuccess(final String avatarUrl, final String msg) {
-                        mUserDetailView.showUpdateAvatarSuccessMsg(avatarUrl, msg);
+                    public void onSuccess(final String qiNiuToken) {
                         mUserDetailView.hideLoading();
+                        mUserDetailView.showSuccessMsg("图片上传成功，正在设置数据库...");
+                        mUserDetailView.showLoading();
+                        final UserBean user = new UserBean();
+                        user.setAvatar(SmartApiUrls.QiNiuBucket + userBean.getAvatar());
+                        QiNiuUtil.uploadImgAndStoreSmartApiDB(localFilePath,
+                                userBean.getAvatar(),
+                                qiNiuToken,
+                                SmartApiUrls.USERS_AVATAR,
+                                userToken,
+                                JsonUtil.serialize(user),
+                                new UploadListener() {
+                                    @Override
+                                    public void onSuccess(final String msg) {
+                                        mUserDetailView.showUploadSuccessMsg(msg, user);
+                                        mUserDetailView.hideLoading();
+                                    }
+
+                                    @Override
+                                    public void onFailure(final String msg) {
+                                        mUserDetailView.showFailedMsg(msg);
+                                        mUserDetailView.hideLoading();
+                                    }
+                                });
                     }
 
                     @Override
@@ -58,13 +83,5 @@ public class UserDetailPresenter {
                         mUserDetailView.hideLoading();
                     }
                 });
-            }
-
-            @Override
-            public void onFailure(final String msg) {
-                mUserDetailView.showFailedMsg(msg);
-                mUserDetailView.hideLoading();
-            }
-        });
     }
 }

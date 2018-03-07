@@ -1,5 +1,8 @@
 package com.zoctan.smarthub.hubDetail.widget;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -12,6 +15,7 @@ import com.flyco.tablayout.listener.CustomTabEntity;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseActivity;
+import com.zoctan.smarthub.beans.HubBean;
 
 import java.util.ArrayList;
 
@@ -24,6 +28,7 @@ public class HubDetailActivity extends BaseActivity {
     ViewPager mViewPager;
     @BindView(R.id.CommonTabLayout_hub_detail)
     CommonTabLayout mTabLayout;
+    protected HubBean hubBean = new HubBean();
 
     private final Fragment[] mFragmentList = new Fragment[]{
             HubDetailNowFragment.newInstance(),
@@ -41,7 +46,6 @@ public class HubDetailActivity extends BaseActivity {
             R.drawable.ic_realtime_select,
             R.drawable.ic_line_chart_select,
             R.drawable.ic_timer_select};
-    private final ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
 
     @Override
     protected int bindLayout() {
@@ -49,8 +53,21 @@ public class HubDetailActivity extends BaseActivity {
     }
 
     @Override
+    protected void onCreate(@Nullable final Bundle savedInstanceState) {
+        final Intent intent = getIntent();
+        final Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            hubBean.setName(bundle.getString("hub_name"));
+            hubBean.setOnenet_id(bundle.getString("hub_onenet_id"));
+            hubBean.setIs_electric(bundle.getBoolean("hub_is_electric"));
+            hubBean.setConnected(bundle.getBoolean("hub_connected"));
+        }
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     protected void initView() {
-        mToolbar.setTitle(mSPUtil.getString("hub_name"));
+        mToolbar.setTitle(hubBean.getName());
         setSupportActionBar(mToolbar);
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -61,7 +78,9 @@ public class HubDetailActivity extends BaseActivity {
             }
         });
 
-        mViewPager.setAdapter(new HubDetailViewPagerAdapter(getSupportFragmentManager(), mFragmentList));
+        mViewPager.setAdapter(new HubDetailViewPagerAdapter(getSupportFragmentManager(), mFragmentList, hubBean));
+
+        final ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
         for (int i = 0; i < mTabTextList.length; i++) {
             mTabEntities.add(new TabEntity(getString(mTabTextList[i]), mIconSelectIds[i], mIconUnSelectIds[i]));
         }
@@ -105,14 +124,22 @@ public class HubDetailActivity extends BaseActivity {
 
 class HubDetailViewPagerAdapter extends FragmentPagerAdapter {
     private final Fragment[] mList;
+    private final HubBean hub;
 
-    HubDetailViewPagerAdapter(final FragmentManager fragmentManager, final Fragment[] fragments) {
+    HubDetailViewPagerAdapter(final FragmentManager fragmentManager, final Fragment[] fragments, final HubBean hubBean) {
         super(fragmentManager);
         mList = fragments;
+        hub = hubBean;
     }
 
     @Override
     public Fragment getItem(final int position) {
+        final Bundle bundle = new Bundle();
+        bundle.putString("hub_name", hub.getName());
+        bundle.putString("hub_onenet_id", hub.getOnenet_id());
+        bundle.putBoolean("hub_is_electric", hub.getIs_electric());
+        bundle.putBoolean("hub_connected", hub.getConnected());
+        mList[position].setArguments(bundle);
         return mList[position];
     }
 

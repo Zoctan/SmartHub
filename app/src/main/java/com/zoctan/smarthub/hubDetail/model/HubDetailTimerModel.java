@@ -5,15 +5,19 @@ import com.zoctan.smarthub.beans.TimerBean;
 import java.util.List;
 
 public interface HubDetailTimerModel {
-    void loadHubTimerList(String token, String hubOneNetId, Listener listener);
+    void loadHubTimerList(String token, String hubOneNetId, onLoadHubTimerListListener listener);
 
-    void doHubTimer(String token, TimerBean timer, Listener listener);
+    void doHubTimer(String token, TimerBean timer, onDoHubTimerListListener listener);
 
-    interface Listener {
-        void onTimerSuccess(String msg);
+    interface onLoadHubTimerListListener {
+        void onSuccess(List<TimerBean> timerBean);
 
-        void onTimerListSuccess(List<TimerBean> timerBean);
+        void onFailure(String msg);
+    }
 
-        void onTimerFailure(String msg);
+    interface onDoHubTimerListListener {
+        void onSuccess(String msg);
+
+        void onFailure(String msg);
     }
 }

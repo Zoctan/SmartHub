@@ -1,11 +1,10 @@
 package com.zoctan.smarthub.user.model.impl;
 
-import com.google.gson.Gson;
 import com.okhttplib.HttpInfo;
 import com.okhttplib.OkHttpUtil;
 import com.okhttplib.annotation.RequestType;
 import com.okhttplib.callback.Callback;
-import com.zoctan.smarthub.api.UserUrls;
+import com.zoctan.smarthub.api.SmartApiUrls;
 import com.zoctan.smarthub.beans.UserBean;
 import com.zoctan.smarthub.response.ResponseUser;
 import com.zoctan.smarthub.user.model.UserLoginModel;
@@ -17,15 +16,15 @@ public class UserLoginModelImpl implements UserLoginModel {
     @Override
     public void loginOrRegister(final Boolean login, final UserBean user,
                                 final Listener listener) {
-        String url = UserUrls.TOKENS;
+        String url = SmartApiUrls.USERS_TOKENS;
         if (!login) {
-            url = UserUrls.USERS;
+            url = SmartApiUrls.USERS;
         }
         OkHttpUtil.getDefault(this).doAsync(
                 HttpInfo.Builder()
                         .setUrl(url)
                         .setRequestType(RequestType.POST)
-                        .addParamJson(new Gson().toJson(user))
+                        .addParamJson(JsonUtil.serialize(user))
                         .build(),
                 new Callback() {
                     @Override

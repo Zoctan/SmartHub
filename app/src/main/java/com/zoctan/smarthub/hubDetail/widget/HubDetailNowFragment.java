@@ -1,6 +1,7 @@
 package com.zoctan.smarthub.hubDetail.widget;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,8 +10,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
-import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -18,17 +19,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.ImageUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
 import com.zoctan.smarthub.beans.DeviceBean;
-import com.zoctan.smarthub.beans.UserBean;
+import com.zoctan.smarthub.beans.HubBean;
 import com.zoctan.smarthub.hubDetail.presenter.HubDetailNowPresenter;
 import com.zoctan.smarthub.hubDetail.view.HubDetailNowView;
 import com.zoctan.smarthub.utils.AlerterUtil;
 import com.zoctan.smarthub.utils.NiftyDialog;
 import com.zoctan.smarthub.utils.NiftyDialogUtil;
+import com.zyao89.view.zloading.ZLoadingView;
 
 import java.io.File;
 import java.util.Map;
@@ -38,6 +39,9 @@ import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
 import static android.app.Activity.RESULT_OK;
+import static com.zoctan.smarthub.utils.ImgUtil.CHOOSE_PICTURE;
+import static com.zoctan.smarthub.utils.ImgUtil.CROP_SMALL_PICTURE;
+import static com.zoctan.smarthub.utils.ImgUtil.TAKE_PICTURE;
 
 public class HubDetailNowFragment extends BaseFragment implements HubDetailNowView {
 
@@ -55,15 +59,27 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
     TextView mTvPower;
     @BindView(R.id.FabSpeedDial_hub_detail)
     FabSpeedDial mFabSpeedDial;
+    @BindView(R.id.ZLoadingView_hub_detail_now)
+    ZLoadingView zLoadingView;
     private final Handler handler = new Handler();
     private final HubDetailNowPresenter mPresenter = new HubDetailNowPresenter(this);
-    protected static final int CHOOSE_PICTURE = 0;
-    protected static final int TAKE_PICTURE = 1;
-    private static final int CROP_SMALL_PICTURE = 2;
     protected static Uri imageUri;
+    protected HubBean hubBean = new HubBean();
+    private DeviceBean deviceBean;
 
     public static HubDetailNowFragment newInstance() {
         return new HubDetailNowFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            hubBean.setName(getArguments().getString("hub_name"));
+            hubBean.setOnenet_id(getArguments().getString("hub_onenet_id"));
+            hubBean.setIs_electric(getArguments().getBoolean("hub_is_electric"));
+            hubBean.setConnected(getArguments().getBoolean("hub_connected"));
+        }
     }
 
     @Override
@@ -74,22 +90,19 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
     @Override
     protected void initView(final View view, final Bundle savedInstanceState) {
         // 插座在线即查询实时数据
-        if (mSPUtil.getBoolean("hub_connected")) {
-            handler.postDelayed(runnable, 1000);
+        if (hubBean.getConnected()) {
+            handler.postDelayed(runnableLoadHubNowList, 0);
         }
-        // 继电器已断电
+        // 继电器已通电
         final boolean flag;
-        if (!mSPUtil.getBoolean("hub_is_electric")) {
+        if (!hubBean.getIs_electric()) {
             flag = false;
             final DeviceBean deviceBean = new DeviceBean();
-            deviceBean.setName("继电器已断电，无法查询当前用电器");
+            deviceBean.setName(getString(R.string.msg_can_not_load_when_no_electric));
             setDevice(deviceBean);
         } else {
             flag = true;
-            mPresenter.loadHubDevice(
-                    mSPUtil.getString("hub_onenet_id"),
-                    mSPUtil.getString("user_token")
-            );
+            mPresenter.loadHubDevice(hubBean.getOnenet_id(), userToken);
         }
         mFabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
@@ -97,12 +110,15 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                 switch (menuItem.getItemId()) {
                     case R.id.action_add_device:
                         // 空载不允许添加
+                        // 已经识别到的也不添加
                         if (flag) {
                             if (!mTvAppliances.getText().equals(getString(R.string.find_device))) {
                                 if (mTvAppliances.getText().equals(getString(R.string.none_device))) {
                                     AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_do_when_none);
-                                } else {
+                                } else if (mTvAppliances.getText().equals(getString(R.string.msg_add_when_none))) {
                                     addDevice();
+                                } else {
+                                    AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_update_when_error);
                                 }
                             } else {
                                 AlerterUtil.showDanger(getHoldingActivity(), R.string.find_device);
@@ -116,11 +132,13 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                             if (!mTvAppliances.getText().equals(getString(R.string.find_device))) {
                                 if (mTvAppliances.getText().equals(getString(R.string.none_device))) {
                                     AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_do_when_none);
+                                } else if (mTvAppliances.getText().equals(getString(R.string.msg_add_when_none))) {
+                                    AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_add_when_none);
                                 } else {
                                     updateDevice();
                                 }
                             } else {
-                                AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_do_when_no_electric);
+                                AlerterUtil.showDanger(getHoldingActivity(), R.string.find_device);
                             }
                         } else {
                             AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_do_when_no_electric);
@@ -135,42 +153,19 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
         });
     }
 
-    private final Runnable runnable = new Runnable() {
+    private final Runnable runnableLoadHubNowList = new Runnable() {
         @Override
         public void run() {
-            updateDetail();
+            mPresenter.loadHubNowList(hubBean.getOnenet_id(), "I,V,W,Q");
             // 间隔5秒
-            handler.postDelayed(this, 1000 * 5);
-        }
-
-        void updateDetail() {
-            mPresenter.loadHubNowList(
-                    mSPUtil.getString("hub_onenet_id"),
-                    "I,V,W,Q");
+            handler.postDelayed(this, 5 * 1000);
         }
     };
-
-    public void resetHub() {
-        final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
-                .init(R.string.nav_clear,
-                        "确定清除存储的所有用电器特征值吗？",
-                        R.drawable.ic_clear,
-                        R.string.all_ensure);
-        dialog
-                .setButton1Click(new View.OnClickListener() {
-                    @Override
-                    public void onClick(final View v) {
-                        mPresenter.sendOrder(mSPUtil.getString("hub_onenet_id"), mSPUtil.getString("user_token"), "reset");
-                        dialog.dismiss();
-                    }
-                })
-                .show();
-    }
 
     public void updateDevice() {
         @SuppressLint("InflateParams") final View view = getLayoutInflater().inflate(R.layout.dialog_update_device, null);
         final TextInputEditText mEtDeviceName = view.findViewById(R.id.EditText_device_name);
-        mEtDeviceName.setText(mSPUtil.getString("device_name"));
+        mEtDeviceName.setText(deviceBean.getName());
         mEtDeviceName.setSelection(mEtDeviceName.getText().length());
 
         final Button mBtnDeviceImg = view.findViewById(R.id.Button_device_img);
@@ -193,12 +188,11 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                     @Override
                     public void onClick(final View v) {
                         if (mEtDeviceName.getText().length() > 0) {
+                            getHoldingActivity().hideSoftKeyBoard(mEtDeviceName, getContext());
                             final String name = mEtDeviceName.getText().toString();
-                            final DeviceBean deviceBean = new DeviceBean();
-                            deviceBean.setId(mSPUtil.getString("device_id"));
                             deviceBean.setName(name);
-                            deviceBean.setHub_id(mSPUtil.getString("hub_onenet_id"));
-                            mPresenter.doDevice(deviceBean, mSPUtil.getString("user_token"), "update");
+                            deviceBean.setAction("update");
+                            mPresenter.doDevice(deviceBean, userToken);
                             dialog.dismiss();
                         }
                     }
@@ -206,14 +200,15 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                 .show();
     }
 
-    private void showUpdateImgDialog() {
+
+    public void showUpdateImgDialog() {
         @SuppressWarnings("ConstantConditions") final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("设置用电器图片");
+        builder.setTitle("设置图片");
+        final String[] items = {"选择本地照片", "拍照"};
+        builder.setNegativeButton("取消", null);
         // 指定照片保存路径（应用本身的缓存目录）
         imageUri = Uri.fromFile(new File(getHoldingActivity().getCacheDir(),
                 System.currentTimeMillis() + "device.png"));
-        final String[] items = {"选择本地照片", "拍照"};
-        builder.setNegativeButton("取消", null);
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(final DialogInterface dialog, final int which) {
@@ -234,6 +229,32 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
             }
         });
         builder.create().show();
+    }
+
+    // 裁剪图片
+    public void startPhotoZoom(final Uri uri) {
+        if (uri == null) {
+            AlerterUtil.showDanger(getHoldingActivity(), "图片路径不存在");
+            return;
+        }
+        try {
+            final Intent intent = new Intent("com.android.camera.action.CROP");
+            // 打开图片类文件
+            intent.setDataAndType(uri, "image/*");
+            // 设置裁剪
+            intent.putExtra("crop", "true");
+            // aspectX aspectY 是宽高的比例
+            intent.putExtra("aspectX", 1);
+            intent.putExtra("aspectY", 1);
+            // outputX outputY 是裁剪图片宽高
+            intent.putExtra("outputX", 250);
+            intent.putExtra("outputY", 250);
+            intent.putExtra("return-data", true);
+            startActivityForResult(intent, CROP_SMALL_PICTURE);
+        } catch (final ActivityNotFoundException e) {
+            e.printStackTrace();
+            AlerterUtil.showDanger(getHoldingActivity(), "设备不支持裁剪行为");
+        }
     }
 
     @Override
@@ -262,14 +283,9 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                                     ImageUtils.toRound(photo),
                                     imageUri.getPath(),
                                     Bitmap.CompressFormat.PNG);
-                            final DeviceBean deviceBean = new DeviceBean();
-                            deviceBean.setId(mSPUtil.getString("device_id"));
-                            deviceBean.setHub_id(mSPUtil.getString("device_hub_id"));
-                            deviceBean.setImg(mSPUtil.getString("device_id") + mSPUtil.getString("device_hub_id") + ".png");
-                            final UserBean userBean = new UserBean();
-                            userBean.setToken(mSPUtil.getString("user_token"));
+                            deviceBean.setImg(deviceBean.getHub_id() + deviceBean.getId() + ".png");
                             // 上传图片
-                            mPresenter.uploadImg(userBean, deviceBean, imageUri.getPath());
+                            mPresenter.qiNiuUpload(userToken, deviceBean, imageUri.getPath());
                         }
                     }
                     break;
@@ -277,55 +293,64 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
         }
     }
 
-    // 裁剪图片
-    private void startPhotoZoom(final Uri uri) {
-        if (uri == null) {
-            AlerterUtil.showDanger(getHoldingActivity(), "图片路径不存在");
-            return;
-        }
-        try {
-            final Intent intent = new Intent("com.android.camera.action.CROP");
-            // 打开图片类文件
-            intent.setDataAndType(uri, "image/*");
-            // 设置裁剪
-            intent.putExtra("crop", "true");
-            // aspectX aspectY 是宽高的比例
-            intent.putExtra("aspectX", 1);
-            intent.putExtra("aspectY", 1);
-            // outputX outputY 是裁剪图片宽高
-            intent.putExtra("outputX", 250);
-            intent.putExtra("outputY", 250);
-            intent.putExtra("return-data", true);
-            startActivityForResult(intent, CROP_SMALL_PICTURE);
-        } catch (final ActivityNotFoundException e) {
-            e.printStackTrace();
-            AlerterUtil.showDanger(getHoldingActivity(), R.string.all_cannot_crop);
-        }
+    public void resetHub() {
+        final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
+                .init(R.string.nav_clear,
+                        R.string.msg_hub_reset,
+                        R.drawable.ic_clear,
+                        R.string.all_ensure);
+        dialog
+                .setButton1Click(new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View v) {
+                        mPresenter.sendOrder(hubBean.getOnenet_id(), userToken, "reset");
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 
     private TextView mTvStore = null;
     private TextView mTvMatch = null;
+    private Button mBtnStore = null;
+    private Button mBtnMatch = null;
+    private ZLoadingView storeOrMatchLoading = null;
     private int list = 0;
+
+    @Override
+    public void showStoreOrMatchLoading() {
+        mBtnStore.setVisibility(View.GONE);
+        mBtnMatch.setVisibility(View.GONE);
+        storeOrMatchLoading.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideStoreOrMatchLoading() {
+        mBtnStore.setVisibility(View.VISIBLE);
+        mBtnMatch.setVisibility(View.VISIBLE);
+        storeOrMatchLoading.setVisibility(View.GONE);
+    }
 
     public void addDevice() {
         @SuppressLint("InflateParams") final View view = getLayoutInflater().inflate(R.layout.dialog_new_device, null);
         final TextInputEditText mEtDeviceName = view.findViewById(R.id.EditText_device_name);
         mTvStore = view.findViewById(R.id.TextView_store);
         mTvMatch = view.findViewById(R.id.TextView_match);
-        final Button mBtnStore = view.findViewById(R.id.Button_store_device);
-        final Button mBtnMatch = view.findViewById(R.id.Button_match_device);
+        storeOrMatchLoading = view.findViewById(R.id.ZLoadingView_new_device);
+        mBtnStore = view.findViewById(R.id.Button_store_device);
+        mBtnMatch = view.findViewById(R.id.Button_match_device);
 
         mBtnStore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                mPresenter.sendOrder(mSPUtil.getString("hub_onenet_id"), mSPUtil.getString("user_token"), "store");
+                mPresenter.sendOrder(hubBean.getOnenet_id(), userToken, "store");
             }
         });
 
         mBtnMatch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                mPresenter.sendOrder(mSPUtil.getString("hub_onenet_id"), mSPUtil.getString("user_token"), "match");
+                mPresenter.sendOrder(hubBean.getOnenet_id(), userToken, "match");
             }
         });
 
@@ -344,12 +369,14 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
                                     && mTvStore.getText().toString().equals("有效")
                                     && mTvMatch.getText().toString().equals("有效")
                                     && list != 0) {
+                                getHoldingActivity().hideSoftKeyBoard(mEtDeviceName, getContext());
                                 final String name = mEtDeviceName.getText().toString();
                                 final DeviceBean deviceBean = new DeviceBean();
                                 deviceBean.setName(name);
                                 deviceBean.setEigenvalue(list);
-                                deviceBean.setHub_id(mSPUtil.getString("hub_onenet_id"));
-                                mPresenter.doDevice(deviceBean, mSPUtil.getString("user_token"), "add");
+                                deviceBean.setHub_id(hubBean.getOnenet_id());
+                                deviceBean.setAction("add");
+                                mPresenter.doDevice(deviceBean, userToken);
                                 dialog.dismiss();
                             }
                         } catch (final NullPointerException ignored) {
@@ -362,9 +389,9 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
     @Override
     public void setHubStore(final boolean flag) {
         if (flag) {
-            mTvStore.setText("有效");
+            mTvStore.setText(R.string.is_validate);
         } else {
-            mTvStore.setText("无效");
+            mTvStore.setText(R.string.not_validate);
         }
     }
 
@@ -372,9 +399,9 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
     public void setHubMatch(final String list) {
         this.list = Integer.parseInt(list);
         if (this.list != 0) {
-            mTvMatch.setText("有效");
+            mTvMatch.setText(R.string.is_validate);
         } else {
-            mTvMatch.setText("无效");
+            mTvMatch.setText(R.string.not_validate);
         }
     }
 
@@ -391,10 +418,7 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
         }
         mTvAppliances.setText(device.getName());
         if (device.getHub_id() != null) {
-            mSPUtil.put("device_id", device.getId());
-            mSPUtil.put("device_name", device.getName());
-            mSPUtil.put("device_hub_id", device.getHub_id());
-            mSPUtil.put("device_img", device.getImg());
+            this.deviceBean = device;
         }
     }
 
@@ -407,23 +431,29 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
     }
 
     @Override
-    public void showUpdateImgSuccessMsg(final String url, final String msg) {
-        mSPUtil.put("device_img", "http://smarthub.txdna.cn/" + url);
-        AlerterUtil.showInfo(getActivity(), msg);
+    public void showUploadSuccessMsg(final String msg) {
+        AlerterUtil.showInfo(getHoldingActivity(), msg);
     }
 
     @Override
     public void showDoDeviceSuccessMsg(final String msg) {
-        AlerterUtil.showInfo(getActivity(), msg);
-        mPresenter.loadHubDevice(
-                mSPUtil.getString("hub_onenet_id"),
-                mSPUtil.getString("user_token")
-        );
+        AlerterUtil.showInfo(getHoldingActivity(), msg);
+        mPresenter.loadHubDevice(hubBean.getOnenet_id(), userToken);
+    }
+
+    @Override
+    public void showLoadDeviceLoading() {
+        zLoadingView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoadDeviceLoading() {
+        zLoadingView.setVisibility(View.GONE);
     }
 
     @Override
     public void showLoading() {
-        AlerterUtil.showLoading(getActivity());
+        AlerterUtil.showLoading(getHoldingActivity());
     }
 
     @Override
@@ -433,18 +463,18 @@ public class HubDetailNowFragment extends BaseFragment implements HubDetailNowVi
 
     @Override
     public void showSuccessMsg(final String msg) {
-        ToastUtils.showShort(msg);
+        AlerterUtil.showInfo(getHoldingActivity(), msg);
     }
 
     @Override
     public void showFailedMsg(final String msg) {
-        ToastUtils.showShort(msg);
+        AlerterUtil.showDanger(getHoldingActivity(), msg);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         // 停止刷新
-        handler.removeCallbacks(runnable);
+        handler.removeCallbacks(runnableLoadHubNowList);
     }
 }

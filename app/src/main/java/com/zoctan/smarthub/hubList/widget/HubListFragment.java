@@ -37,6 +37,7 @@ import com.zoctan.smarthub.utils.AlerterUtil;
 import com.zoctan.smarthub.utils.NiftyDialog;
 import com.zoctan.smarthub.utils.NiftyDialogUtil;
 import com.zoctan.smarthub.zxing.activity.CaptureActivity;
+import com.zyao89.view.zloading.ZLoadingView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +68,8 @@ public class HubListFragment extends BaseFragment implements HubListView {
     private final static int REQUEST_CODE = 0x01;
     //扫描成功返回码
     private final static int RESULT_OK = 0xA1;
+    @BindView(R.id.ZLoadingView_hub_list)
+    ZLoadingView zLoadingView;
 
     @Override
     protected int bindLayout() {
@@ -78,7 +81,7 @@ public class HubListFragment extends BaseFragment implements HubListView {
         // 固定RecyclerView大小
         mRecyclerView.setHasFixedSize(true);
         // 设置布局管理器
-        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getHoldingActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
         // 设置item动画
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -96,7 +99,7 @@ public class HubListFragment extends BaseFragment implements HubListView {
         });
 
         setSmartRefreshListener();
-        refreshHubList();
+        refreshHubList(true);
     }
 
     private final HubListAdapter.OnItemClickListener mOnItemClickListener = new HubListAdapter.OnItemClickListener() {
@@ -106,13 +109,17 @@ public class HubListFragment extends BaseFragment implements HubListView {
                 return;
             }
             final HubBean hub = mAdapter.getItem(position);
+            hub.setAction(action);
             switch (action) {
                 case "detail":
-                    mSPUtil.put("hub_name", hub.getName());
-                    mSPUtil.put("hub_onenet_id", hub.getOnenet_id());
-                    mSPUtil.put("hub_is_electric", hub.getIs_electric());
-                    mSPUtil.put("hub_connected", hub.getConnected());
                     final Intent intent = new Intent("hub_detail");
+                    // 设置启动Activity时携带的参数信息 的Intent
+                    final Bundle bundle = new Bundle();
+                    bundle.putString("hub_name", hub.getName());
+                    bundle.putString("hub_onenet_id", hub.getOnenet_id());
+                    bundle.putBoolean("hub_is_electric", hub.getIs_electric());
+                    bundle.putBoolean("hub_connected", hub.getConnected());
+                    intent.putExtras(bundle);
                     intent.addCategory("hub");
                     startActivity(intent);
                     getHoldingActivity().overridePendingTransition(android.R.anim.slide_in_left, 0);
@@ -122,40 +129,40 @@ public class HubListFragment extends BaseFragment implements HubListView {
                     break;
                 case "on":
                 case "off":
-                    mHubListPresenter.hubOpenClose(hub.getOnenet_id(), action, mSPUtil.getString("user_token"));
-                    //ToastUtils.showShort(action);
+                    mHubListPresenter.hubOpenClose(hub, userToken);
                     break;
                 case "update":
-                    showUpdateDialog(action, hub);
-                    //ToastUtils.showShort(action);
+                    showUpdateDialog(hub);
                     break;
                 case "delete":
-                    showDeleteDialog(hub);
-                    //ToastUtils.showShort(action);
+                    showAddOrDeleteDialog(hub, action);
                     break;
             }
         }
     };
 
-    private void showDeleteDialog(final HubBean hub) {
-        final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
-                .init(R.string.hub_delete,
-                        R.string.hub_delete_msg,
-                        R.drawable.ic_alert,
-                        R.string.all_ensure);
+    private void showAddOrDeleteDialog(final HubBean hub, final String which) {
+        int title = R.string.hub_add;
+        int msg = R.string.hub_add_msg;
+        int icon = R.drawable.ic_hub_list;
+        if (which.equals("delete")) {
+            title = R.string.hub_delete;
+            msg = R.string.msg_hub_delete;
+            icon = R.drawable.ic_alert;
+        }
+        final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity()).init(title, msg, icon, R.string.all_ensure);
         dialog
                 .setButton1Click(new View.OnClickListener() {
                     @Override
                     public void onClick(final View v) {
-                        mHubListPresenter.doHub("delete",
-                                mSPUtil.getString("user_token"),
-                                hub);
+                        mHubListPresenter.doHub(hub, userToken);
                         dialog.dismiss();
                     }
-                }).show();
+                })
+                .show();
     }
 
-    private void showUpdateDialog(final String action, final HubBean hub) {
+    private void showUpdateDialog(final HubBean hub) {
         @SuppressLint("InflateParams") final View view = getLayoutInflater().inflate(R.layout.dialog_edit_hub, null);
         final TextInputEditText mEtHubName = view.findViewById(R.id.EditText_hub_name);
         final TextInputLayout mLayoutHubName = view.findViewById(R.id.TextInputLayout_hub_name);
@@ -193,35 +200,34 @@ public class HubListFragment extends BaseFragment implements HubListView {
                     public void onClick(final View v) {
                         if (mEtHubName.getText().length() > 0
                                 && mLayoutHubName.getError() == null) {
+                            getHoldingActivity().hideSoftKeyBoard(mEtHubName, getContext());
                             hub.setName(mEtHubName.getText().toString());
-                            mHubListPresenter.doHub(action,
-                                    mSPUtil.getString("user_token"),
-                                    hub);
+                            mHubListPresenter.doHub(hub, userToken);
                             dialog.dismiss();
                         }
                     }
                 }).show();
     }
 
-    public void refreshHubList() {
+    public void refreshHubList(final boolean isShowLoading) {
         if (mData != null) {
             mData.clear();
         }
-        mHubListPresenter.loadHubList(mSPUtil.getString("user_token"));
+        mHubListPresenter.loadHubList(userToken, isShowLoading);
     }
 
     private void setSmartRefreshListener() {
         mSmartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(final RefreshLayout refreshlayout) {
-                refreshHubList();
-                refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
+                refreshHubList(false);
+                refreshlayout.finishRefresh(4000/*,false*/);//传入false表示刷新失败
             }
         });
         mSmartRefreshLayout.setOnLoadmoreListener(new OnLoadmoreListener() {
             @Override
             public void onLoadmore(final RefreshLayout refreshlayout) {
-                refreshlayout.finishLoadmore(2000/*,false*/);//传入false表示加载失败
+                refreshlayout.finishLoadmore(4000/*,false*/);//传入false表示加载失败
             }
         });
     }
@@ -266,12 +272,12 @@ public class HubListFragment extends BaseFragment implements HubListView {
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     public void permissionDenied() {
-        AlerterUtil.showDanger(getActivity(), R.string.permission_denied);
+        AlerterUtil.showDanger(getHoldingActivity(), R.string.permission_denied);
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     public void permissionDeniedNeverAsk() {
-        AlerterUtil.showDanger(getActivity(), R.string.permission_denied_never_ask);
+        AlerterUtil.showDanger(getHoldingActivity(), R.string.permission_denied_never_ask);
     }
 
     @Override
@@ -296,7 +302,7 @@ public class HubListFragment extends BaseFragment implements HubListView {
                         if (result.length != 2) {
                             isValidateQR = false;
                         } else {
-                            AlerterUtil.showInfo(getActivity(), String.format("Onenet:%s\nMac:%s", onenetId, mac));
+                            //AlerterUtil.showInfo(getHoldingActivity(), String.format("Onenet:%s\nMac:%s", onenetId, mac));
                             // onenet的id是一串数字，如果扫出来前半段不是数字会抛错
                             //noinspection ResultOfMethodCallIgnored
                             Long.parseLong(onenetId);
@@ -308,37 +314,18 @@ public class HubListFragment extends BaseFragment implements HubListView {
                                 final HubBean hub = new HubBean();
                                 hub.setOnenet_id(onenetId);
                                 hub.setMac(mac);
-                                showAddDialog(hub);
+                                showAddOrDeleteDialog(hub, "add");
                             }
                         }
                     } catch (final Exception e) {
                         isValidateQR = false;
                     }
                     if (!isValidateQR) {
-                        AlerterUtil.showDanger(getActivity(), "请扫描正确的插座二维码哦~");
+                        AlerterUtil.showDanger(getHoldingActivity(), "请扫描正确的插座二维码哦~");
                     }
                 }
             }
         }
-    }
-
-    private void showAddDialog(final HubBean hub) {
-        final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
-                .init(R.string.hub_add,
-                        R.string.hub_add_msg,
-                        R.drawable.ic_hub_list,
-                        R.string.all_ensure);
-        dialog
-                .setButton1Click(new View.OnClickListener() {
-                    @Override
-                    public void onClick(final View v) {
-                        mHubListPresenter.doHub("add",
-                                mSPUtil.getString("user_token"),
-                                hub);
-                        dialog.dismiss();
-                    }
-                })
-                .show();
     }
 
     @Override
@@ -348,19 +335,19 @@ public class HubListFragment extends BaseFragment implements HubListView {
             mData.addAll(hubList);
             mAdapter.setData(mData);
         } else {
-            AlerterUtil.showInfo(getActivity(), R.string.tip_add_hub);
+            AlerterUtil.showInfo(getHoldingActivity(), R.string.tip_add_hub);
         }
         mAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void showLoading() {
-        AlerterUtil.showLoading(getActivity());
+        zLoadingView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoading() {
-        AlerterUtil.hideLoading();
+        zLoadingView.setVisibility(View.GONE);
     }
 
     @Override
@@ -368,15 +355,15 @@ public class HubListFragment extends BaseFragment implements HubListView {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                refreshHubList();
-                AlerterUtil.showInfo(getActivity(), msg);
+                refreshHubList(true);
+                AlerterUtil.showInfo(getHoldingActivity(), msg);
             }
-        }, 1500);
+        }, 2000);
     }
 
     @Override
     public void showFailedMsg(final String msg) {
-        AlerterUtil.showDanger(getActivity(), msg);
+        AlerterUtil.showDanger(getHoldingActivity(), msg);
     }
 }
 
@@ -390,14 +377,15 @@ class HubListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyDataSetChanged();
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, final int viewType) {
         final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_hub, parent, false);
         return new ItemViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof ItemViewHolder) {
             final HubBean hub = mData.get(position);
             if (hub == null) {
@@ -414,6 +402,7 @@ class HubListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 Icon.on(((ItemViewHolder) holder).mIvHub).color(R.color.accent).icon(R.drawable.ic_hub).put();
             } else {
                 text2 = R.string.hub_not_electric;
+                Icon.on(((ItemViewHolder) holder).mIvHub).color(R.color.secondary_text).icon(R.drawable.ic_hub).put();
                 checked = false;
             }
             if (hub.getConnected()) {

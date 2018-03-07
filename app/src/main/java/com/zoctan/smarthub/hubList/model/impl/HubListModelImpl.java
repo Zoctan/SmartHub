@@ -1,11 +1,10 @@
 package com.zoctan.smarthub.hubList.model.impl;
 
-import com.google.gson.Gson;
 import com.okhttplib.HttpInfo;
 import com.okhttplib.OkHttpUtil;
 import com.okhttplib.annotation.RequestType;
 import com.okhttplib.callback.Callback;
-import com.zoctan.smarthub.api.HubUrls;
+import com.zoctan.smarthub.api.SmartApiUrls;
 import com.zoctan.smarthub.beans.HubBean;
 import com.zoctan.smarthub.hubList.model.HubListModel;
 import com.zoctan.smarthub.response.Response;
@@ -18,10 +17,11 @@ import java.util.List;
 public class HubListModelImpl implements HubListModel {
 
     @Override
-    public void loadHubList(final String token, final Listener listener) {
-        final String url = HubUrls.HUBS;
-        final String headerKey = "Authorization";
-        final String headerValue = "Smart " + token;
+    public void loadHubList(final String token,
+                            final onLoadHubListListener listener) {
+        final String url = SmartApiUrls.HUBS;
+        final String headerKey = SmartApiUrls.HEADER_KEY;
+        final String headerValue = SmartApiUrls.HEADER_VALUE + token;
         // https://github.com/MrZhousf/OkHttp3
         OkHttpUtil.getDefault(this).doAsync(
                 HttpInfo.Builder()
@@ -48,15 +48,13 @@ public class HubListModelImpl implements HubListModel {
     }
 
     @Override
-    public void hubOpenClose(final String oneNetId, final String order,
-                             final String token, final Listener listener) {
-        final String headerKey = "Authorization";
-        final String headerValue = "Smart " + token;
-        int status = 1;
-        if (order.equals("off")) {
-            status = 0;
-        }
-        final String url = HubUrls.HUBS + "/" + oneNetId + "/order?order=turn&status=" + status;
+    public void hubOpenClose(final HubBean hub,
+                             final String token,
+                             final onHubOpenCloseListener listener) {
+        final String headerKey = SmartApiUrls.HEADER_KEY;
+        final String headerValue = SmartApiUrls.HEADER_VALUE + token;
+        final int status = hub.getAction().equals("off") ? 0 : 1;
+        final String url = SmartApiUrls.setOrderUrl(hub.getOnenet_id(), "turn", status);
         OkHttpUtil.getDefault(this).doAsync(
                 HttpInfo.Builder()
                         .setUrl(url)
@@ -73,34 +71,39 @@ public class HubListModelImpl implements HubListModel {
                     @Override
                     public void onSuccess(final HttpInfo info) throws IOException {
                         final Response response = JsonUtil.getObjectFromHttpInfo(info, Response.class);
-                        listener.onSuccess(response.getMsg());
+                        listener.onSuccess(response.getResult());
                     }
                 });
     }
 
     @Override
-    public void doHub(final String action, final String token,
-                      final HubBean hub, final Listener listener) {
-        String url = HubUrls.HUBS;
-        int requestType = RequestType.POST;
-        switch (action) {
+    public void doHub(final HubBean hub,
+                      final String token,
+                      final onDoHubListener listener) {
+        final String url;
+        final int requestType;
+        switch (hub.getAction()) {
             case "delete":
-                url += "/" + hub.getOnenet_id();
+                url = SmartApiUrls.HUBS + "/" + hub.getOnenet_id();
                 requestType = RequestType.DELETE;
                 break;
             case "update":
-                url += "/" + hub.getOnenet_id();
+                url = SmartApiUrls.HUBS + "/" + hub.getOnenet_id();
                 requestType = RequestType.PUT;
                 break;
+            default:
+                url = SmartApiUrls.HUBS;
+                requestType = RequestType.POST;
+                break;
         }
-        final String headerKey = "Authorization";
-        final String headerValue = "Smart " + token;
+        final String headerKey = SmartApiUrls.HEADER_KEY;
+        final String headerValue = SmartApiUrls.HEADER_VALUE + token;
         OkHttpUtil.getDefault(this).doAsync(
                 HttpInfo.Builder()
                         .setUrl(url)
                         .setRequestType(requestType)
                         .addHead(headerKey, headerValue)
-                        .addParamJson(new Gson().toJson(hub))
+                        .addParamJson(JsonUtil.serialize(hub))
                         .build(),
                 new Callback() {
                     @Override

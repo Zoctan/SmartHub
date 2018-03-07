@@ -33,10 +33,18 @@
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/cardMargin"
             android:scrollbars="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        </android.support.v7.widget.RecyclerView>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+    <com.zyao89.view.zloading.ZLoadingView
+        android:id="@+id/ZLoadingView_hub_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        app:z_color="@color/primary"
+        app:z_type="DoubleCircleBuilder" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/FloatingActionButton_hub_list"

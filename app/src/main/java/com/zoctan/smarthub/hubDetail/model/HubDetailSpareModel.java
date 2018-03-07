@@ -3,11 +3,11 @@ package com.zoctan.smarthub.hubDetail.model;
 import com.zoctan.smarthub.beans.MonthSpareBean;
 
 public interface HubDetailSpareModel {
-    void loadHubSpareList(String oneNetId, String token, Listener listener);
+    void loadHubSpareList(String oneNetId, String token, onLoadHubSpareListListener listener);
 
-    interface Listener {
-        void onSpareSuccess(MonthSpareBean monthSpareBean);
+    interface onLoadHubSpareListListener {
+        void onSuccess(MonthSpareBean monthSpareBean);
 
-        void onSpareFailure(String msg);
+        void onFailure(String msg);
     }
 }

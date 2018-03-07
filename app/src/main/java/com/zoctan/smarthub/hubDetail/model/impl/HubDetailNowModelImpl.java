@@ -1,36 +1,26 @@
 package com.zoctan.smarthub.hubDetail.model.impl;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.google.gson.Gson;
 import com.okhttplib.HttpInfo;
 import com.okhttplib.OkHttpUtil;
 import com.okhttplib.annotation.RequestType;
 import com.okhttplib.callback.Callback;
-import com.qiniu.android.http.ResponseInfo;
-import com.qiniu.android.storage.UpCompletionHandler;
-import com.qiniu.android.storage.UpProgressHandler;
-import com.qiniu.android.storage.UploadManager;
-import com.qiniu.android.storage.UploadOptions;
-import com.zoctan.smarthub.api.DeviceUrls;
-import com.zoctan.smarthub.api.HubUrls;
 import com.zoctan.smarthub.api.OneNetUrls;
+import com.zoctan.smarthub.api.SmartApiUrls;
 import com.zoctan.smarthub.beans.DeviceBean;
-import com.zoctan.smarthub.beans.UserBean;
 import com.zoctan.smarthub.hubDetail.model.HubDetailNowModel;
 import com.zoctan.smarthub.response.Response;
 import com.zoctan.smarthub.response.ResponseDevice;
 import com.zoctan.smarthub.response.ResponseOneNetDataStreams;
 import com.zoctan.smarthub.utils.JsonUtil;
 
-import org.json.JSONObject;
-
 import java.io.IOException;
 
 public class HubDetailNowModelImpl implements HubDetailNowModel {
     @Override
-    public void loadHubNowList(final String oneNetId, final String dataStreamIds, final Listener listener) {
-        final String headerKey = "api-key";
-        final String headerValue = "nJVyiaj5Y297Fc6Q=bUYVWnz2=0=";
+    public void loadHubNowList(final String oneNetId, final String dataStreamIds, final onLoadHubNowListListener listener) {
+        final String headerKey = OneNetUrls.HEADER_KEY;
+        final String headerValue = OneNetUrls.HEADER_VALUE;
         final String url = OneNetUrls.buildDataStreamsGet(oneNetId, dataStreamIds);
 
         OkHttpUtil.getDefault(this).doGetAsync(
@@ -43,24 +33,24 @@ public class HubDetailNowModelImpl implements HubDetailNowModel {
                     @Override
                     public void onFailure(final HttpInfo info) throws IOException {
                         final String response = info.getRetDetail();
-                        listener.onNowFailure(response);
+                        listener.onFailure(response);
                     }
 
                     @Override
                     public void onSuccess(final HttpInfo info) throws IOException {
                         final ResponseOneNetDataStreams responseList = JsonUtil.getObjectFromHttpInfo(info, ResponseOneNetDataStreams.class);
                         if (responseList.getError().equals("succ")) {
-                            listener.onOneNetDataStreamSuccess(responseList.getData());
+                            listener.onSuccess(responseList.getData());
                         }
                     }
                 });
     }
 
     @Override
-    public void loadHubDevice(final String oneNetId, final String token, final Listener listener) {
-        final String url = DeviceUrls.DEVICE + "/" + oneNetId;
-        final String headerKey = "Authorization";
-        final String headerValue = "Smart " + token;
+    public void loadHubDevice(final String oneNetId, final String token, final onLoadHubDeviceListener listener) {
+        final String url = SmartApiUrls.DEVICE + "/" + oneNetId;
+        final String headerKey = SmartApiUrls.HEADER_KEY;
+        final String headerValue = SmartApiUrls.HEADER_VALUE + token;
         OkHttpUtil.getDefault(this).doGetAsync(
                 HttpInfo.Builder()
                         .setUrl(url)
@@ -71,30 +61,30 @@ public class HubDetailNowModelImpl implements HubDetailNowModel {
                     @Override
                     public void onFailure(final HttpInfo info) throws IOException {
                         final String response = info.getRetDetail();
-                        listener.onNowFailure(response);
+                        listener.onFailure(response);
                     }
 
                     @Override
                     public void onSuccess(final HttpInfo info) throws IOException {
                         final ResponseDevice responseDevice = JsonUtil.getObjectFromHttpInfo(info, ResponseDevice.class);
                         if (responseDevice.getMsg().equals("ok")) {
-                            listener.onNowSuccess(responseDevice.getResult());
+                            listener.onSuccess(responseDevice.getResult());
                         } else {
                             final DeviceBean deviceBean = new DeviceBean();
                             deviceBean.setName(responseDevice.getError());
-                            listener.onNowSuccess(deviceBean);
+                            listener.onSuccess(deviceBean);
                         }
                     }
                 });
     }
 
     @Override
-    public void doDevice(final DeviceBean deviceBean, final String token, final String action, final Listener listener) {
-        final String url = HubUrls.HUBS + "/device/" + deviceBean.getHub_id();
-        final String headerKey = "Authorization";
-        final String headerValue = "Smart " + token;
+    public void doDevice(final DeviceBean deviceBean, final String token, final onDoDeviceListener listener) {
+        final String url = SmartApiUrls.DEVICE + "/" + deviceBean.getHub_id();
+        final String headerKey = SmartApiUrls.HEADER_KEY;
+        final String headerValue = SmartApiUrls.HEADER_VALUE + token;
         int requestType = RequestType.POST;
-        if (action.equals("update")) {
+        if (deviceBean.getAction().equals("update")) {
             requestType = RequestType.PUT;
         }
         OkHttpUtil.getDefault(this).doAsync(
@@ -108,16 +98,16 @@ public class HubDetailNowModelImpl implements HubDetailNowModel {
                     @Override
                     public void onFailure(final HttpInfo info) throws IOException {
                         final String response = info.getRetDetail();
-                        listener.onNowFailure(response);
+                        listener.onFailure(response);
                     }
 
                     @Override
                     public void onSuccess(final HttpInfo info) throws IOException {
                         final Response response = JsonUtil.getObjectFromHttpInfo(info, Response.class);
                         if (response.getMsg().equals("ok")) {
-                            listener.onDoDeviceSuccess(response.getResult());
+                            listener.onSuccess(response.getResult());
                         } else {
-                            listener.onNowFailure(response.getError());
+                            listener.onFailure(response.getError());
                         }
                     }
                 });
@@ -125,45 +115,9 @@ public class HubDetailNowModelImpl implements HubDetailNowModel {
 
     @Override
     public void sendOrder(final String oneNetId, final String token, final String order, final sendOrderListener listener) {
-        final String headerKey = "Authorization";
-        final String headerValue = "Smart " + token;
-        final String url = HubUrls.HUBS + "/" + oneNetId + "/order?order=" + order + "&status=1";
-        OkHttpUtil.getDefault(this).doAsync(
-                HttpInfo.Builder()
-                        .setUrl(url)
-                        .setRequestType(RequestType.GET)
-                        .addHead(headerKey, headerValue)
-                        .build(),
-                new Callback() {
-                    @Override
-                    public void onFailure(final HttpInfo info) throws IOException {
-                        final String response = info.getRetDetail();
-                        listener.onNowFailure(response);
-                    }
-
-                    @Override
-                    public void onSuccess(final HttpInfo info) throws IOException {
-                        final Response response = JsonUtil.getObjectFromHttpInfo(info, Response.class);
-                        switch (order) {
-                            case "store":
-                                listener.setHubStore(response.getResult().equals("1"));
-                                break;
-                            case "match":
-                                listener.setHubMatch(response.getResult());
-                                break;
-                            default:
-                                listener.onNowSuccess(response.getResult());
-                                break;
-                        }
-                    }
-                });
-    }
-
-    @Override
-    public void getQiNiuToken(final UserBean userBean, final DeviceBean deviceBean, final UploadListener listener) {
-        final String url = HubUrls.QiNiu + "/" + deviceBean.getImg();
-        final String headerKey = "Authorization";
-        final String headerValue = "Smart " + userBean.getToken();
+        final String headerKey = SmartApiUrls.HEADER_KEY;
+        final String headerValue = SmartApiUrls.HEADER_VALUE + token;
+        final String url = SmartApiUrls.setOrderUrl(oneNetId, order, 1);
         OkHttpUtil.getDefault(this).doAsync(
                 HttpInfo.Builder()
                         .setUrl(url)
@@ -180,61 +134,18 @@ public class HubDetailNowModelImpl implements HubDetailNowModel {
                     @Override
                     public void onSuccess(final HttpInfo info) throws IOException {
                         final Response response = JsonUtil.getObjectFromHttpInfo(info, Response.class);
-                        if (response.getMsg().equals("ok")) {
-                            listener.onSuccess(response.getResult());
+                        switch (order) {
+                            case "store":
+                                listener.setHubStore(response.getResult().equals("1"));
+                                break;
+                            case "match":
+                                listener.setHubMatch(response.getResult());
+                                break;
+                            default:
+                                listener.onSuccess(response.getResult());
+                                break;
                         }
                     }
                 });
-    }
-
-    // 上传图片到七牛云
-    @Override
-    public void uploadImg(final DeviceBean deviceBean, final String token, final String qiNiuToken, final String photoPath, final UploadListener listener) {
-        final UploadManager uploadManager = new UploadManager();
-        final String url = DeviceUrls.IMG + "/" + deviceBean.getHub_id();
-        uploadManager.put(photoPath, deviceBean.getImg(), qiNiuToken, new UpCompletionHandler() {
-            @Override
-            public void complete(final String key, final ResponseInfo info, final JSONObject res) {
-                // info.error中包含了错误信息，可打印调试
-                if (info.isOK()) {
-                    // 上传成功后将key值上传到自己的服务器
-                    final String headerKey = "Authorization";
-                    final String headerValue = "Smart " + token;
-                    deviceBean.setImg("http://smarthub.txdna.cn/" + deviceBean.getImg());
-                    OkHttpUtil.getDefault(this).doAsync(
-                            HttpInfo.Builder()
-                                    .setUrl(url)
-                                    .setRequestType(RequestType.PUT)
-                                    .addParamJson(new Gson().toJson(deviceBean))
-                                    .addHead(headerKey, headerValue)
-                                    .build(),
-                            new Callback() {
-                                @Override
-                                public void onFailure(final HttpInfo info) throws IOException {
-                                    final String response = info.getRetDetail();
-                                    listener.onFailure(response);
-                                }
-
-                                @Override
-                                public void onSuccess(final HttpInfo info) throws IOException {
-                                    final Response response = JsonUtil.getObjectFromHttpInfo(info, Response.class);
-                                    if (response.getMsg().equals("ok")) {
-                                        listener.onSuccess(response.getResult());
-                                    } else {
-                                        listener.onFailure(response.getResult());
-                                    }
-                                }
-                            });
-                } else {
-                    listener.onFailure(info.error);
-                }
-            }
-        }, new UploadOptions(null, null, false,
-                new UpProgressHandler() {
-                    @Override
-                    public void progress(final String key, final double percent) {
-                        LogUtils.d(key + ": " + percent);
-                    }
-                }, null));
     }
 }

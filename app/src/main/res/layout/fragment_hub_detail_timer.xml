@@ -31,10 +31,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/cardMargin"
-            android:scrollbars="vertical">
-
-        </android.support.v7.widget.RecyclerView>
+            android:scrollbars="vertical" />
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+    <com.zyao89.view.zloading.ZLoadingView
+        android:id="@+id/ZLoadingView_hub_detail_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        app:z_color="@color/primary"
+        app:z_type="DoubleCircleBuilder" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/FloatingActionButton_timer_list"

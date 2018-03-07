@@ -217,6 +217,13 @@ public class MainActivity extends BaseActivity {
                 .setButton1Click(new View.OnClickListener() {
                     @Override
                     public void onClick(final View v) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Glide.get(getApplicationContext()).clearDiskCache();//清理磁盘缓存 需要在子线程中执行
+                            }
+                        }).start();
+                        Glide.get(getApplicationContext()).clearMemory();//清理内存缓存
                         mCacheUtil.clear();
                         // 点击“确认”后的操作
                         ToastUtils.showShort("缓存已清理");

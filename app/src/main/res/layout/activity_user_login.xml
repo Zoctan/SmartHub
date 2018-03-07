@@ -224,13 +224,14 @@
         android:textColor="@color/third_text"
         android:textSize="16sp" />
 
-    <com.wang.avi.AVLoadingIndicatorView
-        android:id="@+id/AVLoadingIndicatorView_user_login"
+    <com.zyao89.view.zloading.ZLoadingView
+        android:id="@+id/ZLoadingView_user_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="24dp"
         android:visibility="gone"
-        app:indicatorName="BallScale" />
+        app:z_type="DoubleCircleBuilder"
+        app:z_color="@color/icon" />
 </RelativeLayout>

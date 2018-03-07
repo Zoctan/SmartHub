@@ -139,6 +139,16 @@
         </GridLayout>
     </LinearLayout>
 
+    <com.zyao89.view.zloading.ZLoadingView
+        android:id="@+id/ZLoadingView_user_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        app:z_color="@color/primary"
+        app:z_type="DoubleCircleBuilder" />
+
     <io.github.yavski.fabspeeddial.FabSpeedDial
         android:id="@+id/FabSpeedDial_user_detail"
         android:layout_width="wrap_content"

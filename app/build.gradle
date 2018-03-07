@@ -9,23 +9,16 @@ android {
     defaultConfig {
         // 应用的包名
         applicationId "com.zoctan.smartHub"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 27
         versionCode 1
-        versionName "1.0.1"
+        versionName "1.0.2"
         multiDexEnabled true
     }
-    // 需要配置自己的签名
     signingConfigs {
         release {
-            // 签名别名
-            keyAlias 'key0'
-            // 签名密码
-            keyPassword 'wgh1052380315'
             // 签名文件.keystore或者.jks
             storeFile file('/media/root/Data/language/java/android/key.jks')
-            // 签名密码
-            storePassword 'wgh1052380315'
         }
     }
     buildTypes {
@@ -68,23 +61,26 @@ dependencies {
     compile 'com.android.support:cardview-v7:27.1.0'
     compile 'com.android.support:support-v4:27.1.0'
     compile "com.android.support:multidex:1.0.3"
-    // 转换Java对象和Json对象
+
+    // Java 和 Json 对象 转换
     compile 'com.google.code.gson:gson:2.8.2'
     compile 'com.zhousf.lib:okhttp3:2.9.3'
     // 图片加载
     compile 'com.github.bumptech.glide:glide:4.3.1'
     // 圆形头像显示
     compile 'de.hdodenhof:circleimageview:2.2.0'
-    // chart
+    // 图表库
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
     // 七牛云
     compile 'com.qiniu:qiniu-android-sdk:7.3.10'
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'com.qiniu:happy-dns:0.2.13'
     compile 'com.google.zxing:core:3.3.1'
-    // butterknife注解框架
+
+    // butterknife 注解框架
     compile 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
     // permissions
     compile('com.github.hotchemi:permissionsdispatcher:3.1.0') {
         // if you don't use android.app.Fragment you can exclude support for them
@@ -92,30 +88,47 @@ dependencies {
     }
     annotationProcessor 'com.github.hotchemi:permissionsdispatcher-processor:3.1.0'
 
+    // 侧滑菜单
     compile 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.3.0'
 
+    // 下拉刷新组件
     compile 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.3'
 
+    // GIF 加载库
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.8'
 
+    // 动画加载库
+    compile 'com.zyao89:zloading:1.0.8'
+
+    // 下拉选择框
     compile 'com.github.arcadefire:nice-spinner:1.3.1'
 
+    // 工具集
     compile 'com.blankj:utilcode:1.12.6'
 
+    // 沉浸式状态栏和沉浸式导航栏管理
     compile 'com.gyf.barlibrary:barlibrary:2.3.0'
 
-    compile 'com.wang.avi:library:2.1.3'
-
+    // 出场、入场动画
     compile 'com.nineoldandroids:library:2.4.0'
 
+    // 圆角矩形框背景
     compile 'com.flyco.roundview:FlycoRoundView_Lib:1.1.2@aar'
     compile 'com.flyco.tablayout:FlycoTabLayout_Lib:1.5.0@aar'
 
+    // 消息推送栏
     compile 'com.tapadoo.android:alerter:2.0.4'
-    // fab浮动按钮
+
+    // fab 浮动按钮
     compile 'io.github.yavski:fab-speed-dial:1.0.6'
 
+    // 对话框
     compile 'com.github.sd6352051:NiftyDialogEffects:v1.0.2'
 
+    // icon 加载库
     compile 'com.github.jrvansuita:IconHandler:v2.0.0'
+
+    // lombok 注解
+    compileOnly 'org.projectlombok:lombok:1.16.20'
+    annotationProcessor 'org.projectlombok:lombok:1.16.20'
 }

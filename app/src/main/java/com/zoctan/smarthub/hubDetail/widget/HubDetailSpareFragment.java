@@ -5,12 +5,12 @@ import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.GridLayout;
 import android.widget.TextView;
 
-import com.blankj.utilcode.util.ToastUtils;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
@@ -23,8 +23,11 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.Utils;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
+import com.zoctan.smarthub.beans.HubBean;
 import com.zoctan.smarthub.hubDetail.presenter.HubDetailSparePresenter;
 import com.zoctan.smarthub.hubDetail.view.HubDetailSpareView;
+import com.zoctan.smarthub.utils.AlerterUtil;
+import com.zyao89.view.zloading.ZLoadingView;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -42,11 +45,25 @@ public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpa
     LineChart mLineChart;
     @BindView(R.id.GridLayout_hub_detail_spare)
     GridLayout mGridLayout;
+    @BindView(R.id.ZLoadingView_hub_detail_spare)
+    ZLoadingView zLoadingView;
     private final Handler handler = new Handler();
     private final HubDetailSparePresenter mPresenter = new HubDetailSparePresenter(this);
+    protected HubBean hubBean = new HubBean();
 
     public static HubDetailSpareFragment newInstance() {
         return new HubDetailSpareFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            hubBean.setName(getArguments().getString("hub_name"));
+            hubBean.setOnenet_id(getArguments().getString("hub_onenet_id"));
+            hubBean.setIs_electric(getArguments().getBoolean("hub_is_electric"));
+            hubBean.setConnected(getArguments().getBoolean("hub_connected"));
+        }
     }
 
     @Override
@@ -58,7 +75,7 @@ public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpa
     protected void initView(final View view, final Bundle savedInstanceState) {
         initLineChart();
         // 插座在线即查询实时数据
-        if (mSPUtil.getBoolean("hub_connected")) {
+        if (hubBean.getConnected()) {
             handler.postDelayed(runnable, 1000);
         } else {
             setLineChart();
@@ -75,9 +92,7 @@ public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpa
     };
 
     private void setLineChart() {
-        mPresenter.loadHubSpareList(
-                mSPUtil.getString("hub_onenet_id"),
-                mSPUtil.getString("user_token"));
+        mPresenter.loadHubSpareList(hubBean.getOnenet_id(), userToken);
     }
 
     private void initLineChart() {
@@ -218,6 +233,16 @@ public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpa
     }
 
     @Override
+    public void showLoading() {
+        zLoadingView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        zLoadingView.setVisibility(View.GONE);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         // 停止刷新
@@ -226,7 +251,7 @@ public class HubDetailSpareFragment extends BaseFragment implements HubDetailSpa
 
     @Override
     public void showFailedMsg(final String msg) {
-        ToastUtils.showShort(msg);
+        AlerterUtil.showDanger(getHoldingActivity(), msg);
     }
 
     private static class MyValueFormatter implements IAxisValueFormatter {

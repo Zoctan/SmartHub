@@ -2,6 +2,8 @@ package com.zoctan.smarthub.hubDetail.widget;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -18,7 +20,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.blankj.utilcode.util.ToastUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
@@ -26,12 +27,14 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.vansuita.library.Icon;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseFragment;
+import com.zoctan.smarthub.beans.HubBean;
 import com.zoctan.smarthub.beans.TimerBean;
 import com.zoctan.smarthub.hubDetail.presenter.HubDetailTimerPresenter;
 import com.zoctan.smarthub.hubDetail.view.HubDetailTimerView;
 import com.zoctan.smarthub.utils.AlerterUtil;
 import com.zoctan.smarthub.utils.NiftyDialog;
 import com.zoctan.smarthub.utils.NiftyDialogUtil;
+import com.zyao89.view.zloading.ZLoadingView;
 
 import org.angmarch.views.NiceSpinner;
 
@@ -52,13 +55,27 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
     RecyclerView mRecyclerView;
     @BindView(R.id.SmartRefreshLayout_timer_list)
     SmartRefreshLayout mSmartRefreshLayout;
+    @BindView(R.id.ZLoadingView_hub_detail_timer)
+    ZLoadingView zLoadingView;
     private final Calendar calendar = Calendar.getInstance();
     private final HubDetailTimerPresenter mPresenter = new HubDetailTimerPresenter(this);
     private HubDetailTimerListAdapter mAdapter;
     private List<TimerBean> mData;
+    protected HubBean hubBean = new HubBean();
 
     public static HubDetailTimerFragment newInstance() {
         return new HubDetailTimerFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            hubBean.setName(getArguments().getString("hub_name"));
+            hubBean.setOnenet_id(getArguments().getString("hub_onenet_id"));
+            hubBean.setIs_electric(getArguments().getBoolean("hub_is_electric"));
+            hubBean.setConnected(getArguments().getBoolean("hub_connected"));
+        }
     }
 
     @Override
@@ -77,21 +94,14 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
             switch (action) {
                 case "update":
                     showTimerDialog(timer);
-                    //ToastUtils.showShort("update");
                     break;
                 case "close":
                 case "open":
                     timer.setStatus(timer.getAction().equals("close") ? 0 : 1);
-                    mPresenter.doHubTimer(
-                            mSPUtil.getString("user_password"),
-                            timer);
-                    //ToastUtils.showShort("update");
+                    mPresenter.doHubTimer(userToken, timer);
                     break;
                 case "delete":
-                    mPresenter.doHubTimer(
-                            mSPUtil.getString("user_password"),
-                            timer);
-                    //ToastUtils.showShort("delete");
+                    mPresenter.doHubTimer(userToken, timer);
                     break;
             }
         }
@@ -100,7 +110,7 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
     @Override
     protected void initView(final View view, final Bundle savedInstanceState) {
         mRecyclerView.setHasFixedSize(true);
-        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getHoldingActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
@@ -108,14 +118,14 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
         mAdapter.setOnItemClickListener(mOnItemClickListener);
         mRecyclerView.setAdapter(mAdapter);
         setSmartRefresh();
-        refreshTimerList();
+        refreshTimerList(true);
     }
 
     private void setSmartRefresh() {
         mSmartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(final RefreshLayout refreshlayout) {
-                refreshTimerList();
+                refreshTimerList(false);
                 refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
             }
         });
@@ -131,7 +141,7 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
     public void addTimer() {
         final TimerBean timer = new TimerBean();
         timer.setAction("add");
-        timer.setHub_id(mSPUtil.getString("hub_onenet_id"));
+        timer.setHub_id(hubBean.getOnenet_id());
         timer.setPower(0);
         timer.setRepeat("每天");
         showTimerDialog(timer);
@@ -177,7 +187,6 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
                 } else {
                     timer.setPower(1);
                 }
-                //ToastUtils.showShort(openCloseList.get(i));
             }
         });
 
@@ -189,7 +198,6 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
             @Override
             public void onItemClick(final AdapterView<?> adapterView, final View view, final int i, final long l) {
                 timer.setRepeat(repeatList.get(i));
-                //ToastUtils.showShort(repeatList.get(i));
             }
         });
 
@@ -221,14 +229,13 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
                     public void onClick(final View v) {
                         if (mEtTimerName.getText().length() > 0
                                 && mLayoutTimerName.getError() == null) {
+                            getHoldingActivity().hideSoftKeyBoard(mEtTimerName, getContext());
                             // 补零
                             final String hour = String.format(Locale.CHINA, "%02d", mTimePicker.getHour());
                             final String minute = String.format(Locale.CHINA, "%02d", mTimePicker.getMinute());
                             timer.setTime(String.format("%s:%s", hour, minute));
                             timer.setName(mEtTimerName.getText().toString());
-                            mPresenter.doHubTimer(
-                                    mSPUtil.getString("user_password"),
-                                    timer);
+                            mPresenter.doHubTimer(userToken, timer);
                             dialog.dismiss();
                         }
                     }
@@ -236,13 +243,11 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
                 .show();
     }
 
-    public void refreshTimerList() {
+    public void refreshTimerList(final boolean isShowLoading) {
         if (mData != null) {
             mData.clear();
         }
-        mPresenter.loadHubTimerList(
-                mSPUtil.getString("user_password"),
-                mSPUtil.getString("hub_onenet_id"));
+        mPresenter.loadHubTimerList(userToken, hubBean.getOnenet_id(), isShowLoading);
     }
 
     @Override
@@ -257,24 +262,23 @@ public class HubDetailTimerFragment extends BaseFragment implements HubDetailTim
 
     @Override
     public void showLoading() {
-        AlerterUtil.showLoading(getActivity());
+        zLoadingView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoading() {
-        AlerterUtil.hideLoading();
+        zLoadingView.setVisibility(View.GONE);
     }
-
 
     @Override
     public void showSuccessMsg(final String msg) {
-        ToastUtils.showShort(msg);
-        refreshTimerList();
+        AlerterUtil.showInfo(getHoldingActivity(), msg);
+        refreshTimerList(true);
     }
 
     @Override
     public void showFailedMsg(final String msg) {
-        ToastUtils.showShort(msg);
+        AlerterUtil.showDanger(getHoldingActivity(), msg);
     }
 }
 
@@ -289,14 +293,15 @@ class HubDetailTimerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         this.notifyDataSetChanged();
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, final int viewType) {
         final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_timer, parent, false);
         return new ItemViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof ItemViewHolder) {
             final TimerBean timer = mData.get(position);
             if (timer == null) {

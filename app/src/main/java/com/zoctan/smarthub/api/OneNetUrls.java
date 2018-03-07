@@ -3,6 +3,9 @@ package com.zoctan.smarthub.api;
 import java.util.Map;
 
 public class OneNetUrls {
+    public final static String HEADER_KEY = "api-key";
+    public final static String HEADER_VALUE = "nJVyiaj5Y297Fc6Q=bUYVWnz2=0=";
+
     // https://open.iot.10086.cn/doc/art260.html#68
     /*
     datastream_id=a,b,c        // 查询的数据流，多个数据流之间用逗号分隔（可选）

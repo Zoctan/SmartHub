@@ -16,31 +16,39 @@ public class HubDetailTimerPresenter {
         mHubModel = new HubDetailTimerModelImpl();
     }
 
-    public void loadHubTimerList(final String token, final String hubOneNetId) {
-        mHubModel.loadHubTimerList(token, hubOneNetId, new HubDetailTimerPresenter.Listener());
+    public void loadHubTimerList(final String token, final String hubOneNetId, final boolean isShowLoading) {
+        if (isShowLoading) {
+            mTimerView.showLoading();
+        }
+        mHubModel.loadHubTimerList(token, hubOneNetId, new HubDetailTimerModel.onLoadHubTimerListListener() {
+            @Override
+            public void onSuccess(final List<TimerBean> timerBean) {
+                mTimerView.loadTimerList(timerBean);
+                mTimerView.hideLoading();
+            }
+
+            @Override
+            public void onFailure(final String msg) {
+                mTimerView.showFailedMsg(msg);
+                mTimerView.hideLoading();
+            }
+        });
     }
 
     public void doHubTimer(final String token, final TimerBean timer) {
         mTimerView.showLoading();
-        mHubModel.doHubTimer(token, timer, new HubDetailTimerPresenter.Listener());
-    }
+        mHubModel.doHubTimer(token, timer, new HubDetailTimerModel.onDoHubTimerListListener() {
+            @Override
+            public void onSuccess(final String msg) {
+                mTimerView.showSuccessMsg(msg);
+                mTimerView.hideLoading();
+            }
 
-    private class Listener implements HubDetailTimerModel.Listener {
-        @Override
-        public void onTimerSuccess(final String msg) {
-            mTimerView.showSuccessMsg(msg);
-            mTimerView.hideLoading();
-        }
-
-        @Override
-        public void onTimerListSuccess(final List<TimerBean> timerBean) {
-            mTimerView.loadTimerList(timerBean);
-        }
-
-        @Override
-        public void onTimerFailure(final String msg) {
-            mTimerView.showFailedMsg(msg);
-            mTimerView.hideLoading();
-        }
+            @Override
+            public void onFailure(final String msg) {
+                mTimerView.showFailedMsg(msg);
+                mTimerView.hideLoading();
+            }
+        });
     }
 }

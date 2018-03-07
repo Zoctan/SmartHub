@@ -20,8 +20,9 @@ public abstract class BaseFragment extends Fragment {
     // 当前 Activity 渲染的视图 View
     protected View contentView;
     protected BaseActivity mActivity;
-    protected SPUtils mSPUtil = SPUtils.getInstance();
     private Unbinder unbinder;
+    protected SPUtils mSPUtil = SPUtils.getInstance();
+    protected String userToken = mSPUtil.getString("user_token");
 
     // 获取布局文件ID
     protected abstract int bindLayout();
@@ -34,11 +35,17 @@ public abstract class BaseFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onSaveInstanceState(@NonNull final Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(STATE_SAVE_IS_HIDDEN, isHidden());
+    }
+
+    @Override
+    public void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            boolean isSupportHidden = savedInstanceState.getBoolean(STATE_SAVE_IS_HIDDEN);
-            @SuppressWarnings("ConstantConditions") FragmentTransaction ft = getFragmentManager().beginTransaction();
+            final boolean isSupportHidden = savedInstanceState.getBoolean(STATE_SAVE_IS_HIDDEN);
+            @SuppressWarnings("ConstantConditions") final FragmentTransaction ft = getFragmentManager().beginTransaction();
             if (isSupportHidden) {
                 ft.hide(this);
             } else {
@@ -49,18 +56,18 @@ public abstract class BaseFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mActivity = (BaseActivity) getActivity();
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(final Context context) {
         super.onAttach(context);
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
         setRetainInstance(true);
         contentView = inflater.inflate(bindLayout(), null);
         unbinder = ButterKnife.bind(this, contentView);
@@ -80,11 +87,5 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(STATE_SAVE_IS_HIDDEN, isHidden());
     }
 }

@@ -6,15 +6,25 @@ import java.util.List;
 
 public interface HubListModel {
 
-    void loadHubList(String token, Listener listener);
+    void loadHubList(String token, onLoadHubListListener listener);
 
-    void hubOpenClose(String oneNetId, String order, String token, Listener listener);
+    void hubOpenClose(HubBean hub, String token, onHubOpenCloseListener listener);
 
-    void doHub(String action, String token, HubBean hub, Listener listener);
+    void doHub(HubBean hub, String token, onDoHubListener listener);
 
-    interface Listener {
+    interface onLoadHubListListener {
         void onSuccess(List<HubBean> hubList);
 
+        void onFailure(String msg);
+    }
+
+    interface onHubOpenCloseListener {
+        void onSuccess(String msg);
+
+        void onFailure(String msg);
+    }
+
+    interface onDoHubListener {
         void onSuccess(String msg);
 
         void onFailure(String msg);

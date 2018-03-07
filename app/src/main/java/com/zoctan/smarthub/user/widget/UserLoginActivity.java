@@ -16,7 +16,6 @@ import com.blankj.utilcode.util.LogUtils;
 import com.geetest.gt3unbindsdk.Bind.GT3GeetestBindListener;
 import com.geetest.gt3unbindsdk.Bind.GT3GeetestUtilsBind;
 import com.gyf.barlibrary.ImmersionBar;
-import com.wang.avi.AVLoadingIndicatorView;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.base.BaseActivity;
 import com.zoctan.smarthub.beans.UserBean;
@@ -24,6 +23,7 @@ import com.zoctan.smarthub.main.MainActivity;
 import com.zoctan.smarthub.user.presenter.UserLoginPresenter;
 import com.zoctan.smarthub.user.view.UserLoginView;
 import com.zoctan.smarthub.utils.AlerterUtil;
+import com.zyao89.view.zloading.ZLoadingView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,8 +62,8 @@ public class UserLoginActivity extends BaseActivity implements UserLoginView {
     Button mBtnLogin;
     @BindView(R.id.Button_user_register)
     Button mBtnRegister;
-    @BindView(R.id.AVLoadingIndicatorView_user_login)
-    AVLoadingIndicatorView mProgressBar;
+    @BindView(R.id.ZLoadingView_user_login)
+    ZLoadingView zLoadingView;
     @BindView(R.id.LinearLayout_user_password2)
     LinearLayout mLayoutRegister;
     @BindView(R.id.RelativeLayout_user_login)
@@ -111,16 +111,16 @@ public class UserLoginActivity extends BaseActivity implements UserLoginView {
     // 通过交换按钮的text来交换位置
     @OnClick(R.id.Button_user_register)
     public void exchangeButton() {
-        if (mBtnLogin.getText() == "注册") {
-            mBtnLogin.setText("登录");
-            mBtnRegister.setText("注册");
+        if (mBtnLogin.getText() == getString(R.string.user_register)) {
+            mBtnLogin.setText(R.string.user_login);
+            mBtnRegister.setText(R.string.user_register);
             mViewRegisterLine.setVisibility(View.GONE);
             mLayoutRegister.setVisibility(View.GONE);
             mIvApp.setVisibility(View.VISIBLE);
             mTvApp.setTextSize(14);
         } else {
-            mBtnLogin.setText("注册");
-            mBtnRegister.setText("登录");
+            mBtnLogin.setText(R.string.user_register);
+            mBtnRegister.setText(R.string.user_login);
             mViewRegisterLine.setVisibility(View.VISIBLE);
             mLayoutRegister.setVisibility(View.VISIBLE);
             mIvApp.setVisibility(View.GONE);
@@ -136,7 +136,7 @@ public class UserLoginActivity extends BaseActivity implements UserLoginView {
                 && mLayoutUserPassword.getError() == null) {
             flag = true;
         }
-        if (mBtnLogin.getText() == "注册"
+        if (mBtnLogin.getText() == getString(R.string.user_register)
                 && mEtPassword2.getText().length() == 0
                 && mLayoutUserPassword2.getError() != null) {
             flag = false;
@@ -191,7 +191,7 @@ public class UserLoginActivity extends BaseActivity implements UserLoginView {
                             final UserBean user = new UserBean();
                             user.setUsername(mEtUserName.getText().toString());
                             user.setPassword(mEtPassword.getText().toString());
-                            if (mBtnLogin.getText() == "注册") {
+                            if (mBtnLogin.getText() == getString(R.string.user_register)) {
                                 mLoginPresenter.userAction(false, user);
                             } else {
                                 mLoginPresenter.userAction(true, user);
@@ -229,7 +229,7 @@ public class UserLoginActivity extends BaseActivity implements UserLoginView {
         mSPUtil.put("user_phone", userBean.getPhone());
         mSPUtil.put("user_name", userBean.getUsername());
         mSPUtil.put("user_token", userBean.getToken());
-        if (mBtnLogin.getText() == "注册") {
+        if (mBtnLogin.getText() == getString(R.string.user_register)) {
             AlerterUtil.showInfo(this, R.string.user_register_success);
         } else {
             AlerterUtil.showInfo(this, R.string.user_login_success);
@@ -242,12 +242,12 @@ public class UserLoginActivity extends BaseActivity implements UserLoginView {
 
     @Override
     public void showLoading() {
-        mProgressBar.show();
+        zLoadingView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoading() {
-        mProgressBar.hide();
+        zLoadingView.setVisibility(View.GONE);
     }
 
     @Override

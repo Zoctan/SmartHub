@@ -19,32 +19,33 @@ public class HubDetailSparePresenter {
     }
 
     public void loadHubSpareList(final String hubOneNetId, final String token) {
-        mHubModel.loadHubSpareList(hubOneNetId, token, new HubDetailSparePresenter.Listener());
-    }
-
-    private class Listener implements HubDetailSpareModel.Listener {
-        @Override
-        public void onSpareSuccess(final MonthSpareBean monthSpareBean) {
-            if (monthSpareBean == null) {
-                return;
+        mSpareView.showLoading();
+        mHubModel.loadHubSpareList(hubOneNetId, token, new HubDetailSpareModel.onLoadHubSpareListListener() {
+            @Override
+            public void onSuccess(final MonthSpareBean monthSpareBean) {
+                if (monthSpareBean == null) {
+                    return;
+                }
+                final Double kwh = monthSpareBean.getWatt() / 1000.0;
+                final Double bill = kwh * monthSpareBean.getPrice();
+                // x轴、y轴的数据
+                final String[] x = new String[24];
+                final ArrayList<Entry> y = new ArrayList<>();
+                for (Integer i = 0; i < 24; i++) {
+                    x[i] = i.toString();
+                    y.add(new Entry(i, Float.parseFloat(String.format(Locale.CHINA, "%.1f", monthSpareBean.getHour().get(i)))));
+                }
+                mSpareView.setSpareData(String.format(Locale.CHINA, "%.3f", kwh),
+                        String.format(Locale.CHINA, "%.2f", bill), monthSpareBean.getCurrent_month());
+                mSpareView.setLineChartData(x, y);
+                mSpareView.hideLoading();
             }
-            final Double kwh = monthSpareBean.getWatt() / 1000.0;
-            final Double bill = kwh * monthSpareBean.getPrice();
-            // x轴、y轴的数据
-            final String[] x = new String[24];
-            final ArrayList<Entry> y = new ArrayList<>();
-            for (Integer i = 0; i < 24; i++) {
-                x[i] = i.toString();
-                y.add(new Entry(i, Float.parseFloat(String.format(Locale.CHINA, "%.1f", monthSpareBean.getHour().get(i)))));
-            }
-            mSpareView.setSpareData(String.format(Locale.CHINA, "%.3f", kwh),
-                    String.format(Locale.CHINA, "%.2f", bill), monthSpareBean.getCurrent_month());
-            mSpareView.setLineChartData(x, y);
-        }
 
-        @Override
-        public void onSpareFailure(final String msg) {
-            mSpareView.showFailedMsg(msg);
-        }
+            @Override
+            public void onFailure(final String msg) {
+                mSpareView.showFailedMsg(msg);
+                mSpareView.hideLoading();
+            }
+        });
     }
 }

@@ -23,7 +23,6 @@
     <string name="user_detail_new_password">修改密码</string>
     <string name="user_detail_new_info">修改用户信息</string>
     <string name="all_different_password">两次密码不一致</string>
-    <string name="all_cannot_crop">设备不支持裁剪行为</string>
 
     <string name="user_hint_input_new_password">新密码</string>
     <string name="user_hint_input_password">请输入密码</string>
@@ -65,10 +64,13 @@
     <string name="hub_add">添加插座</string>
     <string name="hub_add_msg">确定添加插座吗？</string>
     <string name="hub_delete">删除插座</string>
-    <string name="hub_delete_msg">确定删除插座吗？</string>
+    <string name="msg_hub_delete">确定删除插座吗？</string>
+    <string name="msg_hub_reset">确定清除存储的所有用电器特征值吗？</string>
 
     <string name="find_device">正在查询当前用电器…</string>
     <string name="none_device">空载</string>
+    <string name="is_validate">有效</string>
+    <string name="not_validate">无效</string>
     <string name="hub_hint_input_device">请输入用电器名</string>
     <string name="hub_detail_store_device">存储</string>
     <string name="hub_detail_store_tip">存储值：</string>
@@ -79,7 +81,10 @@
     <string name="hub_detail_update_device_img">更新当前用电器图片</string>
     <string name="hub_detail_reset_hub">清除存储的所有用电器特征值</string>
     <string name="msg_do_when_no_electric">继电器已断电，请通电后再设置</string>
+    <string name="msg_can_not_load_when_no_electric">继电器已断电，无法查询当前用电器</string>
     <string name="msg_do_when_none">空载，请插上用电器后再设置</string>
+    <string name="msg_add_when_none">无法确认当前用电器，请先手动添加</string>
+    <string name="msg_update_when_error">如果当前电器有误，请更新信息</string>
 
     <string name="hub_detail_real_time_info">实时信息</string>
     <string name="hub_detail_energy_used">日用电量</string>
@@ -103,7 +108,7 @@
     <string name="about_app_function">功能介绍</string>
     <string name="about_app_function_introduction">
         1.遵循 Material Design 风格\n
-        2.兼容 7.0-8.1 及各种分辨率\n
+        2.兼容 6.0 ＜= x ＜ 7.0 及各种分辨率\n
         3.支持扫码添加插座\n
         4.支持对插座的状态、日用电量查看、设置定时开关\n
         5.多时间段用电量\n

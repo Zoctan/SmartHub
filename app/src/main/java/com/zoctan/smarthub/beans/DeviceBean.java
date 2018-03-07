@@ -2,50 +2,16 @@ package com.zoctan.smarthub.beans;
 
 import java.io.Serializable;
 
+import lombok.Data;
+
+@Data
 public class DeviceBean implements Serializable {
-    private String id;
+    private Integer id;
     private String hub_id;
     private String name;
     private String img;
     private int eigenvalue;
 
-    public String getId() {
-        return this.id;
-    }
-
-    public void setId(final String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public int getEigenvalue() {
-        return this.eigenvalue;
-    }
-
-    public void setEigenvalue(final int eigenvalue) {
-        this.eigenvalue = eigenvalue;
-    }
-
-    public String getImg() {
-        return this.img;
-    }
-
-    public void setImg(final String img) {
-        this.img = img;
-    }
-
-    public String getHub_id() {
-        return hub_id;
-    }
-
-    public void setHub_id(final String hub_id) {
-        this.hub_id = hub_id;
-    }
+    // 非数据库字段，只是为了方便数据操作
+    private String action;
 }

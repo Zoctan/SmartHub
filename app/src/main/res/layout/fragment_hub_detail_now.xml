@@ -23,8 +23,8 @@
 
         <ImageView
             android:id="@+id/ImageView_hub_detail_now_appliances"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
+            android:layout_width="175dp"
+            android:layout_height="175dp"
             android:layout_below="@+id/TextView_hub_detail_now_appliances_title"
             android:layout_centerHorizontal="true"
             android:src="@drawable/ic_hub_head"
@@ -32,13 +32,23 @@
 
         <TextView
             android:id="@+id/TextView_hub_detail_now_appliances_name"
-            android:layout_marginTop="12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/ImageView_hub_detail_now_appliances"
+            android:layout_marginTop="16dp"
             android:gravity="center"
             android:text="@string/find_device"
             android:textColor="@color/third_text" />
+
+        <com.zyao89.view.zloading.ZLoadingView
+            android:id="@+id/ZLoadingView_hub_detail_now"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/TextView_hub_detail_now_appliances_name"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"
+            app:z_color="@color/icon"
+            app:z_type="DoubleCircleBuilder" />
 
         <io.github.yavski.fabspeeddial.FabSpeedDial
             android:id="@+id/FabSpeedDial_hub_detail"

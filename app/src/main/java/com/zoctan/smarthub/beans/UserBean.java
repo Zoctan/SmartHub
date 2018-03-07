@@ -1,7 +1,12 @@
 package com.zoctan.smarthub.beans;
 
 
-public class UserBean {
+import java.io.Serializable;
+
+import lombok.Data;
+
+@Data
+public class UserBean implements Serializable {
     private String id;
     private String token;
     private String username;
@@ -10,51 +15,5 @@ public class UserBean {
     private String avatar;
     private String phone;
 
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(final String avatar) {
-        this.avatar = avatar;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(final String password) {
-        this.password = password;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(final String username) {
-        this.username = username;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(final String id) {
-        this.id = id;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(final String phone) {
-        this.phone = phone;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(final String token) {
-        this.token = token;
-    }
+    private String action;
 }
