@@ -27,7 +27,7 @@ def send_order(device_id, order, status, sleep_time=4):
         # 识别当前的用电器，更新list的值
         data = '{match}' + status
     if data is None:
-        return '命令错误'
+        return '命令错误', None
     else:
         response = requests.post(cmd_url, data=data, headers=headers)
         # 4秒收一次数据，只能延迟高点查询插座状态
