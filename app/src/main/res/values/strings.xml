@@ -115,13 +115,6 @@
         5.支持日夜间模式\n
         6.目前基本功能已完成\n
     </string>
-    <string name="about_source_code">源码</string>
-    <string name="about_source_code_url">https://github.com/Zoctan/SmartHub.git</string>
-    <string name="about_author">APP作者</string>
-    <string name="about_github">Github:</string>
-    <string name="about_github_url">https://github.com/Zoctan</string>
-    <string name="about_email">邮箱:</string>
-    <string name="about_email_url">752481828@qq.com</string>
     <string name="about_library">用到的开源库</string>
     <string name="about_library_introduction">
         gson\n
