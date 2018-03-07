@@ -12,7 +12,7 @@ from .qiniuyun import refresh_cdn
 headers = {'api-key': 'nJVyiaj5Y297Fc6Q=bUYVWnz2=0='}
 
 
-@decorators.composed(decorators.route('/api/hubs/device/<device_id>', methods=['POST']), decorators.json_required)
+@decorators.composed(decorators.route('/api/hubs/devices/<device_id>', methods=['POST']), decorators.json_required)
 def add_device(device_id):
     name = request.json.get('name')
     if name is None:
@@ -25,7 +25,7 @@ def add_device(device_id):
     return jsonify({'msg': 'ok', 'result': '用电器添加成功'})
 
 
-@decorators.composed(decorators.route('/api/hubs/device/<device_id>', methods=['PUT']), decorators.json_required)
+@decorators.composed(decorators.route('/api/hubs/devices/<device_id>', methods=['PUT']), decorators.json_required)
 def update_device(device_id):
     name = request.json.get('name')
     if name is None:
@@ -35,7 +35,7 @@ def update_device(device_id):
     return jsonify({'msg': 'ok', 'result': '用电器修改成功'})
 
 
-@decorators.composed(decorators.route('/api/hubs/device/img/<device_id>', methods=['PUT']), decorators.json_required)
+@decorators.composed(decorators.route('/api/hubs/devices/img/<device_id>', methods=['PUT']), decorators.json_required)
 def update_device_img(device_id):
     img = request.json.get('img')
     if not img or img == '':
@@ -46,7 +46,7 @@ def update_device_img(device_id):
     return jsonify({'msg': 'ok', 'result': '用电器图片修改成功'})
 
 
-@decorators.route('/api/hubs/device/<device_id>', methods=['GET'])
+@decorators.route('/api/hubs/devices/<device_id>', methods=['GET'])
 def get_device(device_id):
     hub = Hub.query.filter_by(onenet_id=device_id).first()
     if not hub:
