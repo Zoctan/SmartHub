@@ -97,4 +97,4 @@ def hub_order(device_id):
         devices = Device.query.filter_by(hub_id=device_id).all()
         for device in devices:
             db.session.delete(device)
-    return jsonify({'result': send_order(device_id, order, status)[0]})
+    return jsonify({'msg': 'ok', 'result': send_order(device_id, order, status)[0]})
