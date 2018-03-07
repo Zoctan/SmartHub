@@ -63,7 +63,7 @@ def get_device(device_id):
     # 0：无效或不能识别当前用电器
     if eigenvalue == 0:
         # 提示用户进行用电器添加
-        return jsonify({'msg': 'no', 'error': '无法确认当前用电器，请手动添加该用电器'})
+        return jsonify({'msg': 'no', 'error': '无法确认当前用电器，请先手动添加'})
     else:
         # 先从数据库找
         device = Device.query.filter_by(eigenvalue=eigenvalue, hub_id=device_id).first()
@@ -71,4 +71,4 @@ def get_device(device_id):
             return jsonify({'msg': 'ok', 'result': device.to_json()})
         else:
             # 提示用户进行用电器添加
-            return jsonify({'msg': 'no', 'error': '无法确认当前用电器，请手动添加该用电器'})
+            return jsonify({'msg': 'no', 'error': '无法确认当前用电器，请先手动添加'})
