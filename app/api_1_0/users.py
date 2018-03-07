@@ -64,7 +64,7 @@ def update_user():
     if not phone or not username:
         return jsonify({'msg': 'no', 'error': '用户名或手机号不能为空'})
     user = User.query.filter_by(username=username).first()
-    if user:
+    if g.current_user.username != username and user:
         return jsonify({'msg': 'no', 'error': '用户名已存在'})
     g.current_user.phone = phone
     g.current_user.username = username
