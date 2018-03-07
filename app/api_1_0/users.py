@@ -43,7 +43,7 @@ def update_user_avatar():
     avatar = request.json.get('avatar')
     if not avatar or avatar == '':
         return jsonify({'msg': 'no', 'error': '图片链接不能为空'})
-    g.current_user.avatar = 'http://smarthub.txdna.cn/{}'.format(avatar)
+    g.current_user.avatar = avatar
     refresh_cdn([avatar])
     return jsonify({'msg': 'ok', 'result': '头像修改成功'})
 
