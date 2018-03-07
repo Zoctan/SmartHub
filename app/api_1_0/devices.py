@@ -41,7 +41,7 @@ def update_device_img(device_id):
     if not img or img == '':
         return jsonify({'msg': 'no', 'error': '图片链接不能为空'})
     device = Device.query.filter_by(id=request.json.get('id'), hub_id=device_id).first()
-    device.img = request.json.get('img')
+    device.img = 'http://smarthub.txdna.cn/{}'.format(img)
     refresh_cdn([device.img])
     return jsonify({'msg': 'ok', 'result': '用电器图片修改成功'})
 
