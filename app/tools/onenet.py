@@ -57,4 +57,7 @@ def send_order(device_id, order, status, sleep_time=4):
             msg = '命令执行超时'
         else:
             msg = '设备响应消息过长'
+
+        if order == 'turn' and msg != '设备正常响应':
+            msg = '插座可能未响应，请刷新后重新开关'
         return msg, query_url
