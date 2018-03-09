@@ -1,10 +1,10 @@
 # 智能插座
 
-基于 Material Design 和 MVP 开发模式的智能插座客户端
+基于 Material Design 和 MVP 架构的智能插座客户端
 
 支持：Android 6.0 <= x < 7.0
 
-服务器代码使用 python flask 框架编写，源码在分支 api 中。
+服务器代码使用 Python 的 Flask 框架编写，源码在分支 api 中。
 
 # 功能
 
@@ -14,6 +14,8 @@
 5. 目前基本功能已完成
 
 以下是部分截图：
+
+<img src="https://github.com/Zoctan/SmartHub/blob/app/screenshot/total.png"/>
 
 <div>
 <img width="30%" height="30%" src="https://github.com/Zoctan/SmartHub/blob/app/screenshot/guide3.png"/>
