@@ -4,7 +4,7 @@
 
 支持：Android 6.0 <= x < 7.0
 
-服务器代码使用 Python 的 Flask 框架编写，源码在分支 api 中。
+服务器代码使用 Python 的 Flask 框架编写，源码在分支 master 中。
 
 # 功能
 
