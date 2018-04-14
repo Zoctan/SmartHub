@@ -12,7 +12,7 @@ from ..tools.redis_timers import RedisTimer
 def add_timer(device_id):
     hub = Hub.query.filter_by(onenet_id=device_id).first()
     if not hub:
-        return jsonify({'msg': 'no', 'error': '插座不存在'})
+        return jsonify({'msg': '插座不存在', 'error': 1})
     name = request.json.get('name')
     power = request.json.get('power')
     repeat = request.json.get('repeat')
@@ -27,25 +27,25 @@ def add_timer(device_id):
     db.session.flush()
     # 加到redis
     RedisTimer(id=timer.id, hub_id=device_id, repeat=repeat, time=time, power=power, status=1).set()
-    return jsonify({'msg': 'ok', 'result': '定时器添加成功'})
+    return jsonify({'msg': '定时器添加成功', 'error': 0})
 
 
 @decorators.route('/api/hubs/timers/<device_id>', methods=['GET'])
 def hub_all_timers(device_id):
     hub = Hub.query.filter_by(onenet_id=device_id).first()
     if not hub:
-        return jsonify({'msg': 'no', 'error': '插座不存在'})
+        return jsonify({'msg': '插座不存在', 'error': 1})
     timer_list = []
     for timer in hub.timers:
         timer_list.append(timer.to_json())
-    return jsonify({'msg': 'ok', 'result': timer_list})
+    return jsonify({'msg': '成功获取所有插座信息', 'error': 0, 'result': timer_list})
 
 
 @decorators.composed(decorators.route('/api/hubs/timers/<device_id>', methods=['PUT']), decorators.json_required)
 def update_timer(device_id):
     timer = Timer.query.filter_by(id=request.json.get('id'), hub_id=device_id).first()
     if not timer:
-        return jsonify({'msg': 'no', 'error': '定时器不存在'})
+        return jsonify({'msg': '定时器不存在', 'error': 1})
     name = request.json.get('name')
     power = request.json.get('power')
     if name == '':
@@ -63,14 +63,14 @@ def update_timer(device_id):
     else:
         RedisTimer(id=timer.id, hub_id=device_id, repeat=timer.repeat,
                 time=timer.time, power=timer.power, status=timer.status).update()
-    return jsonify({'msg': 'ok', 'result': '定时器修改成功'})
+    return jsonify({'msg': '定时器修改成功', 'error': 0})
 
 
 @decorators.composed(decorators.route('/api/hubs/timers/<device_id>', methods=['DELETE']), decorators.json_required)
 def delete_timer(device_id):
     timer = Timer.query.filter_by(id=request.json.get('id'), hub_id=device_id).first()
     if not timer:
-        return jsonify({'msg': 'no', 'error': '定时器不存在'})
+        return jsonify({'msg': '定时器不存在', 'error': 1})
     RedisTimer(id=timer.id, hub_id=timer.hub_id).delete()
     db.session.delete(timer)
-    return jsonify({'msg': 'ok', 'result': '定时器删除成功'})
+    return jsonify({'msg': '定时器删除成功', 'error': 0})

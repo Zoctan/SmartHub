@@ -13,14 +13,14 @@ multi_auth = MultiAuth(basic_auth, token_auth)
 
 
 @basic_auth.error_handler
-def basic_auth_unauthorized(error):
+def basic_auth_unauthorized():
     # default 401: unauthorized, but it will alert a login window
-    return jsonify({'msg': 'no', 'error': error})
+    return jsonify({'msg': '请带上token访问api', 'error': 1})
 
 
 @token_auth.error_handler
-def token_auth_unauthorized(error='请带上token访问api'):
-    return jsonify({'msg': 'no', 'error': error})
+def token_auth_unauthorized():
+    return jsonify({'msg': '请带上token访问api', 'error': 1})
 
 
 @basic_auth.verify_password
@@ -51,4 +51,4 @@ def get_token():
     token = g.current_user.generate_auth_token(31536000)
     result = g.current_user.to_json()
     result.update({'token': token.decode('ascii')})
-    return jsonify({'msg': 'ok', 'result': result})
+    return jsonify({'msg': 'token获取成功', 'error': 0, 'result': result})

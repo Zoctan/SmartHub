@@ -20,7 +20,7 @@ def get_qiniu_token(key):
     # 上传到七牛后保存的文件名key
     # 生成上传 Token，可以指定过期时间等
     token = q.upload_token(bucket_name, key, 3600)
-    return jsonify({'msg': 'ok', 'result': token})
+    return jsonify({'msg': '上传成功', 'error': 0, 'result': token})
 
 
 def refresh_cdn(urls):

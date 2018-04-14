@@ -8,8 +8,8 @@ from ..models import MonthSpare
 @decorators.route('/api/hubs/spares/<device_id>', methods=['GET'])
 def get_hub_spare(device_id):
     if g.current_user is None:
-        return jsonify({'msg': 'no', 'result': '请带上token查询'})
+        return jsonify({'msg': '请带上token查询', 'error': 1})
     month = MonthSpare.query.filter_by(hub_id=device_id).first()
     if not month:
-        return jsonify({'msg': 'no', 'error': '插座不存在'})
-    return jsonify({'msg': 'ok', 'result': month.to_json()})
+        return jsonify({'msg': '插座不存在', 'error': 1})
+    return jsonify({'msg': '成功获取插座能耗', 'error': 0, 'result': month.to_json()})

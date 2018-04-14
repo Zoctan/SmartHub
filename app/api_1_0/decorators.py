@@ -19,7 +19,7 @@ def route(rule, **options):
                 return rest
             except Exception as e:
                 db.session.rollback()
-                return jsonify({'msg': 'no', 'error': '数据库出错'})
+                return jsonify({'msg': '数据库出错', 'error': 1})
             finally:
                 db.session.remove()
 
@@ -44,7 +44,7 @@ def json_required(func):
     @wraps(func)
     def decorated_function(*args, **kwargs):
         if not request.json:
-            return jsonify({'msg': 'no', 'error': '请使用Json格式传输数据'})
+            return jsonify({'msg': '请使用Json格式传输数据', 'error': 1})
         return func(*args, **kwargs)
 
     return decorated_function

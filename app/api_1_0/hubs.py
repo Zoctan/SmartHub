@@ -44,7 +44,7 @@ def get_hubs():
         tmp = {'connected': connected, 'is_electric': is_electric}
         tmp.update(hub.to_json())
         hub_list.append(tmp)
-    return jsonify({'msg': 'ok', 'result': hub_list})
+    return jsonify({'msg': '成功获取插座信息', 'error': 0, 'result': hub_list})
 
 
 @decorators.composed(decorators.route('/api/hubs', methods=['POST']), decorators.json_required)
@@ -53,9 +53,9 @@ def add_hub():
     mac = request.json.get('mac')
     # require these value
     if not onenet_id or not mac:
-        return jsonify({'msg': 'no', 'error': '缺少参数: 设备号 MAC地址'})
+        return jsonify({'msg': '缺少参数: 设备号 MAC地址', 'error': 1})
     if Hub.query.filter_by(onenet_id=onenet_id).first():
-        return jsonify({'msg': 'no', 'error': '插座已被添加'})
+        return jsonify({'msg': '插座已被添加', 'error': 1})
     hub = Hub(user_id=g.current_user.id, mac=mac, onenet_id=onenet_id)
     db.session.add(hub)
     db.session.flush()
@@ -67,25 +67,25 @@ def add_hub():
     hour = HourSpare()
     hour.hub_id = onenet_id
     db.session.add(hour)
-    return jsonify({'msg': 'ok', 'result': '插座添加成功'})
+    return jsonify({'msg': '插座添加成功', 'error': 0})
 
 
 @decorators.route('/api/hubs/<device_id>', methods=['DELETE'])
 def delete_hub(device_id):
     hub = Hub.query.filter_by(onenet_id=device_id).first()
     if not hub:
-        return jsonify({'msg': 'no', 'error': '插座不存在'})
+        return jsonify({'msg': '插座不存在', 'error': 1})
     db.session.delete(hub)
-    return jsonify({'msg': 'ok', 'result': '插座删除成功'})
+    return jsonify({'msg': '插座删除成功', 'error': 0})
 
 
 @decorators.composed(decorators.route('/api/hubs/<device_id>', methods=['PUT']), decorators.json_required)
 def update_hub(device_id):
     hub = Hub.query.filter_by(onenet_id=device_id).first()
     if not hub:
-        return jsonify({'msg': 'no', 'error': '插座不存在'})
+        return jsonify({'msg': '插座不存在', 'error': 1})
     hub.name = request.json.get('name')
-    return jsonify({'msg': 'ok', 'result': '插座修改成功'})
+    return jsonify({'msg': '插座修改成功', 'error': 0})
 
 
 @decorators.route('/api/hubs/<device_id>/order', methods=['GET'])
@@ -97,4 +97,4 @@ def hub_order(device_id):
         devices = Device.query.filter_by(hub_id=device_id).all()
         for device in devices:
             db.session.delete(device)
-    return jsonify({'msg': 'ok', 'result': send_order(device_id, order, status)[0]})
+    return jsonify({'msg': '指令下达成功', 'error': 0, 'result': send_order(device_id, order, status)[0]})
