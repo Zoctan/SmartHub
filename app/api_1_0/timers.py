@@ -36,7 +36,7 @@ def hub_all_timers(onenet_id):
     timer_list = []
     for timer in hub.timers:
         timer_list.append(timer.to_json())
-    return Result.success('成功获取所有插座信息', timer_list)
+    return Result.success('成功获取所有定时器', timer_list)
 
 
 @decorators.composed(decorators.route('/api/hubs/timers', methods=['PUT']), decorators.json_required)
