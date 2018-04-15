@@ -8,34 +8,30 @@ from ..models import User, db
 from .qiniuyun import refresh_cdn
 
 
-@decorators.composed(decorators.route('/api/tokens', methods=['POST']), decorators.json_required)
-def login():
-    username = request.json.get('username')
-    password = request.json.get('password')
-    if username and password and verify_password(username, password):
-        return get_token()
-    return jsonify({'msg': '用户名或密码错误', 'error': 1})
-
-
 @decorators.route('/api/users', methods=['GET'])
 def get_user_info():
-    return jsonify({'msg': '用户信息获取成功', 'error': 0, 'result': [g.current_user.to_json()]})
+    return get_token('用户信息获取成功')
 
 
 @decorators.composed(decorators.route('/api/users', methods=['POST']), decorators.json_required)
-def add_user():
+def login_register():
     username = request.json.get('username')
     password = request.json.get('password')
-    # require these value
     if not username or not password:
         return jsonify({'msg': '缺少参数: 用户名 密码', 'error': 1})
+    # 可能是登录
+    msg = '登录成功'
     if User.query.filter_by(username=username).first():
-        return jsonify({'msg': '用户名已存在', 'error': 1})
-    g.current_user = User(username=username)
-    g.current_user.password = password
-    db.session.add(g.current_user)
-    db.session.flush()
-    return get_token()
+        if not verify_password(username, password):
+            # 但登录的用户名或密码错误
+            return jsonify({'msg': '错误：用户名、密码错误或用户已注册，请重试', 'error': 1})
+    else:
+        g.current_user = User(username=username)
+        g.current_user.password = password
+        db.session.add(g.current_user)
+        db.session.flush()
+        msg = '成功注册'
+    return get_token(msg)
 
 
 @decorators.composed(decorators.route('/api/users/avatar', methods=['PUT']), decorators.json_required)
@@ -43,9 +39,9 @@ def update_user_avatar():
     avatar = request.json.get('avatar')
     if not avatar or avatar == '':
         return jsonify({'msg': '图片链接不能为空', 'error': 1})
-    g.current_user.avatar = avatar
-    refresh_cdn([avatar])
-    return jsonify({'msg': '头像修改成功', 'error': 0})
+    g.current_user.avatar = 'http://smarthub.txdna.cn/' + avatar
+    refresh_cdn([g.current_user.avatar])
+    return jsonify({'msg': '头像修改成功', 'error': 0, 'result': g.current_user.avatar})
 
 
 @decorators.composed(decorators.route('/api/users/password', methods=['PUT']), decorators.json_required)

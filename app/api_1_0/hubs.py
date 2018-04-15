@@ -67,34 +67,40 @@ def add_hub():
     hour = HourSpare()
     hour.hub_id = onenet_id
     db.session.add(hour)
-    return jsonify({'msg': '插座添加成功', 'error': 0})
+    return jsonify({'msg': '成功添加插座', 'error': 0})
 
 
-@decorators.route('/api/hubs/<device_id>', methods=['DELETE'])
-def delete_hub(device_id):
-    hub = Hub.query.filter_by(onenet_id=device_id).first()
+@decorators.composed(decorators.route('/api/hubs', methods=['DELETE']), decorators.json_required)
+def delete_hub():
+    onenet_id = request.json.get('onenet_id')
+    hub = Hub.query.filter_by(onenet_id=onenet_id).first()
     if not hub:
         return jsonify({'msg': '插座不存在', 'error': 1})
     db.session.delete(hub)
-    return jsonify({'msg': '插座删除成功', 'error': 0})
+    return jsonify({'msg': '成功删除插座', 'error': 0})
 
 
-@decorators.composed(decorators.route('/api/hubs/<device_id>', methods=['PUT']), decorators.json_required)
-def update_hub(device_id):
-    hub = Hub.query.filter_by(onenet_id=device_id).first()
+@decorators.composed(decorators.route('/api/hubs', methods=['PUT']), decorators.json_required)
+def update_hub():
+    onenet_id = request.json.get('onenet_id')
+    hub = Hub.query.filter_by(onenet_id=onenet_id).first()
     if not hub:
         return jsonify({'msg': '插座不存在', 'error': 1})
     hub.name = request.json.get('name')
-    return jsonify({'msg': '插座修改成功', 'error': 0})
+    return jsonify({'msg': '成功修改插座', 'error': 0})
 
 
-@decorators.route('/api/hubs/<device_id>/order', methods=['GET'])
-def hub_order(device_id):
-    order = request.args.get('order')
-    status = request.args.get('status')
+@decorators.composed(decorators.route('/api/hubs/order', methods=['POST']), decorators.json_required)
+def hub_order():
+    onenet_id = request.json.get('onenet_id')
+    hub = Hub.query.filter_by(onenet_id=onenet_id).first()
+    if not hub:
+        return jsonify({'msg': '插座不存在', 'error': 1})
+    order = request.json.get('order')
+    status = request.json.get('status')
     if order == 'reset':
         # 相应地也要清除所有数据库保存的用电器信息
-        devices = Device.query.filter_by(hub_id=device_id).all()
+        devices = Device.query.filter_by(hub_id=onenet_id).all()
         for device in devices:
             db.session.delete(device)
-    return jsonify({'msg': '指令下达成功', 'error': 0, 'result': send_order(device_id, order, status)[0]})
+    return jsonify({'msg': '成功下达指令', 'error': 0, 'result': send_order(onenet_id, order, status)[0]})

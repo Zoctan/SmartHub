@@ -7,8 +7,10 @@ from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
 from . import api
 from ..models import User, AnonymousUser
 
+scheme = 'Smart'
+
 basic_auth = HTTPBasicAuth()
-token_auth = HTTPTokenAuth(scheme='Smart')
+token_auth = HTTPTokenAuth(scheme=scheme)
 multi_auth = MultiAuth(basic_auth, token_auth)
 
 
@@ -47,8 +49,8 @@ def before_request():
     pass
 
 
-def get_token():
+def get_token(msg='token获取成功'):
     token = g.current_user.generate_auth_token(31536000)
     result = g.current_user.to_json()
-    result.update({'token': token.decode('ascii')})
-    return jsonify({'msg': 'token获取成功', 'error': 0, 'result': result})
+    result.update({'token': '{} {}'.format(scheme, token.decode('ascii'))})
+    return jsonify({'msg': msg, 'error': 0, 'result': result})
