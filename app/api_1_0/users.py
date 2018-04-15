@@ -13,25 +13,31 @@ def get_user_info():
     return get_token('用户信息获取成功')
 
 
-@decorators.composed(decorators.route('/api/users', methods=['POST']), decorators.json_required)
-def login_register():
+@decorators.composed(decorators.route('/api/token', methods=['POST']), decorators.json_required)
+def login():
     username = request.json.get('username')
     password = request.json.get('password')
     if not username or not password:
         return Result.error('缺少参数: 用户名 密码')
-    # 可能是登录
-    msg = '登录成功'
     if User.query.filter_by(username=username).first():
         if not verify_password(username, password):
-            # 但登录的用户名或密码错误
-            return Result.error('错误：用户名、密码错误或用户已注册，请重试')
-    else:
-        g.current_user = User(username=username)
-        g.current_user.password = password
-        db.session.add(g.current_user)
-        db.session.flush()
-        msg = '成功注册'
-    return get_token(msg)
+            return Result.error('用户名或密码错误')
+        return get_token('登录成功')
+
+
+@decorators.composed(decorators.route('/api/users', methods=['POST']), decorators.json_required)
+def register():
+    username = request.json.get('username')
+    password = request.json.get('password')
+    if not username or not password:
+        return Result.error('缺少参数: 用户名 密码')
+    if User.query.filter_by(username=username).first():
+        return Result.error('用户已注册')
+    g.current_user = User(username=username)
+    g.current_user.password = password
+    db.session.add(g.current_user)
+    db.session.flush()
+    return get_token('成功注册')
 
 
 @decorators.composed(decorators.route('/api/users/avatar', methods=['PUT']), decorators.json_required)
