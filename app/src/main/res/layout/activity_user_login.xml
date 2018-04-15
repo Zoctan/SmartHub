@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:background="@color/primary"
-    tools:context=".user.widget.UserLoginActivity">
+    tools:context=".ui.activity.UserLoginActivity">
 
     <!-- 注册按钮 -->
     <Button

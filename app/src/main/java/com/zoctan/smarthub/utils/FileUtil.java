@@ -62,7 +62,10 @@ public class FileUtil {
      * @param contentType 文件类型如：文本（text/html）
      *                    当手机中没有一个app可以打开file时会抛ActivityNotFoundException
      */
-    public static void startActionFile(final Context context, final File file, final String contentType) throws ActivityNotFoundException {
+    public static void startActionFile(final Context context,
+                                       final File file,
+                                       final String contentType)
+            throws ActivityNotFoundException {
         if (context == null) {
             return;
         }
@@ -85,7 +88,9 @@ public class FileUtil {
      * @param file        File
      * @param requestCode result requestCode
      */
-    public static void startActionCapture(final Activity activity, final File file, final int requestCode) {
+    public static void startActionCapture(final Activity activity,
+                                          final File file,
+                                          final int requestCode) {
         if (activity == null) {
             return;
         }

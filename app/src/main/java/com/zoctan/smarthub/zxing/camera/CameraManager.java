@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2008 ZXing authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.zoctan.smarthub.zxing.camera;
 
 import android.annotation.SuppressLint;
@@ -34,7 +18,6 @@ import java.io.IOException;
  * both preview and decoding.
  */
 public final class CameraManager {
-
     static final int SDK_INT; // Later we can use Build.VERSION.SDK_INT
     private static final String TAG = CameraManager.class.getSimpleName();
     private static final int MIN_FRAME_WIDTH = 240;
@@ -48,7 +31,7 @@ public final class CameraManager {
         int sdkInt;
         try {
             sdkInt = Integer.parseInt(Build.VERSION.SDK);
-        } catch (NumberFormatException nfe) {
+        } catch (final NumberFormatException nfe) {
             // Just to be safe
             sdkInt = 10000;
         }
@@ -73,7 +56,7 @@ public final class CameraManager {
     private boolean initialized;
     private boolean previewing;
 
-    private CameraManager(Context context) {
+    private CameraManager(final Context context) {
 
         this.context = context;
         this.configManager = new CameraConfigurationManager(context);
@@ -94,7 +77,7 @@ public final class CameraManager {
      *
      * @param context The Activity which wants to use the camera.
      */
-    public static void init(Context context) {
+    public static void init(final Context context) {
         if (cameraManager == null) {
             cameraManager = new CameraManager(context);
         }
@@ -115,7 +98,7 @@ public final class CameraManager {
      * @param holder The surface object which the camera will draw preview frames into.
      * @throws IOException Indicates the camera driver failed to open.
      */
-    public void openDriver(SurfaceHolder holder) throws IOException {
+    public void openDriver(final SurfaceHolder holder) throws IOException {
         if (camera == null) {
             camera = Camera.open();
             if (camera == null) {
@@ -183,7 +166,7 @@ public final class CameraManager {
      * @param handler The handler to send the message to.
      * @param message The what field of the message to be sent.
      */
-    public void requestPreviewFrame(Handler handler, int message) {
+    public void requestPreviewFrame(final Handler handler, final int message) {
         if (camera != null && previewing) {
             previewCallback.setHandler(handler, message);
             if (useOneShotPreviewCallback) {
@@ -200,7 +183,7 @@ public final class CameraManager {
      * @param handler The Handler to notify when the autofocus completes.
      * @param message The message to deliver.
      */
-    public void requestAutoFocus(Handler handler, int message) {
+    public void requestAutoFocus(final Handler handler, final int message) {
         if (camera != null && previewing) {
             autoFocusCallback.setHandler(handler, message);
             //Log.d(TAG, "Requesting auto-focus callback");
@@ -216,7 +199,7 @@ public final class CameraManager {
      * @return The rectangle to draw on screen in window coordinates.
      */
     public Rect getFramingRect() {
-        Point screenResolution = configManager.getScreenResolution();
+        final Point screenResolution = configManager.getScreenResolution();
         if (screenResolution == null)
             return null;
         if (framingRect == null) {
@@ -234,8 +217,8 @@ public final class CameraManager {
                 width = height;
             }
 
-            int leftOffset = (screenResolution.x - width) / 2;
-            int topOffset = (screenResolution.y - height) / 2;
+            final int leftOffset = (screenResolution.x - width) / 2;
+            final int topOffset = (screenResolution.y - height) / 2;
             framingRect = new Rect(leftOffset, topOffset, leftOffset + width, topOffset + height);
 
         }
@@ -273,9 +256,9 @@ public final class CameraManager {
      */
     public Rect getFramingRectInPreview() {
         if (framingRectInPreview == null) {
-            Rect rect = new Rect(getFramingRect());
-            Point cameraResolution = configManager.getCameraResolution();
-            Point screenResolution = configManager.getScreenResolution();
+            final Rect rect = new Rect(getFramingRect());
+            final Point cameraResolution = configManager.getCameraResolution();
+            final Point screenResolution = configManager.getScreenResolution();
             //modify here
 //      rect.left = rect.left * cameraResolution.x / screenResolution.x;
 //      rect.right = rect.right * cameraResolution.x / screenResolution.x;
@@ -320,10 +303,10 @@ public final class CameraManager {
      * @param height The height of the image.
      * @return A PlanarYUVLuminanceSource instance.
      */
-    public PlanarYUVLuminanceSource buildLuminanceSource(byte[] data, int width, int height) {
-        Rect rect = getFramingRectInPreview();
-        int previewFormat = configManager.getPreviewFormat();
-        String previewFormatString = configManager.getPreviewFormatString();
+    public PlanarYUVLuminanceSource buildLuminanceSource(final byte[] data, final int width, final int height) {
+        final Rect rect = getFramingRectInPreview();
+        final int previewFormat = configManager.getPreviewFormat();
+        final String previewFormatString = configManager.getPreviewFormatString();
         switch (previewFormat) {
             // This is the standard Android format which all devices are REQUIRED to support.
             // In theory, it's the only one we should ever care about.

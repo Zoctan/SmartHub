@@ -4,15 +4,15 @@ android {
     // 编译SDK的版本
     compileSdkVersion 27
     // build tools的版本
-    buildToolsVersion "26.0.2"
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
         // 应用的包名
         applicationId "com.zoctan.smartHub"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0.2"
+        versionCode 2
+        versionName "2.0.0"
         multiDexEnabled true
     }
     signingConfigs {
@@ -42,6 +42,10 @@ android {
     lintOptions {
         abortOnError true
     }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
 }
 
 repositories {
@@ -53,82 +57,131 @@ repositories {
 
 dependencies {
     // 编译libs目录下的所有jar包
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile(name: 'gt3geetest_sdk', ext: 'aar')
-    compile 'com.android.support:appcompat-v7:27.1.0'
-    compile 'com.android.support:design:27.1.0'
-    compile 'com.android.support:cardview-v7:27.1.0'
-    compile 'com.android.support:support-v4:27.1.0'
-    compile "com.android.support:multidex:1.0.3"
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.12'
+    implementation(name: 'gt3geetest_sdk', ext: 'aar')
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:cardview-v7:27.1.1'
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation "com.android.support:multidex:1.0.3"
 
-    // Java 和 Json 对象 转换
-    compile 'com.google.code.gson:gson:2.8.2'
-    compile 'com.zhousf.lib:okhttp3:2.9.3'
-    // 图片加载
-    compile 'com.github.bumptech.glide:glide:4.3.1'
-    // 圆形头像显示
-    compile 'de.hdodenhof:circleimageview:2.2.0'
-    // 图表库
+    /**
+     * A powerful image downloading and caching library
+     * https://github.com/square/picasso
+     */
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    /**
+     * A circular ImageView
+     * https://github.com/hdodenhof/CircleImageView
+     */
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
+    /**
+     * A chart view / graph view library
+     * https://github.com/PhilJay/MPAndroidChart
+     */
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
-    // 七牛云
-    compile 'com.qiniu:qiniu-android-sdk:7.3.10'
-    compile 'com.loopj.android:android-async-http:1.4.9'
-    compile 'com.qiniu:happy-dns:0.2.13'
-    compile 'com.google.zxing:core:3.3.1'
-
-    // butterknife 注解框架
-    compile 'com.jakewharton:butterknife:8.8.1'
+    //
+    /**
+     * 七牛云
+     * https://developer.qiniu.com/kodo/sdk/1236/android
+     */
+    implementation 'com.qiniu:qiniu-android-sdk:7.3.10'
+    implementation 'com.loopj.android:android-async-http:1.4.9'
+    implementation 'com.qiniu:happy-dns:0.2.13'
+    implementation 'com.google.zxing:core:3.3.1'
+    /**
+     * Bind Android views and callbacks to fields and methods.
+     * https://github.com/JakeWharton/butterknife
+     */
+    implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-
-    // permissions
-    compile('com.github.hotchemi:permissionsdispatcher:3.1.0') {
+    /**
+     * Simple annotation-based API to handle runtime permissions.
+     * https://github.com/permissions-dispatcher/PermissionsDispatcher
+     */
+    implementation('com.github.hotchemi:permissionsdispatcher:3.1.0') {
         // if you don't use android.app.Fragment you can exclude support for them
         exclude module: "support-v13"
     }
     annotationProcessor 'com.github.hotchemi:permissionsdispatcher-processor:3.1.0'
-
-    // 侧滑菜单
-    compile 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.3.0'
-
-    // 下拉刷新组件
-    compile 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.3'
-
-    // GIF 加载库
-    compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.8'
-
-    // 动画加载库
-    compile 'com.zyao89:zloading:1.0.8'
-
-    // 下拉选择框
-    compile 'com.github.arcadefire:nice-spinner:1.3.1'
-
-    // 工具集
-    compile 'com.blankj:utilcode:1.12.6'
-
-    // 沉浸式状态栏和沉浸式导航栏管理
-    compile 'com.gyf.barlibrary:barlibrary:2.3.0'
-
-    // 出场、入场动画
-    compile 'com.nineoldandroids:library:2.4.0'
-
-    // 圆角矩形框背景
-    compile 'com.flyco.roundview:FlycoRoundView_Lib:1.1.2@aar'
-    compile 'com.flyco.tablayout:FlycoTabLayout_Lib:1.5.0@aar'
-
-    // 消息推送栏
-    compile 'com.tapadoo.android:alerter:2.0.4'
-
-    // fab 浮动按钮
-    compile 'io.github.yavski:fab-speed-dial:1.0.6'
-
-    // 对话框
-    compile 'com.github.sd6352051:NiftyDialogEffects:v1.0.2'
-
-    // icon 加载库
-    compile 'com.github.jrvansuita:IconHandler:v2.0.0'
-
-    // lombok 注解
-    compileOnly 'org.projectlombok:lombok:1.16.20'
-    annotationProcessor 'org.projectlombok:lombok:1.16.20'
+    /**
+     * 下拉刷新组件
+     * https://github.com/scwang90/SmartRefreshLayout
+     */
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.5.1'
+    /**
+     * 自定义Loading库
+     * https://github.com/zyao89/ZLoading
+     */
+    implementation 'com.zyao89:zloading:1.0.8'
+    /**
+     * 下拉选择框
+     * https://github.com/arcadefire/nice-spinner
+     */
+    implementation 'com.github.arcadefire:nice-spinner:1.3.1'
+    /**
+     * 工具集
+     * https://github.com/Blankj/AndroidUtilCode
+     */
+    implementation 'com.blankj:utilcode:1.13.10'
+    /**
+     * 沉浸式状态栏和沉浸式导航栏管理
+     * https://github.com/gyf-dev/ImmersionBar
+     */
+    implementation 'com.gyf.barlibrary:barlibrary:2.3.0'
+    /**
+     * 出场、入场动画
+     * https://github.com/JakeWharton/NineOldAndroids
+     */
+    implementation 'com.nineoldandroids:library:2.4.0'
+    /**
+     * TabLayout
+     * https://github.com/H07000223/FlycoTabLayout
+     */
+    implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
+    /**
+     * RoundView
+     * https://github.com/H07000223/FlycoRoundView
+     */
+    implementation 'com.flyco.roundview:FlycoRoundView_Lib:1.1.4@aar'
+    /**
+     * SwitchButton
+     * https://github.com/kyleduo/SwitchButton
+     */
+    implementation 'com.kyleduo.switchbutton:library:2.0.0'
+    /**
+     * RxJava
+     * https://github.com/ReactiveX/RxJava
+     */
+    implementation "io.reactivex.rxjava2:rxjava:2.1.12"
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    /**
+     * Retrofit
+     * https://github.com/square/retrofit
+     */
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.jakewharton.rxbinding2:rxbinding:2.1.1'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    /**
+     * 消息推送栏
+     * https://github.com/Tapadoo/Alerter
+     */
+    implementation 'com.tapadoo.android:alerter:2.0.4'
+    /**
+     * fab 浮动按钮
+     * https://github.com/yavski/fab-speed-dial
+     */
+    implementation 'io.github.yavski:fab-speed-dial:1.0.6'
+    /**
+     * 对话框
+     * https://github.com/sd6352051/NiftyDialogEffects
+     */
+    implementation 'com.github.sd6352051:NiftyDialogEffects:v1.0.3'
+    /**
+     * icon 加载库
+     * https://github.com/jrvansuita/IconHandler
+     */
+    implementation 'com.github.jrvansuita:IconHandler:v2.0.0'
 }

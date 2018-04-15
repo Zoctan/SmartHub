@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2010 ZXing authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.zoctan.smarthub.zxing.camera;
 
 import android.content.Context;
@@ -27,7 +11,6 @@ import android.view.WindowManager;
 import java.util.regex.Pattern;
 
 final class CameraConfigurationManager {
-
     private static final String TAG = CameraConfigurationManager.class.getSimpleName();
 
     private static final int TEN_DESIRED_ZOOM = 27;
@@ -41,11 +24,12 @@ final class CameraConfigurationManager {
     private int previewFormat;
     private String previewFormatString;
 
-    CameraConfigurationManager(Context context) {
+    CameraConfigurationManager(final Context context) {
         this.context = context;
     }
 
-    private static Point getCameraResolution(Camera.Parameters parameters, Point screenResolution) {
+    private static Point getCameraResolution(final Camera.Parameters parameters,
+                                             final Point screenResolution) {
 
         String previewSizeValueString = parameters.get("preview-size-values");
         // saw this on Xperia
@@ -70,30 +54,31 @@ final class CameraConfigurationManager {
         return cameraResolution;
     }
 
-    private static Point findBestPreviewSizeValue(CharSequence previewSizeValueString, Point screenResolution) {
+    private static Point findBestPreviewSizeValue(final CharSequence previewSizeValueString,
+                                                  final Point screenResolution) {
         int bestX = 0;
         int bestY = 0;
         int diff = Integer.MAX_VALUE;
         for (String previewSize : COMMA_PATTERN.split(previewSizeValueString)) {
 
             previewSize = previewSize.trim();
-            int dimPosition = previewSize.indexOf('x');
+            final int dimPosition = previewSize.indexOf('x');
             if (dimPosition < 0) {
                 Log.w(TAG, "Bad preview-size: " + previewSize);
                 continue;
             }
 
-            int newX;
-            int newY;
+            final int newX;
+            final int newY;
             try {
                 newX = Integer.parseInt(previewSize.substring(0, dimPosition));
                 newY = Integer.parseInt(previewSize.substring(dimPosition + 1));
-            } catch (NumberFormatException nfe) {
+            } catch (final NumberFormatException nfe) {
                 Log.w(TAG, "Bad preview-size: " + previewSize);
                 continue;
             }
 
-            int newDiff = Math.abs(newX - screenResolution.x) + Math.abs(newY - screenResolution.y);
+            final int newDiff = Math.abs(newX - screenResolution.x) + Math.abs(newY - screenResolution.y);
             if (newDiff == 0) {
                 bestX = newX;
                 bestY = newY;
@@ -112,17 +97,18 @@ final class CameraConfigurationManager {
         return null;
     }
 
-    private static int findBestMotZoomValue(CharSequence stringValues, int tenDesiredZoom) {
+    private static int findBestMotZoomValue(final CharSequence stringValues,
+                                            final int tenDesiredZoom) {
         int tenBestValue = 0;
         for (String stringValue : COMMA_PATTERN.split(stringValues)) {
             stringValue = stringValue.trim();
-            double value;
+            final double value;
             try {
                 value = Double.parseDouble(stringValue);
-            } catch (NumberFormatException nfe) {
+            } catch (final NumberFormatException nfe) {
                 return tenDesiredZoom;
             }
-            int tenValue = (int) (10.0 * value);
+            final int tenValue = (int) (10.0 * value);
             if (Math.abs(tenDesiredZoom - value) < Math.abs(tenDesiredZoom - tenBestValue)) {
                 tenBestValue = tenValue;
             }
@@ -138,13 +124,13 @@ final class CameraConfigurationManager {
      * Reads, one time, values from the camera that are needed by the app.
      */
     @SuppressWarnings("SuspiciousNameCombination")
-    void initFromCameraParameters(Camera camera) {
-        Camera.Parameters parameters = camera.getParameters();
+    void initFromCameraParameters(final Camera camera) {
+        final Camera.Parameters parameters = camera.getParameters();
         previewFormat = parameters.getPreviewFormat();
         previewFormatString = parameters.get("preview-format");
         Log.d(TAG, "Default preview format: " + previewFormat + '/' + previewFormatString);
-        WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics dm = new DisplayMetrics();
+        final WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        final DisplayMetrics dm = new DisplayMetrics();
         if (manager != null) {
             manager.getDefaultDisplay().getMetrics(dm);
         }
@@ -152,7 +138,7 @@ final class CameraConfigurationManager {
         Log.d(TAG, "Screen resolution: " + screenResolution);
 
         //图片拉伸
-        Point screenResolutionForCamera = new Point();
+        final Point screenResolutionForCamera = new Point();
         screenResolutionForCamera.x = screenResolution.x;
         screenResolutionForCamera.y = screenResolution.y;
         // preview size is always something like 480*320, other 320*480
@@ -172,8 +158,8 @@ final class CameraConfigurationManager {
      * LuminanceSource subclass. In the future we may want to force YUV420SP as it's the smallest,
      * and the planar Y can be used for barcode scanning without a copy in some cases.
      */
-    void setDesiredCameraParameters(Camera camera) {
-        Camera.Parameters parameters = camera.getParameters();
+    void setDesiredCameraParameters(final Camera camera) {
+        final Camera.Parameters parameters = camera.getParameters();
         Log.d(TAG, "Setting preview size: " + cameraResolution);
         parameters.setPreviewSize(cameraResolution.x, cameraResolution.y);
         setFlash(parameters);
@@ -200,7 +186,7 @@ final class CameraConfigurationManager {
         return previewFormatString;
     }
 
-    private void setFlash(Camera.Parameters parameters) {
+    private void setFlash(final Camera.Parameters parameters) {
         // FIXME: This is a hack to turn the flash off on the Samsung Galaxy.
         // And this is a hack-hack to work around a different value on the Behold II
         // Restrict Behold II check to Cupcake, per Samsung's advice
@@ -215,53 +201,53 @@ final class CameraConfigurationManager {
         parameters.set("flash-mode", "off");
     }
 
-    private void setZoom(Camera.Parameters parameters) {
+    private void setZoom(final Camera.Parameters parameters) {
 
-        String zoomSupportedString = parameters.get("zoom-supported");
+        final String zoomSupportedString = parameters.get("zoom-supported");
         if (zoomSupportedString != null && !Boolean.parseBoolean(zoomSupportedString)) {
             return;
         }
 
         int tenDesiredZoom = TEN_DESIRED_ZOOM;
 
-        String maxZoomString = parameters.get("max-zoom");
+        final String maxZoomString = parameters.get("max-zoom");
         if (maxZoomString != null) {
             try {
-                int tenMaxZoom = (int) (10.0 * Double.parseDouble(maxZoomString));
+                final int tenMaxZoom = (int) (10.0 * Double.parseDouble(maxZoomString));
                 if (tenDesiredZoom > tenMaxZoom) {
                     tenDesiredZoom = tenMaxZoom;
                 }
-            } catch (NumberFormatException nfe) {
+            } catch (final NumberFormatException nfe) {
                 Log.w(TAG, "Bad max-zoom: " + maxZoomString);
             }
         }
 
-        String takingPictureZoomMaxString = parameters.get("taking-picture-zoom-max");
+        final String takingPictureZoomMaxString = parameters.get("taking-picture-zoom-max");
         if (takingPictureZoomMaxString != null) {
             try {
-                int tenMaxZoom = Integer.parseInt(takingPictureZoomMaxString);
+                final int tenMaxZoom = Integer.parseInt(takingPictureZoomMaxString);
                 if (tenDesiredZoom > tenMaxZoom) {
                     tenDesiredZoom = tenMaxZoom;
                 }
-            } catch (NumberFormatException nfe) {
+            } catch (final NumberFormatException nfe) {
                 Log.w(TAG, "Bad taking-picture-zoom-max: " + takingPictureZoomMaxString);
             }
         }
 
-        String motZoomValuesString = parameters.get("mot-zoom-values");
+        final String motZoomValuesString = parameters.get("mot-zoom-values");
         if (motZoomValuesString != null) {
             tenDesiredZoom = findBestMotZoomValue(motZoomValuesString, tenDesiredZoom);
         }
 
-        String motZoomStepString = parameters.get("mot-zoom-step");
+        final String motZoomStepString = parameters.get("mot-zoom-step");
         if (motZoomStepString != null) {
             try {
-                double motZoomStep = Double.parseDouble(motZoomStepString.trim());
-                int tenZoomStep = (int) (10.0 * motZoomStep);
+                final double motZoomStep = Double.parseDouble(motZoomStepString.trim());
+                final int tenZoomStep = (int) (10.0 * motZoomStep);
                 if (tenZoomStep > 1) {
                     tenDesiredZoom -= tenDesiredZoom % tenZoomStep;
                 }
-            } catch (NumberFormatException nfe) {
+            } catch (final NumberFormatException nfe) {
                 // continue
             }
         }

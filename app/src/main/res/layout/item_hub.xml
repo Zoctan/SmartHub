@@ -1,87 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.mcxtzhang.swipemenulib.SwipeMenuLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:ios="false"
-    app:swipeEnable="true">
+    android:layout_height="180dp"
+    android:layout_marginStart="5dp"
+    android:layout_marginEnd="5dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardCornerRadius="12dp"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true">
 
-    <GridLayout
-        android:id="@+id/GridLayout_hub"
+    <RelativeLayout
+        android:id="@+id/RelativeLayout_hub"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:columnCount="4"
-        android:orientation="vertical"
-        android:padding="12dp"
-        android:rowCount="2">
+        android:layout_height="match_parent"
+        android:background="@color/detail_icon_select">
 
         <ImageView
-            android:id="@+id/ImageView_hub"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_column="0"
-            android:layout_marginEnd="14dp"
-            android:layout_marginTop="4dp"
-            android:layout_rowSpan="2"
-            android:src="@drawable/ic_hub"
-            tools:ignore="ContentDescription" />
+            android:id="@+id/ImageView_hub_room"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@null"
+            android:scaleType="fitXY"
+            android:src="@drawable/room_badroom" />
 
         <TextView
-            android:id="@+id/TextView_hub_name"
-            android:layout_column="1"
-            android:layout_gravity="start"
-            android:layout_row="0"
-            android:text="@string/all_zero"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/TextView_hub_mac"
-            android:layout_column="1"
-            android:layout_gravity="start"
-            android:layout_row="1"
-            android:text="@string/all_zero"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/TextView_hub_connected"
-            android:layout_column="2"
-            android:layout_row="1"
-            android:text="@string/hub_not_connected"
-            android:textSize="14sp" />
-
-        <Switch
-            android:id="@+id/Switch_hub_open_close"
+            android:id="@+id/TextView_hub"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_column="3"
-            android:layout_gravity="end"
-            android:layout_row="0" />
-
-        <TextView
-            android:id="@+id/TextView_hub_electric"
-            android:layout_column="3"
-            android:layout_gravity="end"
-            android:layout_row="1"
-            android:text="@string/hub_not_electric"
+            android:layout_alignBottom="@id/ImageView_hub_room"
+            android:layout_gravity="start"
+            android:gravity="center"
+            android:paddingBottom="10dp"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
+            android:paddingTop="10dp"
+            android:text="@string/all_zero"
+            android:textColor="@color/third_text"
             android:textSize="14sp" />
 
-    </GridLayout>
+        <com.kyleduo.switchbutton.SwitchButton
+            android:id="@+id/Switch_hub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/ImageView_hub_room"
+            android:paddingEnd="18dp"
+            android:paddingStart="18dp"
+            android:paddingTop="18dp"
+            android:textSize="16sp"
+            app:kswTextAdjust="-2dp"
+            app:kswTextExtra="8dp"
+            app:kswTextOff="断电"
+            app:kswTextOn="通电" />
+    </RelativeLayout>
 
-    <!-- 以下都是侧滑菜单的内容依序排列 -->
-    <Button
-        android:id="@+id/Button_hub_edit"
-        android:layout_width="120dp"
-        android:layout_height="match_parent"
-        android:background="@color/accent"
-        android:text="@string/all_edit"
-        android:textColor="@android:color/white" />
-
-    <Button
-        android:id="@+id/Button_hub_delete"
-        android:layout_width="60dp"
-        android:layout_height="match_parent"
-        android:background="@color/danger"
-        android:text="@string/all_delete"
-        android:textColor="@android:color/white" />
-</com.mcxtzhang.swipemenulib.SwipeMenuLayout>
+</android.support.v7.widget.CardView>

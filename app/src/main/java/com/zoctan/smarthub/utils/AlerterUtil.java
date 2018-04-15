@@ -7,11 +7,7 @@ import com.zoctan.smarthub.R;
 
 public class AlerterUtil {
 
-    private static final int defaultIcon;
-
-    static {
-        defaultIcon = R.drawable.ic_robot;
-    }
+    private static final int defaultIcon = R.drawable.ic_robot;
 
     public static void showInfo(final Activity activity, final int msg) {
         showInfo(activity, activity.getString(msg));

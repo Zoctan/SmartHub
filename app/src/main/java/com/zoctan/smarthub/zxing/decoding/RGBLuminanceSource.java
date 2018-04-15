@@ -1,19 +1,3 @@
-/*
- * Copyright 2009 ZXing authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.zoctan.smarthub.zxing.decoding;
 
 import android.graphics.Bitmap;
@@ -28,20 +12,19 @@ import java.io.FileNotFoundException;
  * from Android bitmaps. It does not support cropping or rotation.
  */
 public final class RGBLuminanceSource extends LuminanceSource {
-
     private final byte[] luminances;
 
-    public RGBLuminanceSource(String path) throws FileNotFoundException {
+    public RGBLuminanceSource(final String path) throws FileNotFoundException {
         this(loadBitmap(path));
     }
 
-    public RGBLuminanceSource(Bitmap bitmap) {
+    public RGBLuminanceSource(final Bitmap bitmap) {
         super(bitmap.getWidth(), bitmap.getHeight());
 
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
+        final int width = bitmap.getWidth();
+        final int height = bitmap.getHeight();
 
-        int[] pixels = new int[width * height];
+        final int[] pixels = new int[width * height];
         bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
 
         // In order to measure pure decoding speed, we convert the entire image
@@ -50,12 +33,12 @@ public final class RGBLuminanceSource extends LuminanceSource {
         // YUVLuminanceSource in the real app.
         luminances = new byte[width * height];
         for (int y = 0; y < height; y++) {
-            int offset = y * width;
+            final int offset = y * width;
             for (int x = 0; x < width; x++) {
-                int pixel = pixels[offset + x];
-                int r = (pixel >> 16) & 0xff;
-                int g = (pixel >> 8) & 0xff;
-                int b = pixel & 0xff;
+                final int pixel = pixels[offset + x];
+                final int r = (pixel >> 16) & 0xff;
+                final int g = (pixel >> 8) & 0xff;
+                final int b = pixel & 0xff;
                 if (r == g && g == b) {
                     // Image is already greyscale, so pick any channel.
                     luminances[offset + x] = (byte) r;
@@ -67,8 +50,8 @@ public final class RGBLuminanceSource extends LuminanceSource {
         }
     }
 
-    private static Bitmap loadBitmap(String path) throws FileNotFoundException {
-        Bitmap bitmap = BitmapFactory.decodeFile(path);
+    private static Bitmap loadBitmap(final String path) throws FileNotFoundException {
+        final Bitmap bitmap = BitmapFactory.decodeFile(path);
         if (bitmap == null) {
             throw new FileNotFoundException("Couldn't open " + path);
         }
@@ -76,11 +59,11 @@ public final class RGBLuminanceSource extends LuminanceSource {
     }
 
     @Override
-    public byte[] getRow(int y, byte[] row) {
+    public byte[] getRow(final int y, byte[] row) {
         if (y < 0 || y >= getHeight()) {
             throw new IllegalArgumentException("Requested row is outside the image: " + y);
         }
-        int width = getWidth();
+        final int width = getWidth();
         if (row == null || row.length < width) {
             row = new byte[width];
         }

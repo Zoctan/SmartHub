@@ -21,7 +21,6 @@ import android.view.Menu;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
@@ -34,7 +33,8 @@ import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
 import com.zoctan.smarthub.R;
-import com.zoctan.smarthub.base.BaseActivity;
+import com.zoctan.smarthub.presenter.BasePresenter;
+import com.zoctan.smarthub.ui.base.BaseActivity;
 import com.zoctan.smarthub.zxing.camera.CameraManager;
 import com.zoctan.smarthub.zxing.decoding.CaptureActivityHandler;
 import com.zoctan.smarthub.zxing.decoding.InactivityTimer;
@@ -55,18 +55,17 @@ import butterknife.ButterKnife;
  * @author Ryan.Tang
  */
 public class CaptureActivity extends BaseActivity implements Callback {
-
-    public static final int RESULT_CODE_QR_SCAN = 0xA1;
-    public static final String INTENT_EXTRA_KEY_QR_SCAN = "qr_scan_result";
-    private static final int REQUEST_CODE_SCAN_GALLERY = 100;
-    private static final float BEEP_VOLUME = 0.10f;
-    private static final long VIBRATE_DURATION = 200L;
     @BindView(R.id.Toolbar_all)
     Toolbar mToolbar;
     @BindView(R.id.SurfaceView_scanner)
     SurfaceView mSurfaceView;
     @BindView(R.id.ViewfinderView_content)
     ViewfinderView mViewfinderView;
+    public static final int RESULT_CODE_QR_SCAN = 0xA1;
+    public static final String INTENT_EXTRA_KEY_QR_SCAN = "qr_scan_result";
+    private static final int REQUEST_CODE_SCAN_GALLERY = 100;
+    private static final float BEEP_VOLUME = 0.10f;
+    private static final long VIBRATE_DURATION = 200L;
     private CaptureActivityHandler handler;
     private boolean hasSurface;
     private Vector<BarcodeFormat> decodeFormats;
@@ -79,15 +78,16 @@ public class CaptureActivity extends BaseActivity implements Callback {
     /**
      * When the beep has finished playing, rewind to queue up another one.
      */
-    private final OnCompletionListener beepListener = new OnCompletionListener() {
-        public void onCompletion(MediaPlayer mediaPlayer) {
-            mediaPlayer.seekTo(0);
-        }
-    };
+    private final OnCompletionListener beepListener = mediaPlayer -> mediaPlayer.seekTo(0);
 
     @Override
     protected int bindLayout() {
         return R.layout.activity_scanner;
+    }
+
+    @Override
+    protected BasePresenter bindPresenter() {
+        return null;
     }
 
     @Override
@@ -97,57 +97,49 @@ public class CaptureActivity extends BaseActivity implements Callback {
         setSupportActionBar(mToolbar);
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        mToolbar.setNavigationOnClickListener(view -> onBackPressed());
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
         CameraManager.init(getApplicationContext());
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         //getMenuInflater().inflate(R.menu.scanner_menu, menu);
         return true;
     }
 
     @Override
-    protected void onActivityResult(final int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         if (requestCode == RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CODE_SCAN_GALLERY:
                     //获取选中图片的路径
-                    Cursor cursor = getContentResolver().query(data.getData(), null, null, null, null);
+                    final Cursor cursor = getContentResolver().query(data.getData(), null, null, null, null);
                     if (cursor.moveToFirst()) {
                         photo_path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
                     }
                     cursor.close();
 
-                    ProgressDialog mProgress = new ProgressDialog(CaptureActivity.this);
+                    final ProgressDialog mProgress = new ProgressDialog(CaptureActivity.this);
                     mProgress.setMessage("正在扫描...");
                     mProgress.setCancelable(false);
                     mProgress.show();
 
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Result result = scanningImage(photo_path);
-                            if (result != null) {
-                                Intent resultIntent = new Intent();
-                                Bundle bundle = new Bundle();
-                                bundle.putString(INTENT_EXTRA_KEY_QR_SCAN, result.getText());
-                                resultIntent.putExtras(bundle);
-                                CaptureActivity.this.setResult(RESULT_CODE_QR_SCAN, resultIntent);
+                    new Thread(() -> {
+                        Result result = scanningImage(photo_path);
+                        if (result != null) {
+                            Intent resultIntent = new Intent();
+                            Bundle bundle = new Bundle();
+                            bundle.putString(INTENT_EXTRA_KEY_QR_SCAN, result.getText());
+                            resultIntent.putExtras(bundle);
+                            CaptureActivity.this.setResult(RESULT_CODE_QR_SCAN, resultIntent);
 
-                            } else {
-                                Message m = handler.obtainMessage();
-                                m.what = R.id.decode_failed;
-                                m.obj = "Scan failed!";
-                                handler.sendMessage(m);
-                            }
+                        } else {
+                            Message m = handler.obtainMessage();
+                            m.what = R.id.decode_failed;
+                            m.obj = "Scan failed!";
+                            handler.sendMessage(m);
                         }
                     }).start();
                     break;
@@ -162,24 +154,24 @@ public class CaptureActivity extends BaseActivity implements Callback {
      * @param path x
      * @return x
      */
-    public Result scanningImage(String path) {
+    public Result scanningImage(final String path) {
         if (TextUtils.isEmpty(path)) {
             return null;
         }
-        Hashtable<DecodeHintType, String> hints = new Hashtable<>();
+        final Hashtable<DecodeHintType, String> hints = new Hashtable<>();
         hints.put(DecodeHintType.CHARACTER_SET, "UTF8"); //设置二维码内容的编码
 
-        BitmapFactory.Options options = new BitmapFactory.Options();
+        final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true; // 先获取原大小
         options.inJustDecodeBounds = false; // 获取新的大小
         int sampleSize = (int) (options.outHeight / (float) 200);
         if (sampleSize <= 0)
             sampleSize = 1;
         options.inSampleSize = sampleSize;
-        Bitmap scanBitmap = BitmapFactory.decodeFile(path, options);
-        RGBLuminanceSource source = new RGBLuminanceSource(scanBitmap);
-        BinaryBitmap bitmap1 = new BinaryBitmap(new HybridBinarizer(source));
-        QRCodeReader reader = new QRCodeReader();
+        final Bitmap scanBitmap = BitmapFactory.decodeFile(path, options);
+        final RGBLuminanceSource source = new RGBLuminanceSource(scanBitmap);
+        final BinaryBitmap bitmap1 = new BinaryBitmap(new HybridBinarizer(source));
+        final QRCodeReader reader = new QRCodeReader();
         try {
             return reader.decode(bitmap1, hints);
         } catch (NotFoundException | ChecksumException | FormatException e) {
@@ -191,7 +183,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
     @Override
     protected void onResume() {
         super.onResume();
-        SurfaceHolder surfaceHolder = mSurfaceView.getHolder();
+        final SurfaceHolder surfaceHolder = mSurfaceView.getHolder();
         if (hasSurface) {
             initCamera(surfaceHolder);
         } else {
@@ -202,7 +194,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
         characterSet = null;
 
         playBeep = true;
-        AudioManager audioService = (AudioManager) getSystemService(AUDIO_SERVICE);
+        final AudioManager audioService = (AudioManager) getSystemService(AUDIO_SERVICE);
         if (audioService != null && audioService.getRingerMode() != AudioManager.RINGER_MODE_NORMAL) {
             playBeep = false;
         }
@@ -232,16 +224,16 @@ public class CaptureActivity extends BaseActivity implements Callback {
      * @param result  x
      * @param barcode x
      */
-    public void handleDecode(Result result, Bitmap barcode) {
+    public void handleDecode(final Result result, final Bitmap barcode) {
         inactivityTimer.onActivity();
         playBeepSoundAndVibrate();
-        String resultString = result.getText();
+        final String resultString = result.getText();
         //FIXME
         if (TextUtils.isEmpty(resultString)) {
             Toast.makeText(CaptureActivity.this, "Scan failed!", Toast.LENGTH_SHORT).show();
         } else {
-            Intent resultIntent = new Intent();
-            Bundle bundle = new Bundle();
+            final Intent resultIntent = new Intent();
+            final Bundle bundle = new Bundle();
             bundle.putString(INTENT_EXTRA_KEY_QR_SCAN, resultString);
             // 不能使用Intent传递大于40kb的bitmap，可以使用一个单例对象存储这个bitmap
             resultIntent.putExtras(bundle);
@@ -250,7 +242,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
         CaptureActivity.this.finish();
     }
 
-    private void initCamera(SurfaceHolder surfaceHolder) {
+    private void initCamera(final SurfaceHolder surfaceHolder) {
         try {
             CameraManager.get().openDriver(surfaceHolder);
         } catch (IOException | RuntimeException e) {
@@ -263,11 +255,11 @@ public class CaptureActivity extends BaseActivity implements Callback {
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+    public void surfaceChanged(final SurfaceHolder holder, final int format, final int width, final int height) {
     }
 
     @Override
-    public void surfaceCreated(SurfaceHolder holder) {
+    public void surfaceCreated(final SurfaceHolder holder) {
         if (!hasSurface) {
             hasSurface = true;
             initCamera(holder);
@@ -275,7 +267,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
+    public void surfaceDestroyed(final SurfaceHolder holder) {
         hasSurface = false;
     }
 
@@ -301,7 +293,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.setOnCompletionListener(beepListener);
 
-            AssetFileDescriptor file = getResources().openRawResourceFd(
+            final AssetFileDescriptor file = getResources().openRawResourceFd(
                     R.raw.beep);
             try {
                 mediaPlayer.setDataSource(file.getFileDescriptor(),
@@ -309,7 +301,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
                 file.close();
                 mediaPlayer.setVolume(BEEP_VOLUME, BEEP_VOLUME);
                 mediaPlayer.prepare();
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 mediaPlayer = null;
             }
         }
@@ -320,7 +312,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
             mediaPlayer.start();
         }
         if (vibrate) {
-            Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+            final Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
             if (vibrator != null) {
                 vibrator.vibrate(VIBRATE_DURATION);
             }
@@ -328,7 +320,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // TODO: add setContentView(...) invocation
         ButterKnife.bind(this);

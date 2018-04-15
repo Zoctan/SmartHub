@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2010 ZXing authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.zoctan.smarthub.zxing.camera;
 
 import android.hardware.Camera;
@@ -30,14 +14,15 @@ final class AutoFocusCallback implements Camera.AutoFocusCallback {
     private Handler autoFocusHandler;
     private int autoFocusMessage;
 
-    void setHandler(Handler autoFocusHandler, int autoFocusMessage) {
+    void setHandler(final Handler autoFocusHandler, final int autoFocusMessage) {
         this.autoFocusHandler = autoFocusHandler;
         this.autoFocusMessage = autoFocusMessage;
     }
 
-    public void onAutoFocus(boolean success, Camera camera) {
+    @Override
+    public void onAutoFocus(final boolean success, final Camera camera) {
         if (autoFocusHandler != null) {
-            Message message = autoFocusHandler.obtainMessage(autoFocusMessage, success);
+            final Message message = autoFocusHandler.obtainMessage(autoFocusMessage, success);
             autoFocusHandler.sendMessageDelayed(message, AUTOFOCUS_INTERVAL_MS);
             autoFocusHandler = null;
         } else {

@@ -38,7 +38,7 @@
         tools:replace="android:label">
         <!-- 引导界面 -->
         <activity
-            android:name="com.zoctan.smarthub.main.SplashActivity"
+            android:name="com.zoctan.smarthub.ui.activity.SplashActivity"
             android:autoRemoveFromRecents="true">
             <intent-filter>
                 <!-- 决定应用程序最先启动的Activity -->
@@ -49,15 +49,15 @@
         </activity>
         <!-- 启动界面 -->
         <activity
-            android:name="com.zoctan.smarthub.main.GuideActivity"
+            android:name="com.zoctan.smarthub.ui.activity.GuideActivity"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen" />
         <!-- 主界面 -->
         <activity
-            android:name="com.zoctan.smarthub.main.MainActivity"
+            android:name="com.zoctan.smarthub.ui.activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <!-- hub详情 -->
         <activity
-            android:name="com.zoctan.smarthub.hubDetail.widget.HubDetailActivity"
+            android:name="com.zoctan.smarthub.ui.activity.HubDetailActivity"
             android:theme="@style/AppTheme.NoActionBar.Translucent">
             <intent-filter>
                 <action android:name="hub_detail" />
@@ -68,7 +68,7 @@
         </activity>
         <!-- 用户登录 -->
         <activity
-            android:name="com.zoctan.smarthub.user.widget.UserLoginActivity"
+            android:name="com.zoctan.smarthub.ui.activity.UserLoginActivity"
             android:theme="@style/AppTheme.NoActionBar.Translucent">
             <intent-filter>
                 <action android:name="user_login" />

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".main.SplashActivity">
+    tools:context=".ui.activity.SplashActivity">
 
     <ImageView
         android:layout_width="110dp"
@@ -22,5 +22,5 @@
         android:layout_centerHorizontal="true"
         android:text="@string/app"
         android:textSize="24sp"
-        android:layout_marginBottom="48dp"/>
+        android:layout_marginBottom="48dp" />
 </RelativeLayout>

@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2010 ZXing authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.zoctan.smarthub.zxing.camera;
 
 import android.os.IBinder;
@@ -35,7 +19,6 @@ import java.lang.reflect.Method;
  * Thanks to Ryan Alford for pointing out the availability of this class.
  */
 final class FlashlightManager {
-
     private static final String TAG = FlashlightManager.class.getSimpleName();
 
     private static final Object iHardwareService;
@@ -67,27 +50,27 @@ final class FlashlightManager {
     }
 
     private static Object getHardwareService() {
-        Class<?> serviceManagerClass = maybeForName("android.os.ServiceManager");
+        final Class<?> serviceManagerClass = maybeForName("android.os.ServiceManager");
         if (serviceManagerClass == null) {
             return null;
         }
 
-        Method getServiceMethod = maybeGetMethod(serviceManagerClass, "getService", String.class);
+        final Method getServiceMethod = maybeGetMethod(serviceManagerClass, "getService", String.class);
         if (getServiceMethod == null) {
             return null;
         }
 
-        Object hardwareService = invoke(getServiceMethod, null, "hardware");
+        final Object hardwareService = invoke(getServiceMethod, null, "hardware");
         if (hardwareService == null) {
             return null;
         }
 
-        Class<?> iHardwareServiceStubClass = maybeForName("android.os.IHardwareService$Stub");
+        final Class<?> iHardwareServiceStubClass = maybeForName("android.os.IHardwareService$Stub");
         if (iHardwareServiceStubClass == null) {
             return null;
         }
 
-        Method asInterfaceMethod = maybeGetMethod(iHardwareServiceStubClass, "asInterface", IBinder.class);
+        final Method asInterfaceMethod = maybeGetMethod(iHardwareServiceStubClass, "asInterface", IBinder.class);
         if (asInterfaceMethod == null) {
             return null;
         }
@@ -95,51 +78,51 @@ final class FlashlightManager {
         return invoke(asInterfaceMethod, null, hardwareService);
     }
 
-    private static Method getSetFlashEnabledMethod(Object iHardwareService) {
+    private static Method getSetFlashEnabledMethod(final Object iHardwareService) {
         if (iHardwareService == null) {
             return null;
         }
-        Class<?> proxyClass = iHardwareService.getClass();
+        final Class<?> proxyClass = iHardwareService.getClass();
         return maybeGetMethod(proxyClass, "setFlashlightEnabled", boolean.class);
     }
 
-    private static Class<?> maybeForName(String name) {
+    private static Class<?> maybeForName(final String name) {
         try {
             return Class.forName(name);
-        } catch (ClassNotFoundException cnfe) {
+        } catch (final ClassNotFoundException cnfe) {
             // OK
             return null;
-        } catch (RuntimeException re) {
+        } catch (final RuntimeException re) {
             Log.w(TAG, "Unexpected error while finding class " + name, re);
             return null;
         }
     }
 
-    private static Method maybeGetMethod(Class<?> clazz, String name, Class<?>... argClasses) {
+    private static Method maybeGetMethod(final Class<?> clazz, final String name, final Class<?>... argClasses) {
         try {
             return clazz.getMethod(name, argClasses);
-        } catch (NoSuchMethodException nsme) {
+        } catch (final NoSuchMethodException nsme) {
             // OK
             return null;
-        } catch (RuntimeException re) {
+        } catch (final RuntimeException re) {
             Log.w(TAG, "Unexpected error while finding method " + name, re);
             return null;
         }
     }
 
-    private static Object invoke(Method method, Object instance, Object... args) {
+    private static Object invoke(final Method method, final Object instance, final Object... args) {
         try {
             return method.invoke(instance, args);
         } catch (IllegalAccessException | RuntimeException e) {
             Log.w(TAG, "Unexpected error while invoking " + method, e);
             return null;
-        } catch (InvocationTargetException e) {
+        } catch (final InvocationTargetException e) {
             Log.w(TAG, "Unexpected error while invoking " + method, e.getCause());
             return null;
         }
     }
 
-    private static void setFlashlight(boolean active) {
+    private static void setFlashlight(final boolean active) {
         if (iHardwareService != null) {
             invoke(setFlashEnabledMethod, iHardwareService, active);
         }

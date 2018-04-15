@@ -46,18 +46,18 @@ public class NiftyDialog extends Dialog implements DialogInterface {
     private int mDuration = -1;
     private boolean isCancelable = true;
 
-    public NiftyDialog(Context context) {
+    public NiftyDialog(final Context context) {
         super(context);
         init(context);
-        this.mContext = context;
+        mContext = context;
     }
 
-    public NiftyDialog(Context context, int theme) {
+    public NiftyDialog(final Context context, final int theme) {
         super(context, theme);
         init(context);
     }
 
-    public static NiftyDialog getInstance(Context context) {
+    public static NiftyDialog getInstance(final Context context) {
         if (instance == null || !mContext.equals(context)) {
             synchronized (NiftyDialog.class) {
                 if (instance == null || !mContext.equals(context)) {
@@ -70,17 +70,17 @@ public class NiftyDialog extends Dialog implements DialogInterface {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        @SuppressWarnings("ConstantConditions") WindowManager.LayoutParams params = getWindow().getAttributes();
+        @SuppressWarnings("ConstantConditions") final WindowManager.LayoutParams params = getWindow().getAttributes();
         params.height = ViewGroup.LayoutParams.MATCH_PARENT;
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         getWindow().setAttributes(params);
     }
 
-    private void init(Context context) {
+    private void init(final Context context) {
 
-        View mDialogView = View.inflate(context, com.gitonway.lee.niftymodaldialogeffects.lib.R.layout.dialog_layout, null);
+        final View mDialogView = View.inflate(context, com.gitonway.lee.niftymodaldialogeffects.lib.R.layout.dialog_layout, null);
 
         mLinearLayoutView = mDialogView.findViewById(com.gitonway.lee.niftymodaldialogeffects.lib.R.id.parentPanel);
         mRelativeLayoutView = mDialogView.findViewById(com.gitonway.lee.niftymodaldialogeffects.lib.R.id.main);
@@ -97,24 +97,15 @@ public class NiftyDialog extends Dialog implements DialogInterface {
 
         setContentView(mDialogView);
 
-        this.setOnShowListener(new OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialogInterface) {
-
-                mLinearLayoutView.setVisibility(View.VISIBLE);
-                if (type == null) {
-                    type = Effectstype.Slidetop;
-                }
-                start(type);
-
-
+        this.setOnShowListener(dialogInterface -> {
+            mLinearLayoutView.setVisibility(View.VISIBLE);
+            if (type == null) {
+                type = Effectstype.Slidetop;
             }
+            start(type);
         });
-        mRelativeLayoutView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isCancelable) dismiss();
-            }
+        mRelativeLayoutView.setOnClickListener(view -> {
+            if (isCancelable) dismiss();
         });
     }
 
@@ -125,117 +116,117 @@ public class NiftyDialog extends Dialog implements DialogInterface {
         mLinearLayoutView.setBackgroundColor(Color.parseColor(defDialogColor));
     }
 
-    public NiftyDialog withDividerColor(String colorString) {
+    public NiftyDialog withDividerColor(final String colorString) {
         mDivider.setBackgroundColor(Color.parseColor(colorString));
         return this;
     }
 
-    public NiftyDialog withDividerColor(int color) {
+    public NiftyDialog withDividerColor(final int color) {
         mDivider.setBackgroundColor(color);
         return this;
     }
 
 
-    public NiftyDialog withTitle(CharSequence title) {
+    public NiftyDialog withTitle(final CharSequence title) {
         toggleView(mLinearLayoutTopView, title);
         mTitle.setText(title);
         return this;
     }
 
-    public NiftyDialog withTitleColor(String colorString) {
+    public NiftyDialog withTitleColor(final String colorString) {
         mTitle.setTextColor(Color.parseColor(colorString));
         return this;
     }
 
-    public NiftyDialog withTitleColor(int color) {
+    public NiftyDialog withTitleColor(final int color) {
         mTitle.setTextColor(color);
         return this;
     }
 
-    public NiftyDialog withMessage(int textResId) {
+    public NiftyDialog withMessage(final int textResId) {
         toggleView(mLinearLayoutMsgView, textResId);
         mMessage.setText(textResId);
         return this;
     }
 
-    public NiftyDialog withMessage(CharSequence msg) {
+    public NiftyDialog withMessage(final CharSequence msg) {
         toggleView(mLinearLayoutMsgView, msg);
         mMessage.setText(msg);
         return this;
     }
 
-    public NiftyDialog withMessageColor(String colorString) {
+    public NiftyDialog withMessageColor(final String colorString) {
         mMessage.setTextColor(Color.parseColor(colorString));
         return this;
     }
 
-    public NiftyDialog withMessageColor(int color) {
+    public NiftyDialog withMessageColor(final int color) {
         mMessage.setTextColor(color);
         return this;
     }
 
-    public NiftyDialog withDialogColor(String colorString) {
+    public NiftyDialog withDialogColor(final String colorString) {
         mLinearLayoutView.getBackground().setColorFilter(ColorUtils.getColorFilter(Color
                 .parseColor(colorString)));
         return this;
     }
 
-    public NiftyDialog withDialogColor(int color) {
+    public NiftyDialog withDialogColor(final int color) {
         mLinearLayoutView.getBackground().setColorFilter(ColorUtils.getColorFilter(color));
         return this;
     }
 
-    public NiftyDialog withIcon(int drawableResId) {
+    public NiftyDialog withIcon(final int drawableResId) {
         mIcon.setImageResource(drawableResId);
         return this;
     }
 
-    public NiftyDialog withIcon(Drawable icon) {
+    public NiftyDialog withIcon(final Drawable icon) {
         mIcon.setImageDrawable(icon);
         return this;
     }
 
-    public NiftyDialog withDuration(int duration) {
+    public NiftyDialog withDuration(final int duration) {
         this.mDuration = duration;
         return this;
     }
 
-    public NiftyDialog withEffect(Effectstype type) {
+    public NiftyDialog withEffect(final Effectstype type) {
         this.type = type;
         return this;
     }
 
-    public NiftyDialog withButtonDrawable(int resid) {
+    public NiftyDialog withButtonDrawable(final int resid) {
         mButton1.setBackgroundResource(resid);
         mButton2.setBackgroundResource(resid);
         return this;
     }
 
-    public NiftyDialog withButton1Text(CharSequence text) {
+    public NiftyDialog withButton1Text(final CharSequence text) {
         mButton1.setVisibility(View.VISIBLE);
         mButton1.setText(text);
 
         return this;
     }
 
-    public NiftyDialog withButton2Text(CharSequence text) {
+    public NiftyDialog withButton2Text(final CharSequence text) {
         mButton2.setVisibility(View.VISIBLE);
         mButton2.setText(text);
         return this;
     }
 
-    public NiftyDialog setButton1Click(View.OnClickListener click) {
+    public NiftyDialog setButton1Click(final View.OnClickListener click) {
         mButton1.setOnClickListener(click);
         return this;
     }
 
-    public NiftyDialog setButton2Click(View.OnClickListener click) {
+    public NiftyDialog setButton2Click(final View.OnClickListener click) {
         mButton2.setOnClickListener(click);
         return this;
     }
 
-    public NiftyDialog setCustomView(int resId, Context context) {
-        View customView = View.inflate(context, resId, null);
+    public NiftyDialog setCustomView(final int resId, final Context context) {
+        final View customView = View.inflate(context, resId, null);
         if (mFrameLayoutCustomView.getChildCount() > 0) {
             mFrameLayoutCustomView.removeAllViews();
         }
@@ -244,7 +235,7 @@ public class NiftyDialog extends Dialog implements DialogInterface {
         return this;
     }
 
-    public NiftyDialog setCustomView(View view, Context context) {
+    public NiftyDialog setCustomView(final View view, final Context context) {
         if (mFrameLayoutCustomView.getChildCount() > 0) {
             mFrameLayoutCustomView.removeAllViews();
         }
@@ -253,19 +244,19 @@ public class NiftyDialog extends Dialog implements DialogInterface {
         return this;
     }
 
-    public NiftyDialog isCancelableOnTouchOutside(boolean cancelable) {
+    public NiftyDialog isCancelableOnTouchOutside(final boolean cancelable) {
         this.isCancelable = cancelable;
         this.setCanceledOnTouchOutside(cancelable);
         return this;
     }
 
-    public NiftyDialog isCancelable(boolean cancelable) {
+    public NiftyDialog isCancelable(final boolean cancelable) {
         this.isCancelable = cancelable;
         this.setCancelable(cancelable);
         return this;
     }
 
-    private void toggleView(View view, Object obj) {
+    private void toggleView(final View view, final Object obj) {
         if (obj == null) {
             view.setVisibility(View.GONE);
         } else {
@@ -273,8 +264,8 @@ public class NiftyDialog extends Dialog implements DialogInterface {
         }
     }
 
-    private void start(Effectstype type) {
-        BaseEffects animator = type.getAnimator();
+    private void start(final Effectstype type) {
+        final BaseEffects animator = type.getAnimator();
         if (mDuration != -1) {
             animator.setDuration(Math.abs(mDuration));
         }
