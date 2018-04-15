@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from flask import g, jsonify
+from flask import g
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
 
 from . import api
 from ..models import User, AnonymousUser
+from .result import Result
 
 scheme = 'Smart'
 
@@ -17,12 +18,12 @@ multi_auth = MultiAuth(basic_auth, token_auth)
 @basic_auth.error_handler
 def basic_auth_unauthorized():
     # default 401: unauthorized, but it will alert a login window
-    return jsonify({'msg': '请带上token访问api', 'error': 1})
+    return Result.error('请带上token访问api')
 
 
 @token_auth.error_handler
 def token_auth_unauthorized():
-    return jsonify({'msg': '请带上token访问api', 'error': 1})
+    return Result.error('请带上token访问api')
 
 
 @basic_auth.verify_password
@@ -53,4 +54,4 @@ def get_token(msg='token获取成功'):
     token = g.current_user.generate_auth_token(31536000)
     result = g.current_user.to_json()
     result.update({'token': '{} {}'.format(scheme, token.decode('ascii'))})
-    return jsonify({'msg': msg, 'error': 0, 'result': result})
+    return Result.success(msg, result)

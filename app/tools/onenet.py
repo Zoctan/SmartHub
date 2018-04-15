@@ -3,7 +3,7 @@
 from time import sleep
 import requests
 
-headers = {'api-key': 'nJVyiaj5Y297Fc6Q=bUYVWnz2=0='}
+onenet_header = {'api-key': 'nJVyiaj5Y297Fc6Q=bUYVWnz2=0='}
 
 
 # https://open.iot.10086.cn/doc/art257.html#68

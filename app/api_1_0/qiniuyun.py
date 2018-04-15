@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from flask import jsonify
 from qiniu import Auth
 from qiniu import CdnManager
-
+from .result import Result
 from . import decorators
 
 # 需要填写你的 Access Key 和 Secret Key
@@ -20,7 +19,7 @@ def get_qiniu_token(key):
     # 上传到七牛后保存的文件名key
     # 生成上传 Token，可以指定过期时间等
     token = q.upload_token(bucket_name, key, 3600)
-    return jsonify({'msg': '成功获取七牛云token', 'error': 0, 'result': token})
+    return Result.success('成功获取七牛云token', token)
 
 
 def refresh_cdn(urls):

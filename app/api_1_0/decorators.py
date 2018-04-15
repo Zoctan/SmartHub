@@ -2,11 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from functools import wraps
-
-from flask import request, jsonify
-
+from flask import request
 from . import api
 from ..models import db
+from .result import Result
 
 
 def route(rule, **options):
@@ -17,9 +16,9 @@ def route(rule, **options):
             try:
                 db.session.commit()
                 return rest
-            except Exception as e:
+            except:
                 db.session.rollback()
-                return jsonify({'msg': '数据库出错', 'error': 1})
+                return Result.error('数据库出错')
             finally:
                 db.session.remove()
 
@@ -44,7 +43,7 @@ def json_required(func):
     @wraps(func)
     def decorated_function(*args, **kwargs):
         if not request.json:
-            return jsonify({'msg': '请使用Json格式传输数据', 'error': 1})
+            return Result.error('请使用Json格式传输数据')
         return func(*args, **kwargs)
 
     return decorated_function

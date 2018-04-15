@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import requests
-import time
-from flask import jsonify, g, request
-
+from flask import g, request
 from app import db
 from . import decorators
+from .result import Result
 from ..models import Hub, Device, MonthSpare, HourSpare
-from ..tools.onenet import send_order
-
-headers = {'api-key': 'nJVyiaj5Y297Fc6Q=bUYVWnz2=0='}
+from ..tools.onenet import send_order, onenet_header
+import requests
+import time
 
 
 def hub_connected(onenet_id):
@@ -44,7 +42,7 @@ def get_hubs():
         tmp = {'connected': connected, 'is_electric': is_electric}
         tmp.update(hub.to_json())
         hub_list.append(tmp)
-    return jsonify({'msg': '成功获取插座信息', 'error': 0, 'result': hub_list})
+    return Result.success('成功获取插座信息', hub_list)
 
 
 @decorators.composed(decorators.route('/api/hubs', methods=['POST']), decorators.json_required)
@@ -53,9 +51,9 @@ def add_hub():
     mac = request.json.get('mac')
     # require these value
     if not onenet_id or not mac:
-        return jsonify({'msg': '缺少参数: 设备号 MAC地址', 'error': 1})
+        return Result.error('缺少参数: 设备号 MAC地址')
     if Hub.query.filter_by(onenet_id=onenet_id).first():
-        return jsonify({'msg': '插座已被添加', 'error': 1})
+        return Result.error('插座已被添加')
     hub = Hub(user_id=g.current_user.id, mac=mac, onenet_id=onenet_id)
     db.session.add(hub)
     db.session.flush()
@@ -67,7 +65,7 @@ def add_hub():
     hour = HourSpare()
     hour.hub_id = onenet_id
     db.session.add(hour)
-    return jsonify({'msg': '成功添加插座', 'error': 0})
+    return Result.success('成功添加插座')
 
 
 @decorators.composed(decorators.route('/api/hubs', methods=['DELETE']), decorators.json_required)
@@ -75,9 +73,9 @@ def delete_hub():
     onenet_id = request.json.get('onenet_id')
     hub = Hub.query.filter_by(onenet_id=onenet_id).first()
     if not hub:
-        return jsonify({'msg': '插座不存在', 'error': 1})
+        return Result.error('插座不存在')
     db.session.delete(hub)
-    return jsonify({'msg': '成功删除插座', 'error': 0})
+    return Result.success('成功删除插座')
 
 
 @decorators.composed(decorators.route('/api/hubs', methods=['PUT']), decorators.json_required)
@@ -85,9 +83,9 @@ def update_hub():
     onenet_id = request.json.get('onenet_id')
     hub = Hub.query.filter_by(onenet_id=onenet_id).first()
     if not hub:
-        return jsonify({'msg': '插座不存在', 'error': 1})
+        return Result.error('插座不存在')
     hub.name = request.json.get('name')
-    return jsonify({'msg': '成功修改插座', 'error': 0})
+    return Result.success('成功修改插座')
 
 
 @decorators.composed(decorators.route('/api/hubs/order', methods=['POST']), decorators.json_required)
@@ -95,7 +93,7 @@ def hub_order():
     onenet_id = request.json.get('onenet_id')
     hub = Hub.query.filter_by(onenet_id=onenet_id).first()
     if not hub:
-        return jsonify({'msg': '插座不存在', 'error': 1})
+        return Result.error('插座不存在')
     order = request.json.get('order')
     status = request.json.get('status')
     if order == 'reset':
@@ -103,4 +101,4 @@ def hub_order():
         devices = Device.query.filter_by(hub_id=onenet_id).all()
         for device in devices:
             db.session.delete(device)
-    return jsonify({'msg': '成功下达指令', 'error': 0, 'result': send_order(onenet_id, order, status)[0]})
+    return Result.success('成功下达指令', send_order(onenet_id, order, status)[0])
