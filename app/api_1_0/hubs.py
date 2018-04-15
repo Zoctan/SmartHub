@@ -16,7 +16,7 @@ def hub_connected(onenet_id):
     cmd_url = url + onenet_id
     # 产品API
     # https://open.iot.10086.cn/product?pid=99569
-    response = requests.get(cmd_url, headers=headers)
+    response = requests.get(cmd_url, headers=onenet_header)
     return response.json()['data']['online']
 
 
@@ -24,7 +24,7 @@ def hub_is_electric(onenet_id):
     # 查询单个数据流
     # https://open.iot.10086.cn/doc/art261.html#68
     url = 'http://api.heclouds.com/devices/{}/datastreams/Relay'.format(onenet_id)
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=onenet_header)
     # 服务器api查询的是最后一次通电时的状态，插座本身不在线的话该数据就是不对的
     return response.json()['data']['current_value'] == 1
 

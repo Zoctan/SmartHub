@@ -29,7 +29,7 @@ def send_order(device_id, order, status, sleep_time=4):
     if data is None:
         return '命令错误', None
     else:
-        response = requests.post(cmd_url, data=data, headers=headers)
+        response = requests.post(cmd_url, data=data, headers=onenet_header)
         # 4秒收一次数据，只能延迟高点查询插座状态
         sleep(sleep_time)
         if order == 'store' or order == 'match':
@@ -38,10 +38,10 @@ def send_order(device_id, order, status, sleep_time=4):
             if order == 'match':
                 url = 'http://api.heclouds.com/devices/{}/datastreams/list'.format(device_id)
             sleep(2)
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, headers=onenet_header)
             return response.json()['data']['current_value'], None
         query_url = url + '/' + response.json()['data']['cmd_uuid']
-        query_response = requests.get(query_url, headers=headers)
+        query_response = requests.get(query_url, headers=onenet_header)
         status = query_response.json()['data']['status']
         if status == 0:
             msg = '设备不在线'
