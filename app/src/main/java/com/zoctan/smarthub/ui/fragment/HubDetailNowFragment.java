@@ -189,7 +189,7 @@ public class HubDetailNowFragment extends BaseFragment {
                     if (mEtDeviceName.getText().length() > 0) {
                         getHoldingActivity().hideSoftKeyBoard(mEtDeviceName, getContext());
                         device.setName(mEtDeviceName.getText().toString());
-                        mPresenter.updateDevice(device);
+                        mPresenter.crudDevice(device, "update");
                         dialog.dismiss();
                     }
                 })
@@ -352,7 +352,7 @@ public class HubDetailNowFragment extends BaseFragment {
                             deviceBean.setName(mEtDeviceName.getText().toString());
                             deviceBean.setEigenvalue(list);
                             deviceBean.setHub_id(hubBean.getOnenet_id());
-                            mPresenter.addDevice(deviceBean);
+                            mPresenter.crudDevice(deviceBean, "add");
                             dialog.dismiss();
                         }
                     } catch (final NullPointerException ignored) {

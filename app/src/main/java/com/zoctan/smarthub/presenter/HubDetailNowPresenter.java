@@ -4,6 +4,7 @@ import com.blankj.utilcode.util.LogUtils;
 import com.qiniu.android.storage.UploadManager;
 import com.qiniu.android.storage.UploadOptions;
 import com.zoctan.smarthub.model.api.ApiManger;
+import com.zoctan.smarthub.model.api.HubApi;
 import com.zoctan.smarthub.model.bean.onenet.OneNetDataStreamsBean;
 import com.zoctan.smarthub.model.bean.onenet.OneNetResponseListBean;
 import com.zoctan.smarthub.model.bean.smart.DeviceBean;
@@ -18,12 +19,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.zoctan.smarthub.App.mSPUtil;
+import static com.zoctan.smarthub.App.SMART_TOKEN;
 
 public class HubDetailNowPresenter extends BasePresenter {
     private HubDetailNowFragment view;
@@ -75,7 +77,7 @@ public class HubDetailNowPresenter extends BasePresenter {
         view.showListDeviceLoading();
         ApiManger.getInstance()
                 .getHubService()
-                .listDevice(mSPUtil.getString("user_token"), onenetId)
+                .listDevice(SMART_TOKEN, onenetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SmartResponseListBean>() {
@@ -106,46 +108,21 @@ public class HubDetailNowPresenter extends BasePresenter {
                 });
     }
 
-    public void addDevice(final DeviceBean device) {
+    public void crudDevice(final DeviceBean device, final String action) {
         view.showLoading();
-        ApiManger.getInstance()
-                .getHubService()
-                .addDevice(mSPUtil.getString("user_token"), device)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<SmartResponseBean>() {
-                    @Override
-                    public void onSubscribe(final Disposable d) {
-                        addDisposable(d);
-                    }
-
-                    @Override
-                    public void onNext(final SmartResponseBean response) {
-                        if (response.getError() > 0) {
-                            view.showFailedMsg(response.getMsg());
-                        } else {
-                            view.showDoDeviceSuccessMsg(response.getMsg());
-                        }
-                    }
-
-                    @Override
-                    public void onError(final Throwable e) {
-                        view.showFailedMsg(e.getMessage());
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        view.hideLoading();
-                    }
-                });
-    }
-
-    public void updateDevice(final DeviceBean device) {
-        view.showLoading();
-        ApiManger.getInstance()
-                .getHubService()
-                .updateDevice(mSPUtil.getString("user_token"), device)
-                .subscribeOn(Schedulers.io())
+        final HubApi api = ApiManger.getInstance().getHubService();
+        final Observable<SmartResponseBean> observable;
+        switch (action) {
+            case "add":
+                observable = api.addDevice(SMART_TOKEN, device);
+                break;
+            case "update":
+                observable = api.updateDevice(SMART_TOKEN, device);
+                break;
+            default:
+                return;
+        }
+        observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SmartResponseBean>() {
                     @Override
@@ -178,7 +155,7 @@ public class HubDetailNowPresenter extends BasePresenter {
         view.showStoreMatchLoading();
         ApiManger.getInstance()
                 .getHubService()
-                .orderHub(mSPUtil.getString("user_token"), order)
+                .orderHub(SMART_TOKEN, order)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SmartResponseBean>() {
@@ -225,7 +202,7 @@ public class HubDetailNowPresenter extends BasePresenter {
         device.setImg(device.getHub_id() + device.getId() + ".png");
         ApiManger.getInstance()
                 .getHubService()
-                .getQiNiuToken(mSPUtil.getString("user_token"), device.getImg())
+                .getQiNiuToken(SMART_TOKEN, device.getImg())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SmartResponseBean>() {
@@ -250,7 +227,7 @@ public class HubDetailNowPresenter extends BasePresenter {
                                     // 上传成功后将key值上传到自己的服务器
                                     ApiManger.getInstance()
                                             .getHubService()
-                                            .updateDeviceImg(mSPUtil.getString("user_token"), device)
+                                            .updateDeviceImg(SMART_TOKEN, device)
                                             .subscribeOn(Schedulers.io())
                                             .observeOn(AndroidSchedulers.mainThread())
                                             .subscribe(new Observer<SmartResponseBean>() {

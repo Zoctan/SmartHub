@@ -5,6 +5,8 @@ public class SmartUrl {
 
     public final static String HEADER_AUTH_KEY = "Authorization";
 
+    public static final String TOKEN = "token";
+
     public static final String USERS = "users";
     public static final String USERS_AVATAR = USERS + "/avatar";
     public static final String USERS_PASSWORD = USERS + "/password";

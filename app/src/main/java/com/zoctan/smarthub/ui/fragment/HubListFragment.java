@@ -142,11 +142,7 @@ public class HubListFragment extends BaseFragment {
         final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity()).init(title, msg, icon, R.string.all_ensure);
         dialog
                 .setButton1Click(v -> {
-                    if (action.equals("delete")) {
-                        mPresenter.deleteHub(hub);
-                    } else {
-                        mPresenter.addHub(hub);
-                    }
+                    mPresenter.crudHub(hub, action);
                     dialog.dismiss();
                 })
                 .show();
@@ -190,7 +186,7 @@ public class HubListFragment extends BaseFragment {
                             && mLayoutHubName.getError() == null) {
                         getHoldingActivity().hideSoftKeyBoard(mEtHubName, getContext());
                         hub.setName(mEtHubName.getText().toString());
-                        mPresenter.updateHub(hub);
+                        mPresenter.crudHub(hub, "update");
                         dialog.dismiss();
                     }
                 }).show();

@@ -23,7 +23,6 @@ public abstract class BaseFragment extends Fragment {
     protected BaseActivity mActivity;
     private Unbinder unbinder;
     protected SPUtils mSPUtil = SPUtils.getInstance();
-    protected String userToken = mSPUtil.getString("user_token");
     private BasePresenter mPresenter;
 
     /**

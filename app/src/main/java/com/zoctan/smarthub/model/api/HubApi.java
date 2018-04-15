@@ -23,8 +23,11 @@ public interface HubApi {
     @GET(SmartUrl.USERS)
     Observable<SmartResponseBean> getUserInfo(@Header(SmartUrl.HEADER_AUTH_KEY) String token);
 
+    @POST(SmartUrl.TOKEN)
+    Observable<SmartResponseBean> login(@Body UserBean user);
+
     @POST(SmartUrl.USERS)
-    Observable<SmartResponseBean> loginRegister(@Body UserBean user);
+    Observable<SmartResponseBean> register(@Body UserBean user);
 
     @PUT(SmartUrl.USERS)
     Observable<SmartResponseBean> updateUserInfo(@Header(SmartUrl.HEADER_AUTH_KEY) String token,

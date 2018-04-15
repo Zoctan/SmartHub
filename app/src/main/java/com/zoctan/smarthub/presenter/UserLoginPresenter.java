@@ -1,11 +1,13 @@
 package com.zoctan.smarthub.presenter;
 
 import com.zoctan.smarthub.model.api.ApiManger;
+import com.zoctan.smarthub.model.api.HubApi;
 import com.zoctan.smarthub.model.bean.smart.SmartResponseBean;
 import com.zoctan.smarthub.model.bean.smart.UserBean;
 import com.zoctan.smarthub.ui.activity.UserLoginActivity;
 import com.zoctan.smarthub.utils.JsonUtil;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -22,14 +24,23 @@ public class UserLoginPresenter extends BasePresenter {
     }
 
     /**
-     * 登录
+     * 登录或注册
      */
-    public void loginRegister(final UserBean user) {
+    public void loginRegister(final UserBean user, final String action) {
         view.showLoading();
-        ApiManger.getInstance()
-                .getHubService()
-                .loginRegister(user)
-                .subscribeOn(Schedulers.io())
+        final HubApi api = ApiManger.getInstance().getHubService();
+        final Observable<SmartResponseBean> observable;
+        switch (action) {
+            case "login":
+                observable = api.login(user);
+                break;
+            case "register":
+                observable = api.register(user);
+                break;
+            default:
+                return;
+        }
+        observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SmartResponseBean>() {
                     @Override

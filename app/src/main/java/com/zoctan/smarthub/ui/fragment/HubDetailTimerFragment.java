@@ -91,10 +91,10 @@ public class HubDetailTimerFragment extends BaseFragment {
                 case "close":
                 case "open":
                     timer.setStatus(action.equals("close") ? 0 : 1);
-                    mPresenter.updateTimer(timer);
+                    mPresenter.crudTimer(timer, "update");
                     break;
                 case "delete":
-                    mPresenter.deleteTimer(timer);
+                    mPresenter.crudTimer(timer, "delete");
                     break;
             }
         }
@@ -209,15 +209,7 @@ public class HubDetailTimerFragment extends BaseFragment {
                         final String minute1 = String.format(Locale.CHINA, "%02d", mTimePicker.getMinute());
                         timer.setTime(String.format("%s:%s", hour1, minute1));
                         timer.setName(mEtTimerName.getText().toString());
-                        switch (action) {
-                            case "add":
-                                mPresenter.addTimer(timer);
-                                break;
-                            case "update":
-                                mPresenter.updateTimer(timer);
-                                break;
-                        }
-
+                        mPresenter.crudTimer(timer, action);
                         dialog.dismiss();
                     }
                 })

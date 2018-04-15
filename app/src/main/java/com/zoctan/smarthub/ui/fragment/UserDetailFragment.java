@@ -214,7 +214,7 @@ public class UserDetailFragment extends BaseFragment {
                         user.setPhone(mEtUserInfo[1].getText().toString());
                         if (RegexUtils.isMobileSimple(user.getPhone())) {
                             getHoldingActivity().hideSoftKeyBoard(mEtUserInfo[0], getContext());
-                            mPresenter.updateUserInfo(user);
+                            mPresenter.crudUser(user, "updateInfo");
                             dialog.dismiss();
                         } else {
                             AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_phone_error);
@@ -263,7 +263,7 @@ public class UserDetailFragment extends BaseFragment {
                         final String password = mEtPassword[0].getText().toString();
                         final UserBean user = new UserBean();
                         user.setPassword(password);
-                        mPresenter.updateUserPassword(user);
+                        mPresenter.crudUser(user, "updatePassword");
                         dialog.dismiss();
                     }
                 })
@@ -297,7 +297,7 @@ public class UserDetailFragment extends BaseFragment {
 
     public void showSuccessMsg(final String msg) {
         AlerterUtil.showInfo(getHoldingActivity(), msg);
-        mPresenter.getUserInfo();
+        mPresenter.crudUser(null, "list");
     }
 
     public void showFailedMsg(final String msg) {

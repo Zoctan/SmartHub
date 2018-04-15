@@ -1,6 +1,7 @@
 package com.zoctan.smarthub.presenter;
 
 import com.zoctan.smarthub.model.api.ApiManger;
+import com.zoctan.smarthub.model.api.HubApi;
 import com.zoctan.smarthub.model.bean.smart.HubBean;
 import com.zoctan.smarthub.model.bean.smart.OrderBean;
 import com.zoctan.smarthub.model.bean.smart.SmartResponseBean;
@@ -10,12 +11,13 @@ import com.zoctan.smarthub.utils.JsonUtil;
 
 import java.util.List;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.zoctan.smarthub.App.mSPUtil;
+import static com.zoctan.smarthub.App.SMART_TOKEN;
 
 public class HubListPresenter extends BasePresenter {
     private HubListFragment view;
@@ -29,7 +31,7 @@ public class HubListPresenter extends BasePresenter {
         view.showLoading();
         ApiManger.getInstance()
                 .getHubService()
-                .listHub(mSPUtil.getString("user_token"))
+                .listHub(SMART_TOKEN)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SmartResponseListBean>() {
@@ -65,7 +67,7 @@ public class HubListPresenter extends BasePresenter {
         view.showLoading();
         ApiManger.getInstance()
                 .getHubService()
-                .orderHub(mSPUtil.getString("user_token"), order)
+                .orderHub(SMART_TOKEN, order)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SmartResponseBean>() {
@@ -95,80 +97,24 @@ public class HubListPresenter extends BasePresenter {
                 });
     }
 
-    public void addHub(final HubBean hub) {
+    public void crudHub(final HubBean hub, final String action) {
         view.showLoading();
-        ApiManger.getInstance()
-                .getHubService()
-                .addHub(mSPUtil.getString("user_token"), hub)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<SmartResponseBean>() {
-                    @Override
-                    public void onSubscribe(final Disposable d) {
-                        addDisposable(d);
-                    }
-
-                    @Override
-                    public void onNext(final SmartResponseBean response) {
-                        if (response.getError() > 0) {
-                            view.showFailedMsg(response.getMsg());
-                        } else {
-                            view.showSuccessMsg(response.getMsg());
-                        }
-                    }
-
-                    @Override
-                    public void onError(final Throwable e) {
-                        view.showFailedMsg(e.getMessage());
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        view.hideLoading();
-                    }
-                });
-    }
-
-    public void updateHub(final HubBean hub) {
-        view.showLoading();
-        ApiManger.getInstance()
-                .getHubService()
-                .updateHub(mSPUtil.getString("user_token"), hub)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<SmartResponseBean>() {
-                    @Override
-                    public void onSubscribe(final Disposable d) {
-                        addDisposable(d);
-                    }
-
-                    @Override
-                    public void onNext(final SmartResponseBean response) {
-                        if (response.getError() > 0) {
-                            view.showFailedMsg(response.getMsg());
-                        } else {
-                            view.showSuccessMsg(response.getMsg());
-                        }
-                    }
-
-                    @Override
-                    public void onError(final Throwable e) {
-                        view.showFailedMsg(e.getMessage());
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        view.hideLoading();
-                    }
-                });
-    }
-
-    public void deleteHub(final HubBean hub) {
-        view.showLoading();
-        ApiManger.getInstance()
-                .getHubService()
-                .deleteHub(mSPUtil.getString("user_token"), hub)
-                .subscribeOn(Schedulers.io())
+        final HubApi api = ApiManger.getInstance().getHubService();
+        final Observable<SmartResponseBean> observable;
+        switch (action) {
+            case "add":
+                observable = api.addHub(SMART_TOKEN, hub);
+                break;
+            case "update":
+                observable = api.updateHub(SMART_TOKEN, hub);
+                break;
+            case "delete":
+                observable = api.deleteHub(SMART_TOKEN, hub);
+                break;
+            default:
+                return;
+        }
+        observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SmartResponseBean>() {
                     @Override

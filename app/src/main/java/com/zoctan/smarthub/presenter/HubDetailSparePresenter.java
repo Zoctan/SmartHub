@@ -15,7 +15,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.zoctan.smarthub.App.mSPUtil;
+import static com.zoctan.smarthub.App.SMART_TOKEN;
 
 public class HubDetailSparePresenter extends BasePresenter {
     private HubDetailSpareFragment view;
@@ -29,7 +29,7 @@ public class HubDetailSparePresenter extends BasePresenter {
         view.showLoading();
         ApiManger.getInstance()
                 .getHubService()
-                .listSpare(mSPUtil.getString("user_token"), onenetId)
+                .listSpare(SMART_TOKEN, onenetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SmartResponseBean>() {

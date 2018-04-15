@@ -92,7 +92,7 @@ public class UserLoginActivity extends BaseActivity {
     }
 
     @OnTextChanged(value = R.id.EditText_user_name, callback = OnTextChanged.Callback.TEXT_CHANGED)
-    void onUserNameChanged(final CharSequence s, final int start, final int count, final int after) {
+    void onUserNameChanged(final CharSequence s) {
         if (s.length() > 12) {
             mLayoutUserName.setErrorEnabled(true);
             mLayoutUserName.setError(getString(R.string.all_max_name));
@@ -102,7 +102,7 @@ public class UserLoginActivity extends BaseActivity {
     }
 
     @OnTextChanged(value = R.id.EditText_user_password2, callback = OnTextChanged.Callback.TEXT_CHANGED)
-    void onPassword2Changed(final CharSequence s, final int start, final int count, final int after) {
+    void onPassword2Changed() {
         if (!mEtPassword.getText().toString().equals(mEtPassword2.getText().toString())) {
             mLayoutUserPassword2.setErrorEnabled(true);
             mLayoutUserPassword2.setError(getString(R.string.all_different_password));
@@ -198,7 +198,11 @@ public class UserLoginActivity extends BaseActivity {
                             final UserBean user = new UserBean();
                             user.setUsername(mEtUserName.getText().toString());
                             user.setPassword(mEtPassword.getText().toString());
-                            mPresenter.loginRegister(user);
+                            if (mBtnLogin.getText() == getString(R.string.user_register)) {
+                                mPresenter.loginRegister(user, "register");
+                            } else {
+                                mPresenter.loginRegister(user, "login");
+                            }
                         } else {
                             mGt3GeetestUtils.gt3TestClose();
                         }
@@ -224,11 +228,7 @@ public class UserLoginActivity extends BaseActivity {
     }
 
     public void showSuccessMsg(final String msg) {
-        if (mBtnLogin.getText() == getString(R.string.user_register)) {
-            AlerterUtil.showInfo(this, R.string.user_register_success);
-        } else {
-            AlerterUtil.showInfo(this, R.string.user_login_success);
-        }
+        AlerterUtil.showInfo(this, msg);
         final Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         mGt3GeetestUtils.cancelUtils();

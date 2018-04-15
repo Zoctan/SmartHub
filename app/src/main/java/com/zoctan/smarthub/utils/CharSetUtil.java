@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 public class CharSetUtil {
 
     /**
-     * 解码 Unicode \uXXXX
+     * 解码 Unicode \\uXXXX
      *
      * @param str
      * @return
