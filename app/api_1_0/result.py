@@ -5,9 +5,9 @@ from flask import jsonify
 
 class Result:
     @staticmethod
-    def success(msg, result=None):
+    def success(msg, result=''):
         return jsonify({'msg': msg, 'error': 0, 'result': result}), {'Content-Type': 'application/json;charset=utf-8'}
 
     @staticmethod
-    def error(msg, result=None):
+    def error(msg, result=''):
         return jsonify({'msg': msg, 'error': 1, 'result': result}), {'Content-Type': 'application/json;charset=utf-8'}
