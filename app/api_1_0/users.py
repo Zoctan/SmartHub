@@ -62,12 +62,16 @@ def update_user_password():
 @decorators.composed(decorators.route('/api/users', methods=['PUT']), decorators.json_required)
 def update_user():
     phone = request.json.get('phone')
+    email = request.json.get('email')
     username = request.json.get('username')
-    if not phone or not username:
-        return Result.error('用户名或手机号不能为空')
+    if not username:
+        return Result.error('用户名不能为空')
+    if not phone or not email:
+        return Result.error('手机和邮箱至少有一个不为空')
     user = User.query.filter_by(username=username).first()
     if g.current_user.username != username and user:
         return Result.error('用户名已存在')
     g.current_user.phone = phone
+    g.current_user.email = email
     g.current_user.username = username
     return Result.success('成功修改信息')

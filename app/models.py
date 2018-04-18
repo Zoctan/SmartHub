@@ -13,7 +13,8 @@ db.session.remove()
 db.drop_all()
 db.create_all()
 user = models.User()
-user.phone='13192605482'
+user.phone='1234567890'
+user.email = '123456@qq.com'
 user.username='test'
 user.password = 'test'
 db.session.add(user)
@@ -44,6 +45,7 @@ db.session.add(timer)
 db.session.commit()
 """
 
+
 class User(db.Model):
     __tablename__ = 'smart_users'
     id = db.Column(db.Integer, primary_key=True)
@@ -54,6 +56,7 @@ class User(db.Model):
             default="http://p0qgwnuel.bkt.clouddn.com/default.png")
     hubs = db.relationship('Hub', backref='User', lazy='dynamic', cascade='all, delete-orphan')
     phone = db.Column(db.Unicode(20, collation='utf8_bin'))
+    email = db.Column(db.Unicode(30, collation='utf8_bin'))
 
     @property
     def password(self):
@@ -87,7 +90,8 @@ class User(db.Model):
             'id': self.id,
             'username': self.username,
             'avatar': self.avatar,
-            'phone': self.phone
+            'phone': self.phone,
+            'email': self.email
         }
         return json
 
