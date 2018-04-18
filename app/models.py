@@ -28,7 +28,7 @@ db.session.add(hub)
 db.session.flush()
 month = models.MonthSpare()
 month.hub_id='19959358'
-month.current_month=3
+month.current_month=4
 month.watt=24
 db.session.add(month)
 hour = models.HourSpare()

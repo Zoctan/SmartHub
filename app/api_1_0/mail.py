@@ -16,7 +16,7 @@ def send_async_email(app, msg):
 
 
 @decorators.composed(decorators.route('/api/mail', methods=['POST']), decorators.json_required)
-def index():
+def send_email():
     email = request.json.get('email')
     phone = request.json.get('phone')
     if not email or not phone:
