@@ -32,16 +32,14 @@ def verify_password(username, password):
         g.current_user = AnonymousUser()
         return True
     # try to authenticate with username/password
-    user = User.query.filter_by(username=username).first()
-    g.current_user = user
-    return False if user is None else user.verify_password(password)
+    g.current_user = User.query.filter_by(username=username).first()
+    return False if g.current_user is None else g.current_user.verify_password(password)
 
 
 @token_auth.verify_token
 def verify_token(token):
-    user = User.verify_auth_token(token)
-    g.current_user = user
-    return False if user is None else True
+    g.current_user = User.verify_auth_token(token)
+    return False if g.current_user is None else True
 
 
 @api.before_request
