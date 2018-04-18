@@ -19,7 +19,7 @@ def send_async_email(app, msg):
 def send_email():
     email = request.json.get('email')
     phone = request.json.get('phone')
-    if not email or not phone:
+    if not email and not phone:
         return Result.error('为了确保收到回复，手机和邮箱至少有一个不为空')
     msg = Message(subject='SmartHub-反馈信息', recipients=['752481828@qq.com'])
     # 邮件内容会以文本和html两种格式呈现，而你能看到哪种格式取决于你的邮件客户端
