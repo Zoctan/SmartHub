@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 
 import com.flyco.tablayout.CommonTabLayout;
 import com.flyco.tablayout.listener.CustomTabEntity;
@@ -15,6 +14,7 @@ import com.zoctan.smarthub.model.bean.smart.HubBean;
 import com.zoctan.smarthub.presenter.BasePresenter;
 import com.zoctan.smarthub.ui.adapter.HubDetailViewPagerAdapter;
 import com.zoctan.smarthub.ui.base.BaseActivity;
+import com.zoctan.smarthub.ui.custom.TitleBar;
 import com.zoctan.smarthub.ui.fragment.HubDetailNowFragment;
 import com.zoctan.smarthub.ui.fragment.HubDetailSpareFragment;
 import com.zoctan.smarthub.ui.fragment.HubDetailTimerFragment;
@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import butterknife.BindView;
 
 public class HubDetailActivity extends BaseActivity {
-    @BindView(R.id.Toolbar_all)
-    Toolbar mToolbar;
+    @BindView(R.id.TitleBar_hub_detail)
+    TitleBar mTitleBar;
     @BindView(R.id.ViewPager_hub_detail)
     ViewPager mViewPager;
     @BindView(R.id.CommonTabLayout_hub_detail)
@@ -75,20 +75,26 @@ public class HubDetailActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        mToolbar.setTitle(hubBean.getName());
-        setSupportActionBar(mToolbar);
-        //noinspection ConstantConditions
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mToolbar.setNavigationOnClickListener(view -> onBackPressed());
-
+        initToolBar();
         mViewPager.setAdapter(new HubDetailViewPagerAdapter(getSupportFragmentManager(), mFragmentList, hubBean));
+        initData();
+        setListener();
+    }
 
+    private void initData() {
         final ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
         for (int i = 0; i < mTabTextList.length; i++) {
             mTabEntities.add(new TabEntity(getString(mTabTextList[i]), mIconSelectIds[i], mIconUnSelectIds[i]));
         }
         mTabLayout.setTabData(mTabEntities);
-        setListener();
+    }
+
+    private void initToolBar() {
+        mTitleBar.setCenterText(hubBean.getName());
+        setSupportActionBar(mTitleBar);
+        //noinspection ConstantConditions
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mTitleBar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
     private void setListener() {

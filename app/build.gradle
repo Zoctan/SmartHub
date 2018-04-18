@@ -1,15 +1,15 @@
-apply plugin: 'com.android.application'
+apply plugin: "com.android.application"
 
 android {
     // 编译SDK的版本
     compileSdkVersion 27
     // build tools的版本
-    buildToolsVersion '27.0.3'
+    buildToolsVersion "27.0.3"
 
     defaultConfig {
         // 应用的包名
         applicationId "com.zoctan.smartHub"
-        minSdkVersion 24
+        minSdkVersion 21
         targetSdkVersion 27
         versionCode 2
         versionName "2.0.0"
@@ -18,7 +18,7 @@ android {
     signingConfigs {
         release {
             // 签名文件.keystore或者.jks
-            storeFile file('/media/root/Data/language/java/android/key.jks')
+            storeFile file("/media/root/Data/language/java/android/key.jks")
         }
     }
     buildTypes {
@@ -29,14 +29,14 @@ android {
             // 是否去除无效的资源文件
             shrinkResources false
             // 混淆的配置文件
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
         // 发行版
         release {
             minifyEnabled false
             shrinkResources false
             signingConfig signingConfigs.release
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
     lintOptions {
@@ -50,138 +50,164 @@ android {
 
 repositories {
     flatDir {
-        dirs 'libs'
+        dirs "libs"
     }
     mavenCentral()
 }
 
 dependencies {
     // 编译libs目录下的所有jar包
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    testImplementation 'junit:junit:4.12'
-    implementation(name: 'gt3geetest_sdk', ext: 'aar')
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.android.support:design:27.1.1'
-    implementation 'com.android.support:cardview-v7:27.1.1'
-    implementation 'com.android.support:support-v4:27.1.1'
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    testImplementation "junit:junit:4.12"
+    implementation(name: "gt3geetest_sdk", ext: "aar")
+    implementation "com.android.support:appcompat-v7:27.1.0"
+    implementation "com.android.support:design:27.1.0"
+    implementation "com.android.support:cardview-v7:27.1.0"
+    implementation "com.android.support:support-v4:27.1.0"
     implementation "com.android.support:multidex:1.0.3"
-
+    implementation "com.android.support:recyclerview-v7:27.1.0"
+    implementation "com.android.support:support-annotations:27.1.0"
     /**
-     * A powerful image downloading and caching library
-     * https://github.com/square/picasso
+     * MaterialDrawer
+     * https://github.com/mikepenz/MaterialDrawer
      */
-    implementation 'com.squareup.picasso:picasso:2.71828'
-    /**
-     * A circular ImageView
-     * https://github.com/hdodenhof/CircleImageView
-     */
-    implementation 'de.hdodenhof:circleimageview:2.2.0'
-    /**
-     * A chart view / graph view library
-     * https://github.com/PhilJay/MPAndroidChart
-     */
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
-    //
-    /**
-     * 七牛云
-     * https://developer.qiniu.com/kodo/sdk/1236/android
-     */
-    implementation 'com.qiniu:qiniu-android-sdk:7.3.10'
-    implementation 'com.loopj.android:android-async-http:1.4.9'
-    implementation 'com.qiniu:happy-dns:0.2.13'
-    implementation 'com.google.zxing:core:3.3.1'
-    /**
-     * Bind Android views and callbacks to fields and methods.
-     * https://github.com/JakeWharton/butterknife
-     */
-    implementation 'com.jakewharton:butterknife:8.8.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-    /**
-     * Simple annotation-based API to handle runtime permissions.
-     * https://github.com/permissions-dispatcher/PermissionsDispatcher
-     */
-    implementation('com.github.hotchemi:permissionsdispatcher:3.1.0') {
-        // if you don't use android.app.Fragment you can exclude support for them
-        exclude module: "support-v13"
+    implementation("com.mikepenz:materialdrawer:6.0.7@aar") {
+        transitive = true
     }
-    annotationProcessor 'com.github.hotchemi:permissionsdispatcher-processor:3.1.0'
-    /**
-     * 下拉刷新组件
-     * https://github.com/scwang90/SmartRefreshLayout
-     */
-    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.5.1'
-    /**
-     * 自定义Loading库
-     * https://github.com/zyao89/ZLoading
-     */
-    implementation 'com.zyao89:zloading:1.0.8'
-    /**
-     * 下拉选择框
-     * https://github.com/arcadefire/nice-spinner
-     */
-    implementation 'com.github.arcadefire:nice-spinner:1.3.1'
-    /**
-     * 工具集
-     * https://github.com/Blankj/AndroidUtilCode
-     */
-    implementation 'com.blankj:utilcode:1.13.10'
-    /**
-     * 沉浸式状态栏和沉浸式导航栏管理
-     * https://github.com/gyf-dev/ImmersionBar
-     */
-    implementation 'com.gyf.barlibrary:barlibrary:2.3.0'
-    /**
-     * 出场、入场动画
-     * https://github.com/JakeWharton/NineOldAndroids
-     */
-    implementation 'com.nineoldandroids:library:2.4.0'
-    /**
-     * TabLayout
-     * https://github.com/H07000223/FlycoTabLayout
-     */
-    implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
-    /**
-     * RoundView
-     * https://github.com/H07000223/FlycoRoundView
-     */
-    implementation 'com.flyco.roundview:FlycoRoundView_Lib:1.1.4@aar'
-    /**
-     * SwitchButton
-     * https://github.com/kyleduo/SwitchButton
-     */
-    implementation 'com.kyleduo.switchbutton:library:2.0.0'
     /**
      * RxJava
      * https://github.com/ReactiveX/RxJava
      */
     implementation "io.reactivex.rxjava2:rxjava:2.1.12"
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    implementation "io.reactivex.rxjava2:rxandroid:2.0.2"
     /**
      * Retrofit
      * https://github.com/square/retrofit
      */
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    implementation 'com.jakewharton.rxbinding2:rxbinding:2.1.1'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    implementation "com.squareup.retrofit2:retrofit:2.4.0"
+    implementation "com.jakewharton.rxbinding2:rxbinding:2.1.1"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:2.4.0"
+    implementation "com.squareup.retrofit2:converter-gson:2.4.0"
+    /**
+     * A powerful image downloading and caching library
+     * https://github.com/square/picasso
+     */
+    implementation "com.squareup.picasso:picasso:2.71828"
+    /**
+     * A circular ImageView
+     * https://github.com/hdodenhof/CircleImageView
+     */
+    implementation "de.hdodenhof:circleimageview:2.2.0"
+    /**
+     * A chart view / graph view library
+     * https://github.com/PhilJay/MPAndroidChart
+     */
+    implementation "com.github.PhilJay:MPAndroidChart:v3.0.3"
+    /**
+     * 七牛云
+     * https://developer.qiniu.com/kodo/sdk/1236/android
+     */
+    implementation "com.qiniu:qiniu-android-sdk:7.3.10"
+    implementation "com.loopj.android:android-async-http:1.4.9"
+    implementation "com.qiniu:happy-dns:0.2.13"
+    /**
+     * zxing-android-embedded
+     * https://github.com/journeyapps/zxing-android-embedded
+     */
+    implementation "com.journeyapps:zxing-android-embedded:3.6.0"
+    /**
+     * Bind Android views and callbacks to fields and methods.
+     * https://github.com/JakeWharton/butterknife
+     */
+    implementation "com.jakewharton:butterknife:8.8.1"
+    annotationProcessor "com.jakewharton:butterknife-compiler:8.8.1"
+    /**
+     * Simple annotation-based API to handle runtime permissions.
+     * https://github.com/permissions-dispatcher/PermissionsDispatcher
+     */
+    implementation("com.github.hotchemi:permissionsdispatcher:3.1.0") {
+        // if you don"t use android.app.Fragment you can exclude support for them
+        exclude module: "support-v13"
+    }
+    annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:3.1.0"
+    /**
+     * 下拉刷新组件
+     * https://github.com/scwang90/SmartRefreshLayout
+     */
+    implementation "com.scwang.smartrefresh:SmartRefreshLayout:1.0.5.1"
+    /**
+     * 自定义Loading库
+     * https://github.com/zyao89/ZLoading
+     */
+    implementation "com.zyao89:zloading:1.1.2"
+    /**
+     * 下拉选择框
+     * https://github.com/arcadefire/nice-spinner
+     */
+    implementation "com.github.arcadefire:nice-spinner:1.3.1"
+    /**
+     * 工具集
+     * https://github.com/Blankj/AndroidUtilCode
+     */
+    implementation "com.blankj:utilcode:1.13.10"
+    /**
+     * 沉浸式状态栏和沉浸式导航栏管理
+     * https://github.com/gyf-dev/ImmersionBar
+     */
+    implementation "com.gyf.barlibrary:barlibrary:2.3.0"
+    /**
+     * providing to realize wave loading effect.
+     * https://github.com/tangqi92/WaveLoadingView
+     */
+    implementation 'me.itangqi.waveloadingview:library:0.3.5'
+    /**
+     * 出入场动画
+     * https://github.com/JakeWharton/NineOldAndroids
+     */
+    implementation "com.nineoldandroids:library:2.4.0"
+    /**
+     * TabLayout
+     * https://github.com/H07000223/FlycoTabLayout
+     */
+    implementation "com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar"
+    /**
+     * RoundView
+     * https://github.com/H07000223/FlycoRoundView
+     */
+    implementation "com.flyco.roundview:FlycoRoundView_Lib:1.1.4@aar"
+    /**
+     * JellyToggleButton
+     * https://github.com/Nightonke/JellyToggleButton/blob/master/README-ZH.md
+     */
+    implementation "com.nightonke:jellytogglebutton:1.0.2"
+    /**
+     * Icons, Borders, Radius ... for Android buttons
+     * https://github.com/medyo/Fancybuttons
+     */
+    implementation "com.github.medyo:fancybuttons:1.8.4"
+    /**
+     * DrawerLayout-like ViewGroup
+     * https://github.com/yarolegovich/SlidingRootNav
+     */
+    implementation "com.yarolegovich:sliding-root-nav:1.1.0"
     /**
      * 消息推送栏
      * https://github.com/Tapadoo/Alerter
      */
-    implementation 'com.tapadoo.android:alerter:2.0.4'
+    implementation "com.tapadoo.android:alerter:2.0.4"
     /**
      * fab 浮动按钮
      * https://github.com/yavski/fab-speed-dial
      */
-    implementation 'io.github.yavski:fab-speed-dial:1.0.6'
+    implementation "io.github.yavski:fab-speed-dial:1.0.6"
     /**
      * 对话框
      * https://github.com/sd6352051/NiftyDialogEffects
      */
-    implementation 'com.github.sd6352051:NiftyDialogEffects:v1.0.3'
+    implementation "com.github.sd6352051:NiftyDialogEffects:v1.0.3"
     /**
      * icon 加载库
      * https://github.com/jrvansuita/IconHandler
      */
-    implementation 'com.github.jrvansuita:IconHandler:v2.0.0'
+    implementation "com.github.jrvansuita:IconHandler:v2.0.0"
 }

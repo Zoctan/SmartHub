@@ -1,37 +1,57 @@
 <resources>
+    <!-- title文字样式（和toolbar自带样式一样，可自行修改） -->
+    <style name="TextAppearance_TitleBar_Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title" />
+    <!-- 左右文字样式 （和toolbar副标题样式一样，可自行修改）-->
+    <style name="TextAppearance_TitleBar_subTitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Subtitle" />
+
+    <style name="CustomTheme" parent="MaterialDrawerTheme">
+        <!-- ...and here we setting appcompat’s color theming attrs -->
+        <item name="colorPrimary">@color/material_drawer_primary</item>
+        <item name="colorPrimaryDark">@color/material_drawer_primary_dark</item>
+        <item name="colorAccent">@color/material_drawer_accent</item>
+        <!-- MaterialDrawer specific values -->
+        <item name="material_drawer_background">@color/material_drawer_background</item>
+        <item name="material_drawer_primary_text">@color/material_drawer_primary_text</item>
+        <item name="material_drawer_primary_icon">@color/material_drawer_primary_icon</item>
+        <item name="material_drawer_secondary_text">@color/material_drawer_secondary_text</item>
+        <item name="material_drawer_hint_text">@color/material_drawer_hint_text</item>
+        <item name="material_drawer_divider">@color/material_drawer_divider</item>
+        <item name="material_drawer_selected">@color/material_drawer_selected</item>
+        <item name="material_drawer_selected_text">@color/material_drawer_selected_text</item>
+        <item name="material_drawer_header_selection_text">
+            @color/material_drawer_header_selection_text
+        </item>
+    </style>
+
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here.-->
         <item name="colorPrimary">@color/primary</item>
+        <item name="colorAccent">@color/accent</item>
+        <!-- 抽屉 -->
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <!-- 返回键 -->
+        <item name="colorControlNormal">@color/white</item>
     </style>
 
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar.Translucent">
-        <item name="android:windowIsTranslucent">true</item>
+    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="color">@color/white</item>
     </style>
 
     <style name="HintAppearance" parent="TextAppearance.AppCompat">
-        　　
         <item name="android:textSize">@dimen/edit_hint_size</item>
-        　　
         <item name="android:textColor">@color/accent</item>
     </style>
 
     <style name="HintErrorAppearance" parent="TextAppearance.AppCompat">
-        　　
         <item name="android:textSize">@dimen/edit_hint_size</item>
-        　　
         <item name="android:textColor">@color/danger</item>
     </style>
 
     <style name="TextErrorAppearance" parent="TextAppearance.AppCompat">
-        　　
         <item name="android:textSize">@dimen/edit_hint_size</item>
-        　　
         <item name="android:textColor">@color/danger</item>
     </style>
+
+    <style name="Theme.AppCompat.DayNight.DarkActionBar" />
 </resources>

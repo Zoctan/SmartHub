@@ -1,8 +1,10 @@
 package com.zoctan.smarthub.ui.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
@@ -15,6 +17,9 @@ import android.widget.LinearLayout;
 import com.blankj.utilcode.util.SPUtils;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.ui.adapter.GuideViewPagerAdapter;
+import com.zoctan.smarthub.utils.AlerterUtil;
+import com.zoctan.smarthub.utils.NiftyDialog;
+import com.zoctan.smarthub.utils.NiftyDialogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +27,18 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * 欢迎页
  */
+@RuntimePermissions
 public class GuideActivity extends Activity implements OnClickListener {
-
     @BindView(R.id.ViewPager_guide_pic)
     ViewPager mViewPagerGuidePic;
     @BindView(R.id.LinearLayout_guide_dot)
@@ -52,7 +63,6 @@ public class GuideActivity extends Activity implements OnClickListener {
     }
 
     protected void initView() {
-        mSPUtil.put("first_open", true);
         final List<View> views = new ArrayList<>();
         // 初始化引导页视图列表
         for (int i = 0; i < pics.length; i++) {
@@ -118,7 +128,8 @@ public class GuideActivity extends Activity implements OnClickListener {
     @Override
     public void onClick(final View view) {
         if (view.getTag().equals("start")) {
-            enterMainActivity();
+            // 请求权限
+            GuideActivityPermissionsDispatcher.toSplashActivityWithPermissionCheck(this);
             return;
         }
 
@@ -127,11 +138,48 @@ public class GuideActivity extends Activity implements OnClickListener {
         setCurDot(position);
     }
 
-    // 进入主界面
-    private void enterMainActivity() {
+    // 进入启动页
+    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
+    public void toSplashActivity() {
+        mSPUtil.put("not_first_open", true);
         final Intent intent = new Intent(GuideActivity.this, SplashActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        GuideActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
+
+    // 给用户解释要请求什么权限，为什么需要此权限
+    @OnShowRationale({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
+    public void showRationale(final PermissionRequest request) {
+        final NiftyDialog dialog = new NiftyDialogUtil(this)
+                .setIcon(R.drawable.ic_alert)
+                .setTitle(R.string.permission_request)
+                .setMessage(R.string.permission_need)
+                .setButton1Text(R.string.all_ensure);
+        dialog.setButton1Click(v -> {
+            dialog.dismiss();
+            request.proceed();//继续执行请求
+        }).setButton2Click(v -> {
+            dialog.dismiss();
+            request.cancel();//取消执行请求
+        }).show();
+    }
+
+    // 一旦用户拒绝了
+    @OnPermissionDenied({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
+    public void permissionDenied() {
+        AlerterUtil.showDanger(this, R.string.permission_denied);
+    }
+
+    // 用户选择的不再询问
+    @OnNeverAskAgain({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
+    public void permissionDeniedNeverAsk() {
+        AlerterUtil.showDanger(this, R.string.permission_denied_never_ask);
     }
 
     private class PageChangeListener implements OnPageChangeListener {

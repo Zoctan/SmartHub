@@ -1,48 +1,70 @@
 package com.zoctan.smarthub.utils;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
 
 import com.gitonway.lee.niftymodaldialogeffects.lib.Effectstype;
 import com.zoctan.smarthub.R;
 
 public class NiftyDialogUtil {
-    private final NiftyDialog dialog;
-    private final Activity mActivity;
+    private NiftyDialog dialog;
+    private Context mContext;
 
-    public NiftyDialogUtil(final Activity activity) {
-        mActivity = activity;
-        dialog = NiftyDialog.getInstance(mActivity);
+    public NiftyDialogUtil() {
     }
 
-    public NiftyDialog init(final int title, final String message, final int icon, final int button1) {
-        return init(mActivity.getString(title), message, icon, button1);
+    public NiftyDialogUtil(final Context context) {
+        mContext = context;
+        dialog = NiftyDialog.getInstance(mContext);
+        this.init();
     }
 
-    public NiftyDialog init(final String title, final int message, final int icon, final int button1) {
-        return init(title, mActivity.getString(message), icon, button1);
+    public NiftyDialogUtil setView(final View view, final Context context) {
+        mContext = context;
+        dialog = NiftyDialog.getInstance(context);
+        dialog.setCustomView(view, context);
+        this.init();
+        return this;
     }
 
-    public NiftyDialog init(final int title, final int message, final int icon, final int button1) {
-        return init(mActivity.getString(title), mActivity.getString(message), icon, button1);
-    }
-
-    public NiftyDialog init(final String title, final String message, final int icon, final int button1) {
-        @SuppressWarnings("ConstantConditions") final Drawable originBitmapDrawable = ContextCompat.getDrawable(mActivity, icon).mutate();
-        return dialog
-                .withTitle(title)
-                .withTitleColor(ContextCompat.getColor(mActivity, R.color.third_text))
-                .withMessage(message)
-                .withMessageColor(ContextCompat.getColor(mActivity, R.color.third_text))
-                .withDividerColor(ContextCompat.getColor(mActivity, R.color.divider))
-                .withDialogColor(ContextCompat.getColor(mActivity, R.color.primary))
-                .withIcon(ImgUtil.tintDrawable(originBitmapDrawable, ColorStateList.valueOf(ContextCompat.getColor(mActivity, R.color.icon))))
+    private void init() {
+        dialog.withTitleColor(ContextCompat.getColor(mContext, R.color.white))
+                .withMessageColor(ContextCompat.getColor(mContext, R.color.white))
+                .withDividerColor(ContextCompat.getColor(mContext, R.color.divider))
+                .withDialogColor(ContextCompat.getColor(mContext, R.color.primary))
                 .withDuration(250)
                 .withEffect(Effectstype.RotateBottom)
-                .withButton1Text(mActivity.getString(button1))
-                .withButton2Text(mActivity.getString(R.string.all_cancel))
+                .withButton2Text(mContext.getString(R.string.all_cancel))
                 .setButton2Click(v -> dialog.dismiss());
+    }
+
+    public NiftyDialogUtil setIcon(final int icon) {
+        @SuppressWarnings("ConstantConditions") final Drawable originBitmapDrawable = ContextCompat.getDrawable(mContext, icon).mutate();
+        dialog.withIcon(ImgUtil.tintDrawable(originBitmapDrawable,
+                ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.white))));
+        return this;
+    }
+
+    public NiftyDialogUtil setTitle(final int title) {
+        dialog.withTitle(mContext.getString(title));
+        return this;
+    }
+
+    public NiftyDialogUtil setMessage(final int message) {
+        dialog.withMessage(mContext.getString(message));
+        return this;
+    }
+
+    public NiftyDialogUtil setMessage(final String message) {
+        dialog.withMessage(message);
+        return this;
+    }
+
+    public NiftyDialog setButton1Text(final int button1) {
+        dialog.withButton1Text(mContext.getString(button1));
+        return dialog;
     }
 }

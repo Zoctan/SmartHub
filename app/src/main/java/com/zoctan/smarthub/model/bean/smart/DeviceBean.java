@@ -14,6 +14,14 @@ public class DeviceBean {
         this.name = name;
     }
 
+    private DeviceBean(final Builder builder) {
+        setId(builder.id);
+        setHub_id(builder.hub_id);
+        setName(builder.name);
+        setImg(builder.img);
+        setEigenvalue(builder.eigenvalue);
+    }
+
     public Integer getId() {
         return id;
     }
@@ -52,5 +60,45 @@ public class DeviceBean {
 
     public void setEigenvalue(final int eigenvalue) {
         this.eigenvalue = eigenvalue;
+    }
+
+    public static final class Builder {
+        private Integer id;
+        private String hub_id;
+        private String name;
+        private String img;
+        private int eigenvalue;
+
+        public Builder() {
+        }
+
+        public Builder id(final Integer val) {
+            id = val;
+            return this;
+        }
+
+        public Builder hub_id(final String val) {
+            hub_id = val;
+            return this;
+        }
+
+        public Builder name(final String val) {
+            name = val;
+            return this;
+        }
+
+        public Builder img(final String val) {
+            img = val;
+            return this;
+        }
+
+        public Builder eigenvalue(final int val) {
+            eigenvalue = val;
+            return this;
+        }
+
+        public DeviceBean build() {
+            return new DeviceBean(this);
+        }
     }
 }

@@ -1,61 +1,67 @@
 package com.zoctan.smarthub.ui.activity;
 
-import android.Manifest;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
-import android.view.KeyEvent;
-import android.view.View;
-import android.widget.TextView;
+import android.view.Gravity;
+import android.widget.ImageView;
 
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.CacheUtils;
+import com.blankj.utilcode.util.FragmentUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.mikepenz.materialdrawer.AccountHeader;
+import com.mikepenz.materialdrawer.AccountHeaderBuilder;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.interfaces.OnCheckedChangeListener;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.SectionDrawerItem;
+import com.mikepenz.materialdrawer.model.SwitchDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IProfile;
+import com.mikepenz.materialdrawer.model.interfaces.Nameable;
+import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader;
+import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.squareup.picasso.Picasso;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.presenter.BasePresenter;
 import com.zoctan.smarthub.ui.base.BaseActivity;
+import com.zoctan.smarthub.ui.custom.TitleBar;
 import com.zoctan.smarthub.ui.fragment.AboutFragment;
+import com.zoctan.smarthub.ui.fragment.FeedbackFragment;
 import com.zoctan.smarthub.ui.fragment.HubListFragment;
 import com.zoctan.smarthub.ui.fragment.UserDetailFragment;
 import com.zoctan.smarthub.utils.AlerterUtil;
 import com.zoctan.smarthub.utils.NiftyDialog;
 import com.zoctan.smarthub.utils.NiftyDialogUtil;
 
-import java.util.Objects;
-
 import butterknife.BindView;
-import de.hdodenhof.circleimageview.CircleImageView;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
 
 import static com.zoctan.smarthub.App.mSPUtil;
 
-@RuntimePermissions
 public class MainActivity extends BaseActivity {
-    @BindView(R.id.Toolbar_all)
-    Toolbar mToolbar;
-    @BindView(R.id.NavigationView_main)
-    NavigationView mNavigationView;
-    @BindView(R.id.DrawerLayout_main)
-    DrawerLayout mDrawerLayout;
-    private TextView headerUserName;
-    private CircleImageView headerUserAvatar;
-    private final CacheUtils mCacheUtil = CacheUtils.getInstance();
-    // 点击的时间
+    @BindView(R.id.TitleBar_main)
+    TitleBar mTitleBar;
+    // 点击返回键的时间，时间短即退出APP
     private long exitTime = 0;
+    private final int HUB_LIST = 0;
+    private final int USER_CENTER = 1;
+    private final int ABOUT = 2;
+    private final int FEEDBACK = 3;
+    private final int DAY_NIGHT = 4;
+    private final int CLEAR = 5;
+    private final int EXIT = 6;
+    private Drawer drawer;
+    private IProfile profile;//登录用户信息
+    private AccountHeader headerResult;//head头布局
+
+    private final Fragment[] mFragments = new Fragment[4];
+    private int currentFragmentIndex;
 
     @Override
     protected int bindLayout() {
@@ -68,190 +74,241 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    protected void initView() {
-        setSupportActionBar(mToolbar);
-        // 创建侧滑键，并实现打开关/闭监听
-        final ActionBarDrawerToggle mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.main_drawer_open, R.string.main_drawer_close);
-        // 给抽屉Layout绑定切换器监听
-        mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
-        // 自动和actionBar关联, 将开关的图片显示在了action上
-        // 如果不设置，也可以有抽屉的效果，不过是默认的图标
-        mActionBarDrawerToggle.syncState();
-
-        // 设置NavigationView点击事件
-        setupDrawerContent(mNavigationView);
-        // 获取侧滑栏头布局文件
-        final View headerView = mNavigationView.getHeaderView(0);
-        headerUserName = headerView.findViewById(R.id.TextView_user_name);
-        headerUserAvatar = headerView.findViewById(R.id.CircleImageView_user_avatar);
-
+    protected void onCreate(@Nullable final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setProfile();
         // 设置侧滑栏头布局用户信息
-        MainActivityPermissionsDispatcher.setHeaderUserWithPermissionCheck(this);
-        // 设置广播接收
-        setBroadcastReceiver();
-        // 默认显示插座列表
-        mNavigationView.setCheckedItem(R.id.item_hub_list);
-        switch2Hub();
+        setHeadLayout(savedInstanceState);
+        setDrawerLayout(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            currentFragmentIndex = savedInstanceState.getInt("currentFragmentIndex");
+        }
+        mFragments[0] = HubListFragment.newInstance();
+        mFragments[1] = UserDetailFragment.newInstance();
+        mFragments[2] = AboutFragment.newInstance();
+        mFragments[3] = FeedbackFragment.newInstance();
+        FragmentUtils.add(getSupportFragmentManager(), mFragments, R.id.FrameLayout_main_content, currentFragmentIndex);
     }
 
-    private void setBroadcastReceiver() {
-        // 接收来自用户修改广播
-        final IntentFilter mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction("update_user_info_or_avatar");
-        // 动态注册广播
-        registerReceiver(broadcastReceiver, mIntentFilter);
+    @Override
+    protected void initView() {
+        mTitleBar.setCenterText(R.string.app);
+        setSupportActionBar(mTitleBar);
+
+        // 初始化抽屉图片加载器
+        DrawerImageLoader.init(new AbstractDrawerImageLoader() {
+            @Override
+            public void set(final ImageView imageView, final Uri uri, final Drawable placeholder) {
+                Picasso.get().load(uri).placeholder(placeholder).into(imageView);
+            }
+
+            @Override
+            public void cancel(final ImageView imageView) {
+                Picasso.get().cancelRequest(imageView);
+            }
+        });
     }
 
-    // 广播
-    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(final Context context, final Intent intent) {
-            // 修改了用户名或头像都要更新主界面侧滑栏
-            if (Objects.equals(intent.getAction(), "update_user_info_or_avatar")) {
-                setHeaderUser();
+    private void setDrawerLayout(final Bundle savedInstanceState) {
+        // 创建抽屉
+        drawer = new DrawerBuilder()
+                .withActivity(this)
+                .withSavedInstance(savedInstanceState)
+                .withRootView(R.id.DrawerLayout_main)
+                .withAccountHeader(headerResult)
+                .withToolbar(mTitleBar)// 和toolbar关联
+                .withShowDrawerOnFirstLaunch(false) // 默认开启抽屉
+                //.withDisplayBelowStatusBar(true)
+                .withDrawerGravity(Gravity.START) // 设置抽屉打开方向默认从左
+                .withActionBarDrawerToggle(true) // 启用toolbar的ActionBarDrawerToggle动画
+                .addDrawerItems(
+                        setHubItem(),
+                        setUserItem(),
+                        setAboutItem(),
+                        setSectionItem(),
+                        setSwitchDayNight(),
+                        setClearItem(),
+                        setFeedbackItem()
+                )// 给抽屉添加item布局
+                .withSelectedItem(HUB_LIST)
+                .build();
+        // 页脚添加退出按钮
+        drawer.addStickyFooterItem(setExitItem());
+        // 去除阴影
+        drawer.getDrawerLayout().setFitsSystemWindows(false);
+        // 抽屉中item的监听事件
+        drawer.setOnDrawerItemClickListener((view, position, drawerItem) -> {
+            switch ((int) drawerItem.getIdentifier()) {
+                case HUB_LIST:
+                    showCurrentFragment(HUB_LIST);
+                    mTitleBar.setCenterText(R.string.nav_hub);
+                    break;
+                case USER_CENTER:
+                    showCurrentFragment(USER_CENTER);
+                    mTitleBar.setCenterText(R.string.nav_user);
+                    break;
+                case ABOUT:
+                    showCurrentFragment(ABOUT);
+                    mTitleBar.setCenterText(R.string.nav_about);
+                    break;
+                case FEEDBACK:
+                    showCurrentFragment(FEEDBACK);
+                    mTitleBar.setCenterText(R.string.nav_feedback);
+                    break;
+                case CLEAR:
+                    clearApp();
+                    break;
+                case EXIT:
+                    finish();
+                    break;
+            }
+            return false;
+        });
+    }
+
+    /**
+     * 创建登录用户对象
+     */
+    public void setProfile() {
+        profile = new ProfileDrawerItem()
+                .withName(mSPUtil.getString("user_name"))
+                .withEmail(mSPUtil.getString("user_email"))
+                .withIcon(mSPUtil.getString("user_avatar"))
+                .withIdentifier(USER_CENTER);//标识符，当设置监听事件时可以根据这个来区别对象
+    }
+
+    private void setHeadLayout(final Bundle savedInstanceState) {
+        headerResult = new AccountHeaderBuilder()
+                .withActivity(this)
+                .withHeaderBackground(R.color.primary)
+                .withCompactStyle(true) // 横向布局
+                .withTranslucentStatusBar(false) //半透明效果
+                .withSelectionListEnabledForSingleProfile(false) // 只有一个用户时关闭下拉菜单
+                .addProfiles(profile)
+                .withSavedInstance(savedInstanceState)
+                .build();
+    }
+
+    private PrimaryDrawerItem setHubItem() {
+        return new PrimaryDrawerItem()
+                .withName(R.string.nav_hub)
+                .withIcon(R.drawable.ic_hub)
+                .withIdentifier(HUB_LIST)
+                .withSelectable(true);
+    }
+
+    private PrimaryDrawerItem setUserItem() {
+        return new PrimaryDrawerItem()
+                .withName(R.string.nav_user)
+                .withIcon(R.drawable.ic_user_center)
+                .withIdentifier(USER_CENTER)
+                .withSelectable(true);
+    }
+
+    private PrimaryDrawerItem setAboutItem() {
+        return new PrimaryDrawerItem()
+                .withName(R.string.nav_about)
+                .withIcon(R.drawable.ic_about)
+                .withIdentifier(ABOUT)
+                .withSelectable(true);
+    }
+
+    private PrimaryDrawerItem setFeedbackItem() {
+        return new PrimaryDrawerItem()
+                .withName(R.string.nav_feedback)
+                .withIcon(R.drawable.ic_feedback)
+                .withIdentifier(FEEDBACK)
+                .withSelectable(true);
+    }
+
+    private PrimaryDrawerItem setClearItem() {
+        return new PrimaryDrawerItem()
+                .withName(R.string.nav_clear)
+                .withIcon(R.drawable.ic_clear)
+                .withIdentifier(CLEAR)
+                .withSelectable(false);
+    }
+
+    private SectionDrawerItem setSectionItem() {
+        return new SectionDrawerItem()
+                .withName(R.string.nav_other)
+                .withDivider(true)
+                .withSelectable(false)
+                .withIdentifier(-1);
+    }
+
+    private PrimaryDrawerItem setExitItem() {
+        return new PrimaryDrawerItem()
+                .withName(R.string.nav_exit)
+                .withIcon(R.drawable.ic_exit)
+                .withIdentifier(EXIT)
+                .withSelectable(false);
+    }
+
+    private SwitchDrawerItem setSwitchDayNight() {
+        return new SwitchDrawerItem()
+                .withName(R.string.nav_day_night)
+                .withIcon(R.drawable.ic_day_night)
+                .withIdentifier(DAY_NIGHT)
+                .withCheckable(!mSPUtil.getBoolean("day"))
+                .withOnCheckedChangeListener(checkedChangeListener);
+    }
+
+    // 开关item的状态监听
+    private final OnCheckedChangeListener checkedChangeListener = (drawerItem, buttonView, isChecked) -> {
+        if (drawerItem instanceof Nameable) {
+            switch ((int) drawerItem.getIdentifier()) {
+                case DAY_NIGHT:
+                    setDayNightMode(true);
+                    recreate();
+                    break;
             }
         }
     };
 
-    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void setHeaderUser() {
-        // 显示头像
-        Picasso.get().load(mSPUtil.getString("user_avatar")).into(headerUserAvatar);
-        // 显示用户名
-        headerUserName.setText(mSPUtil.getString("user_name"));
-    }
-
-    @Override
-    public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-    }
-
-    // 给用户解释要请求什么权限，为什么需要此权限
-    @OnShowRationale({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void showRationale(final PermissionRequest request) {
+    public void clearApp() {
+        final CacheUtils cacheUtils = CacheUtils.getInstance();
         final NiftyDialog dialog = new NiftyDialogUtil(this)
-                .init(R.string.permission_why,
-                        R.string.permission_storage,
-                        R.drawable.ic_alert,
-                        R.string.all_ensure);
-        dialog
-                .setButton1Click(v -> {
-                    dialog.dismiss();
-                    request.proceed();//继续执行请求
-                })
-                .setButton2Click(v -> {
-                    dialog.dismiss();
-                    request.cancel();//取消执行请求
-                })
-                .show();
-    }
-
-    // 一旦用户拒绝了
-    @OnPermissionDenied({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void permissionDenied() {
-        AlerterUtil.showDanger(this, R.string.permission_denied);
-    }
-
-    // 用户选择的不再询问
-    @OnNeverAskAgain({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void permissionDeniedNeverAsk() {
-        AlerterUtil.showDanger(this, R.string.permission_denied_never_ask);
-    }
-
-    // 设置NavigationView点击事件
-    public void setupDrawerContent(final NavigationView mNavigationView) {
-        mNavigationView.setNavigationItemSelectedListener(menuItem -> {
-            switchNavigation(menuItem.getItemId());
-            if (menuItem.getItemId() != R.id.item_clear_cache
-                    && menuItem.getItemId() != R.id.item_switch_day_or_night) {
-                menuItem.setChecked(true);
-                //MainActivityPermissionsDispatcher.
-                // 关闭侧滑栏
-                mDrawerLayout.closeDrawers();
+                .setIcon(R.drawable.ic_add)
+                .setTitle(R.string.nav_clear)
+                .setMessage("共 " + cacheUtils.getCacheSize() + " ，确定清理吗？")
+                .setButton1Text(R.string.all_ensure);
+        dialog.setButton1Click(v -> {
+            cacheUtils.clear();
+            // 点击“确认”后的操作
+            ToastUtils.showShort("缓存已清理");
+            // 重启APP
+            final Intent intent = getApplicationContext().getPackageManager()
+                    .getLaunchIntentForPackage(getApplicationContext().getPackageName());
+            if (intent != null) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
             }
-            return true;
-        });
+        }).show();
     }
 
-    private void switchNavigation(final int id) {
-        switch (id) {
-            case R.id.item_hub_list:
-                switch2Hub();
-                break;
-            case R.id.item_user_center:
-                switch2User();
-                break;
-            case R.id.item_about_app:
-                switch2About();
-                break;
-            case R.id.item_switch_day_or_night:
-                switch2DayNight();
-                break;
-            case R.id.item_clear_cache:
-                switch2Clear();
-                break;
-        }
+    private void showCurrentFragment(final int index) {
+        FragmentUtils.showHide(currentFragmentIndex = index, mFragments);
     }
 
-    public void switch2User() {
-        replaceFragment(new UserDetailFragment(), "user_detail_frame");
-        mToolbar.setTitle(R.string.nav_user);
-    }
-
-    public void switch2Hub() {
-        replaceFragment(new HubListFragment(), "hub_list_frame");
-        mToolbar.setTitle(R.string.nav_hub);
-    }
-
-    public void switch2Clear() {
-        final NiftyDialog dialog = new NiftyDialogUtil(this)
-                .init(R.string.nav_clear,
-                        "共 " + mCacheUtil.getCacheSize() + " ，确定清理吗？",
-                        R.drawable.ic_clear,
-                        R.string.all_ensure);
-        dialog
-                .setButton1Click(v -> {
-                    mCacheUtil.clear();
-                    // 点击“确认”后的操作
-                    ToastUtils.showShort("缓存已清理");
-                    // 重启APP
-                    final Intent intent = getApplicationContext().getPackageManager()
-                            .getLaunchIntentForPackage(getApplicationContext().getPackageName());
-                    if (intent != null) {
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                    }
-                })
-                .show();
-    }
-
-    public void switch2About() {
-        replaceFragment(new AboutFragment(), "about_frame");
-        mToolbar.setTitle(R.string.nav_about);
-    }
-
-    public void switch2DayNight() {
-        setDayNightMode(true);
-        mNavigationView.setCheckedItem(R.id.item_hub_list);
-        recreate();
-    }
-
-    private void replaceFragment(final Fragment fragment, final String tag) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.FrameLayout_main_content, fragment, tag)
-                // 显示fragment动画
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .addToBackStack("replace")
-                .commit();
-    }
-
-    // 双击退出
     @Override
-    public boolean onKeyDown(final int keyCode, final KeyEvent event) {
-        // 当按下返回键
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
+    public void onSaveInstanceState(Bundle outState, final PersistableBundle outPersistentState) {
+        // 保存抽屉状态
+        outState = drawer.saveInstanceState(outState);
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putInt("currentFragmentIndex", currentFragmentIndex);
+    }
+
+    /**
+     * 双击退出
+     */
+    @Override
+    public void onBackPressed() {
+        // 如果抽屉是打开状态，点击返回键 -> 关闭抽屉
+        if (drawer != null && drawer.isDrawerOpen()) {
+            drawer.closeDrawer();
+        } else {
             // 如果按下的时间超过2秒
             if ((System.currentTimeMillis() - exitTime) > 2000) {
                 AlerterUtil.showWarning(this, R.string.all_exit_app);
@@ -263,15 +320,6 @@ public class MainActivity extends BaseActivity {
                 // 正常退出程序
                 System.exit(0);
             }
-            return false;
         }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // 注销广播
-        unregisterReceiver(broadcastReceiver);
     }
 }

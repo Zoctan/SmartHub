@@ -11,7 +11,7 @@
         <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:collapsedTitleTextAppearance="@color/third_text"
+            app:collapsedTitleTextAppearance="@color/white"
             app:expandedTitleMarginStart="10dp"
             app:expandedTitleTextAppearance="@color/secondary_text"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
@@ -35,7 +35,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="5dp"
                     android:text="@string/app"
-                    android:textColor="@color/third_text" />
+                    android:textColor="@color/white" />
 
                 <TextView
                     android:id="@+id/TextView_about_version"
@@ -44,7 +44,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="5dp"
                     android:text="@string/all_zero"
-                    android:textColor="@color/third_text" />
+                    android:textColor="@color/white" />
             </LinearLayout>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>

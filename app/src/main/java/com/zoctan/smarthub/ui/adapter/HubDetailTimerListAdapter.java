@@ -6,13 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 
+import com.nightonke.jellytogglebutton.JellyToggleButton;
 import com.vansuita.library.Icon;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.model.bean.smart.TimerBean;
+import com.zoctan.smarthub.ui.custom.PopupList;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -42,6 +44,18 @@ public class HubDetailTimerListAdapter extends RecyclerView.Adapter<RecyclerView
             if (timer == null) {
                 return;
             }
+
+            final List<String> popupMenuItemList = new ArrayList<>();
+            popupMenuItemList.add("删除");
+            final PopupList popupList = new PopupList(holder.itemView.getContext());
+            popupList.setIndicatorSize(30, 40);
+            popupList.bind(holder.itemView, popupMenuItemList, new PopupList.PopupListListener() {
+                @Override
+                public void onPopupListClick(final View contextView, final int contextPosition, final int position) {
+                    mOnItemClickListener.onItemClick("delete", holder.itemView, holder.getAdapterPosition());
+                }
+            });
+
             if (timer.getPower() == 1) {
                 Icon.on(((ItemViewHolder) holder).mTvTimerPic).color(R.color.accent).icon(R.drawable.ic_switch).put();
             }
@@ -81,7 +95,7 @@ public class HubDetailTimerListAdapter extends RecyclerView.Adapter<RecyclerView
         @BindView(R.id.ImageView_timer_repeat)
         TextView mTvTimerRepeat;
         @BindView(R.id.Switch_timer_open_close)
-        Switch mSwitchOpenClose;
+        JellyToggleButton mSwitchOpenClose;
 
         ItemViewHolder(final View view) {
             super(view);

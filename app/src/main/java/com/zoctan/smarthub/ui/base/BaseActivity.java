@@ -46,9 +46,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             initImmersionBar();
         }
         mPresenter = bindPresenter();
-        // 初始化数据
-        initData();
-        // view与数据绑定
+        // 初始化view
         initView();
         setDayNightMode(false);
     }
@@ -87,12 +85,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             mPresenter = null;
             System.gc();
         }
-    }
-
-    /**
-     * 页面初始化页面数据
-     */
-    protected void initData() {
     }
 
     /**

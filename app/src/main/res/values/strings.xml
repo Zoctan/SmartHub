@@ -3,20 +3,17 @@
 
     <string name="guide">立即体验</string>
 
-    <string name="tip_add_hub">添加一个「插座」吧~</string>
-
     <string name="msg_loading">请稍等…</string>
 
     <string name="user_register">注 册</string>
     <string name="user_login">登 录</string>
-    <string name="user_register_success">注册成功</string>
-    <string name="user_login_success">登录成功</string>
     <string name="all_update">修 改</string>
     <string name="all_cancel">取 消</string>
     <string name="all_ensure">确 定</string>
 
     <string name="user_detail_info">用户信息</string>
     <string name="user_detail_name">用户名</string>
+    <string name="user_detail_email">邮箱</string>
     <string name="user_detail_phone">手机号</string>
     <string name="user_detail_logout">登出</string>
     <string name="user_detail_new_avatar">修改头像</string>
@@ -29,23 +26,26 @@
     <string name="user_hint_input_password_again">请再次输入密码</string>
     <string name="user_hint_input_username">请输入用户名</string>
     <string name="user_hint_input_phone">请输入手机号</string>
-    <string name="msg_phone_error">请输入手机号</string>
 
     <string name="main_drawer_open">open</string>
     <string name="main_drawer_close">close</string>
 
     <string name="permission_denied">权限已拒绝</string>
     <string name="permission_denied_never_ask">权限已拒绝，使用过程若出现问题，请前往「设置」打开APP的权限</string>
-    <string name="permission_why">请求权限</string>
-    <string name="permission_camera">扫描需要相机权限</string>
-    <string name="permission_storage">APP运行过程中需要缓存部分信息在本地，需要读写存储卡两个权限</string>
+    <string name="permission_request">请求权限</string>
+    <string name="permission_need">APP运行过程中需要缓存部分信息在本地，需要读写存储卡，扫描需要相机权限</string>
 
-    <string name="nav_hub">插座列表</string>
+    <string name="nav_hub">我的插座</string>
     <string name="nav_user">用户中心</string>
     <string name="nav_about">关于应用</string>
+    <string name="nav_feedback">建议/反馈</string>
     <string name="nav_other">其他</string>
     <string name="nav_day_night">切换日夜间</string>
     <string name="nav_clear">清除缓存</string>
+    <string name="nav_exit">退出</string>
+
+    <string name="feedback_msg">感谢你的建议/反馈！</string>
+    <string name="feedback_content">建议/反馈内容</string>
 
     <string name="all_exit_app">再按一次退出程序</string>
     <string name="all_edit">编辑</string>
@@ -57,7 +57,6 @@
     <string name="hub_hint_name">插座名字</string>
     <string name="hub_is_connected">在线</string>
     <string name="hub_not_connected">离线</string>
-    <string name="hub_msg_not_connected">插座已离线</string>
     <string name="hub_is_electric">已通电</string>
     <string name="hub_not_electric">已断电</string>
 
@@ -92,8 +91,8 @@
     <string name="hub_detail_timer_setting">定时设置</string>
     <string name="timer_hint_name">请输入定时器名字</string>
 
-    <string name="qr_smart_hub">扫描智能插座</string>
-    <string name="qr_code_scan">二维码/条形码扫描</string>
+    <string name="qr_smart_hub">智能插座扫描</string>
+    <string name="qr_msg">请将二维码/条形码置于框内</string>
 
     <string name="hub_detail_now_voltage">电压(V)</string>
     <string name="hub_detail_now_ampere">电流(A)</string>
@@ -108,7 +107,7 @@
     <string name="about_app_function">功能介绍</string>
     <string name="about_app_function_introduction">
         1.遵循 Material Design 风格\n
-        2.兼容 6.0 ＜= x ＜ 7.0 及各种分辨率\n
+        2.兼容 6.0 ＜= x ＜= 8.0 及各种分辨率\n
         3.支持扫码添加插座\n
         4.支持对插座的状态、日用电量查看、设置定时开关\n
         5.多时间段用电量\n
@@ -117,9 +116,7 @@
     </string>
     <string name="about_library">用到的开源库</string>
     <string name="about_library_introduction">
-        gson\n
-        okhttp3\n
-        glide\n
+        picasso\n
         circleimageview\n
         MPAndroidChart\n
         qiniu-android-sdk\n

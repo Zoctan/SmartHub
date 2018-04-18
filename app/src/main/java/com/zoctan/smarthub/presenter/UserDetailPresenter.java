@@ -1,5 +1,8 @@
 package com.zoctan.smarthub.presenter;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+
 import com.blankj.utilcode.util.LogUtils;
 import com.qiniu.android.storage.UploadManager;
 import com.qiniu.android.storage.UploadOptions;
@@ -45,6 +48,7 @@ public class UserDetailPresenter extends BasePresenter {
                 successAction = response -> {
                     mSPUtil.put("user_name", user.getUsername());
                     mSPUtil.put("user_phone", user.getPhone());
+                    mSPUtil.put("user_email", user.getEmail());
                 };
                 break;
             case "list":
@@ -54,6 +58,7 @@ public class UserDetailPresenter extends BasePresenter {
                     mSPUtil.put("user_id", userBean.getId());
                     mSPUtil.put("user_avatar", userBean.getAvatar());
                     mSPUtil.put("user_phone", userBean.getPhone());
+                    mSPUtil.put("user_email", userBean.getEmail());
                     mSPUtil.put("user_name", userBean.getUsername());
                     mSPUtil.put("user_token", userBean.getToken());
                 };
@@ -67,6 +72,7 @@ public class UserDetailPresenter extends BasePresenter {
                 addDisposable(d);
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onNext(final SmartResponseBean response) {
                 if (response.getError() > 0) {
@@ -74,6 +80,7 @@ public class UserDetailPresenter extends BasePresenter {
                 } else {
                     view.showSuccessMsg(response.getMsg());
                     successAction.accept(response);
+                    crudUser(null, "list");
                 }
             }
 
@@ -137,6 +144,7 @@ public class UserDetailPresenter extends BasePresenter {
                                                         view.showSuccessMsg(response.getMsg());
                                                         final String avatar = JsonUtil.deserialize(response.getResult(), String.class);
                                                         mSPUtil.put("user_avatar", avatar);
+                                                        crudUser(null, "list");
                                                     }
                                                 }
 

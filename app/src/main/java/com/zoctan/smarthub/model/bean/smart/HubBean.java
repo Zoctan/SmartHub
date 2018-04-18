@@ -8,6 +8,18 @@ public class HubBean {
     private Boolean is_electric;
     private String eigenvalue;
 
+    public HubBean() {
+    }
+
+    private HubBean(final Builder builder) {
+        setOnenet_id(builder.onenet_id);
+        setName(builder.name);
+        setMac(builder.mac);
+        setConnected(builder.connected);
+        setIs_electric(builder.is_electric);
+        setEigenvalue(builder.eigenvalue);
+    }
+
     public String getOnenet_id() {
         return onenet_id;
     }
@@ -54,5 +66,51 @@ public class HubBean {
 
     public void setEigenvalue(final String eigenvalue) {
         this.eigenvalue = eigenvalue;
+    }
+
+    public static final class Builder {
+        private String onenet_id;
+        private String name;
+        private String mac;
+        private Boolean connected;
+        private Boolean is_electric;
+        private String eigenvalue;
+
+        public Builder() {
+        }
+
+        public Builder onenet_id(final String val) {
+            onenet_id = val;
+            return this;
+        }
+
+        public Builder name(final String val) {
+            name = val;
+            return this;
+        }
+
+        public Builder mac(final String val) {
+            mac = val;
+            return this;
+        }
+
+        public Builder connected(final Boolean val) {
+            connected = val;
+            return this;
+        }
+
+        public Builder is_electric(final Boolean val) {
+            is_electric = val;
+            return this;
+        }
+
+        public Builder eigenvalue(final String val) {
+            eigenvalue = val;
+            return this;
+        }
+
+        public HubBean build() {
+            return new HubBean(this);
+        }
     }
 }

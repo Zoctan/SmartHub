@@ -8,14 +8,11 @@
     android:orientation="vertical"
     tools:context=".ui.activity.HubDetailActivity">
 
-    <android.support.design.widget.AppBarLayout
+    <com.zoctan.smarthub.ui.custom.TitleBar
+        android:id="@+id/TitleBar_hub_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
-
-        <include layout="@layout/layout_toolbar" />
-
-    </android.support.design.widget.AppBarLayout>
+        android:background="@color/primary" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/ViewPager_hub_detail"
@@ -31,11 +28,11 @@
         android:background="@color/primary"
         app:tl_iconHeight="23dp"
         app:tl_iconWidth="25dp"
-        app:tl_indicator_color="@color/transparent"
-        app:tl_indicator_height="0dp"
+        app:tl_indicator_color="@color/accent"
+        app:tl_indicator_height="2dp"
         app:tl_textSelectColor="@color/detail_icon_select"
-        app:tl_textUnselectColor="@color/detail_icon_unselect"
+        app:tl_textUnselectColor="@color/detail_icon_select"
         app:tl_textsize="12sp"
         app:tl_tab_space_equal="true"
-        app:tl_underline_height="0dp" />
+        app:tl_underline_height="2dp" />
 </LinearLayout>

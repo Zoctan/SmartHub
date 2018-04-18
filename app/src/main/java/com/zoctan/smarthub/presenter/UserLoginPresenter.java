@@ -13,6 +13,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.zoctan.smarthub.App.SMART_TOKEN;
 import static com.zoctan.smarthub.App.mSPUtil;
 
 public class UserLoginPresenter extends BasePresenter {
@@ -53,15 +54,17 @@ public class UserLoginPresenter extends BasePresenter {
                         if (response.getError() > 0) {
                             view.showFailedMsg(response.getMsg());
                         } else {
-                            view.showSuccessMsg(response.getMsg());
                             final UserBean user = JsonUtil.deserialize(response.getResult(), UserBean.class);
                             // 将用户信息存在本地
                             mSPUtil.put("login", true);
                             mSPUtil.put("user_id", user.getId());
                             mSPUtil.put("user_avatar", user.getAvatar());
                             mSPUtil.put("user_phone", user.getPhone());
+                            mSPUtil.put("user_email", user.getEmail());
                             mSPUtil.put("user_name", user.getUsername());
                             mSPUtil.put("user_token", user.getToken());
+                            SMART_TOKEN = user.getToken();
+                            view.showSuccessMsg(response.getMsg());
                         }
                     }
 

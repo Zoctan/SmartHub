@@ -1,42 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".zxing.activity.CaptureActivity">
+    tools:context=".ui.activity.ScannerActivity">
 
-    <android.support.design.widget.AppBarLayout
+    <com.zoctan.smarthub.ui.custom.TitleBar
+        android:id="@+id/TitleBar_scanner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        android:theme="@style/AppTheme" />
 
-        <include layout="@layout/layout_toolbar" />
-
-    </android.support.design.widget.AppBarLayout>
-    <FrameLayout
+    <com.journeyapps.barcodescanner.DecoratedBarcodeView
+        android:id="@+id/DecoratedBarcodeView_scanner"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:zxing_framing_rect_height="200dp"
+        app:zxing_framing_rect_width="200dp"
+        app:zxing_preview_scaling_strategy="centerCrop"
+        app:zxing_scanner_layout="@layout/scanner"
+        app:zxing_use_texture_view="true" />
 
-        <SurfaceView
-            android:id="@+id/SurfaceView_scanner"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:background="@android:color/transparent" />
-
-        <com.zoctan.smarthub.zxing.view.ViewfinderView
-            android:id="@+id/ViewfinderView_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:corner_color="@color/primary"
-            app:frame_color="@color/divider"
-            app:label_text="@string/qr_code_scan"
-            app:label_text_color="@color/third_text"
-            app:laser_color="@color/yellow"
-            app:mask_color="@color/half_transparent"
-            app:result_color="@color/primary_text"
-            app:result_point_color="@color/yellow" />
-    </FrameLayout>
-
-</LinearLayout>
+    <ImageView
+        android:id="@+id/ImageView_torch"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="80dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_torch_off"
+        android:tint="@color/detail_icon_unselect"
+        tools:ignore="ContentDescription" />
+</FrameLayout>

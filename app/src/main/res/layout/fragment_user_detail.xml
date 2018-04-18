@@ -159,7 +159,7 @@
         app:fabBackgroundTint="@color/primary"
         app:fabGravity="bottom_end"
         app:fabMenu="@menu/menu_user_detail"
-        app:miniFabBackgroundTint="@color/icon"
+        app:miniFabBackgroundTint="@color/white"
         app:miniFabDrawableTint="@color/primary"
         app:miniFabTitleTextColor="@color/primary_text" />
 

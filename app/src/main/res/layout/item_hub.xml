@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="180dp"
-    android:layout_marginStart="5dp"
     android:layout_marginEnd="5dp"
+    android:layout_marginStart="5dp"
     android:clickable="true"
     android:focusable="true"
     app:cardCornerRadius="12dp"
@@ -37,22 +37,34 @@
             android:paddingRight="18dp"
             android:paddingTop="10dp"
             android:text="@string/all_zero"
-            android:textColor="@color/third_text"
+            android:textColor="@color/white"
             android:textSize="14sp" />
 
-        <com.kyleduo.switchbutton.SwitchButton
+        <com.nightonke.jellytogglebutton.JellyToggleButton
             android:id="@+id/Switch_hub"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@id/ImageView_hub_room"
-            android:paddingEnd="18dp"
-            android:paddingStart="18dp"
-            android:paddingTop="18dp"
-            android:textSize="16sp"
-            app:kswTextAdjust="-2dp"
-            app:kswTextExtra="8dp"
-            app:kswTextOff="断电"
-            app:kswTextOn="通电" />
+            android:layout_marginEnd="18dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="18dp"
+            app:jtbDraggable="false"
+            app:jtbDuration="500"
+            app:jtbLeftBackgroundColor="@color/half_transparent"
+            app:jtbLeftText="断电"
+            app:jtbLeftTextColor="@color/white"
+            app:jtbLeftTextSize="12sp"
+            app:jtbLeftThumbColor="@color/danger"
+            app:jtbRightBackgroundColor="@color/half_transparent"
+            app:jtbRightText="通电"
+            app:jtbRightTextColor="@color/white"
+            app:jtbRightTextSize="12sp"
+            app:jtbRightThumbColor="@color/accent"
+            app:jtbTextMarginBottom="1dp"
+            app:jtbTextMarginCenter="9dp"
+            app:jtbTextMarginLeft="8dp"
+            app:jtbTextMarginRight="8dp"
+            app:jtbTextMarginTop="1dp" />
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

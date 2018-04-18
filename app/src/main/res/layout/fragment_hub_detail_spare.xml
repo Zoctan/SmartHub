@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <GridLayout
-        android:layout_marginTop="5dp"
         android:id="@+id/GridLayout_hub_detail_spare"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:columnCount="3">
 
         <GridLayout
@@ -26,6 +26,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="0"
+                android:layout_gravity="center"
                 android:layout_marginStart="12dp"
                 android:layout_row="0"
                 android:text="@string/hub_detail_spare_electrical_degree" />
@@ -45,12 +46,11 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:layout_column="1"
-                android:layout_gravity="center|end"
                 android:layout_marginEnd="24dp"
                 android:layout_row="0"
                 android:layout_rowSpan="2"
-                android:tint="@color/orange"
                 android:src="@drawable/ic_electric"
+                android:tint="@color/orange"
                 tools:ignore="ContentDescription" />
         </GridLayout>
 
@@ -74,6 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="0"
+                android:layout_gravity="center"
                 android:layout_marginStart="12dp"
                 android:layout_row="0"
                 android:text="@string/hub_detail_spare_electrical_bill" />
@@ -93,12 +94,11 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:layout_column="1"
-                android:layout_gravity="center|end"
                 android:layout_marginEnd="24dp"
                 android:layout_row="0"
                 android:layout_rowSpan="2"
-                android:tint="@color/danger"
                 android:src="@drawable/ic_electricity_bill"
+                android:tint="@color/danger"
                 tools:ignore="ContentDescription" />
         </GridLayout>
     </GridLayout>
@@ -125,7 +125,7 @@
             android:layout_centerInParent="true"
             android:layout_marginBottom="24dp"
             android:visibility="gone"
-            app:z_color="@color/icon"
+            app:z_color="@color/white"
             app:z_type="DoubleCircleBuilder" />
     </RelativeLayout>
 </LinearLayout>

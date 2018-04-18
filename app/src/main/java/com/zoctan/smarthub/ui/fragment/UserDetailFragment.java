@@ -1,5 +1,6 @@
 package com.zoctan.smarthub.ui.fragment;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -11,21 +12,24 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.CacheUtils;
+import com.blankj.utilcode.util.FragmentUtils;
 import com.blankj.utilcode.util.ImageUtils;
+import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.PermissionUtils;
 import com.blankj.utilcode.util.RegexUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.squareup.picasso.Picasso;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.model.bean.smart.UserBean;
 import com.zoctan.smarthub.presenter.BasePresenter;
 import com.zoctan.smarthub.presenter.UserDetailPresenter;
 import com.zoctan.smarthub.ui.base.BaseFragment;
+import com.zoctan.smarthub.ui.custom.MyTextWatcher;
 import com.zoctan.smarthub.utils.AlerterUtil;
 import com.zoctan.smarthub.utils.NiftyDialog;
 import com.zoctan.smarthub.utils.NiftyDialogUtil;
@@ -40,7 +44,7 @@ import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
 import static android.app.Activity.RESULT_OK;
 
-public class UserDetailFragment extends BaseFragment {
+public class UserDetailFragment extends BaseFragment implements FragmentUtils.OnBackClickListener {
     @BindView(R.id.CircleImageView_user_avatar)
     CircleImageView mCircleImageView;
     @BindView(R.id.TextView_user_name)
@@ -56,6 +60,13 @@ public class UserDetailFragment extends BaseFragment {
     private static final int CHOOSE_PICTURE = 0;
     private static final int TAKE_PICTURE = 1;
     private static final int CROP_SMALL_PICTURE = 2;
+
+    public static UserDetailFragment newInstance() {
+        final Bundle args = new Bundle();
+        final UserDetailFragment fragment = new UserDetailFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     protected int bindLayout() {
@@ -81,6 +92,11 @@ public class UserDetailFragment extends BaseFragment {
         final StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         builder.detectFileUriExposure();
+    }
+
+    @Override
+    public boolean onBackClick() {
+        return false;
     }
 
     private class MenuListener extends SimpleMenuListenerAdapter {
@@ -122,6 +138,11 @@ public class UserDetailFragment extends BaseFragment {
                     break;
                 // 拍照
                 case TAKE_PICTURE:
+                    // 先检查有没有相机权限
+                    if (!PermissionUtils.isGranted(Manifest.permission.CAMERA)) {
+                        this.showFailedMsg("没有相机权限");
+                        return;
+                    }
                     final Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                     startActivityForResult(openCameraIntent, TAKE_PICTURE);
@@ -134,7 +155,7 @@ public class UserDetailFragment extends BaseFragment {
     // 裁剪图片
     public void startPhotoZoom(final Uri uri) {
         if (uri == null) {
-            AlerterUtil.showDanger(getHoldingActivity(), "图片路径不存在");
+            this.showFailedMsg("图片路径不存在");
             return;
         }
         try {
@@ -152,8 +173,8 @@ public class UserDetailFragment extends BaseFragment {
             intent.putExtra("return-data", true);
             startActivityForResult(intent, CROP_SMALL_PICTURE);
         } catch (final ActivityNotFoundException e) {
-            e.printStackTrace();
-            AlerterUtil.showDanger(getHoldingActivity(), "设备不支持裁剪行为");
+            LogUtils.e(e.getMessage());
+            this.showFailedMsg("设备不支持裁剪行为");
         }
     }
 
@@ -196,47 +217,46 @@ public class UserDetailFragment extends BaseFragment {
     public void showUpdateInfoDialog() {
         @SuppressLint("InflateParams") final View view = this.getLayoutInflater().inflate(R.layout.dialog_new_info, null);
         final TextInputEditText[] mEtUserInfo = {view.findViewById(R.id.EditText_user_username), view.findViewById(R.id.EditText_user_phone)};
-        mEtUserInfo[0].setText(mSPUtil.getString("user_name"));
-        mEtUserInfo[1].setText(mSPUtil.getString("user_phone"));
+        mEtUserInfo[0].setText(mTvUserName.getText());
+        mEtUserInfo[1].setText(mTvUserPhone.getText());
         mEtUserInfo[0].setSelection(mEtUserInfo[0].getText().length());
-        final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
-                .init(R.string.user_detail_new_info,
-                        null,
-                        R.drawable.ic_update,
-                        R.string.all_update);
-        dialog
-                .setCustomView(view, getHoldingActivity())
-                .setButton1Click(v -> {
-                    if (mEtUserInfo[0].getText().length() > 0
-                            && mEtUserInfo[1].getText().length() > 0) {
-                        final UserBean user = new UserBean();
-                        user.setUsername(mEtUserInfo[0].getText().toString());
-                        user.setPhone(mEtUserInfo[1].getText().toString());
-                        if (RegexUtils.isMobileSimple(user.getPhone())) {
-                            getHoldingActivity().hideSoftKeyBoard(mEtUserInfo[0], getContext());
-                            mPresenter.crudUser(user, "updateInfo");
-                            dialog.dismiss();
-                        } else {
-                            AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_phone_error);
-                        }
-                    }
-                })
-                .show();
+
+        final NiftyDialog dialog = new NiftyDialogUtil()
+                .setView(view, getHoldingActivity())
+                .setIcon(R.drawable.ic_update)
+                .setTitle(R.string.user_detail_new_info)
+                .setMessage(null)
+                .setButton1Text(R.string.all_update);
+        dialog.setButton1Click(v -> {
+            String name = mEtUserInfo[0].getText().toString();
+            String phone = mEtUserInfo[1].getText().toString();
+            if (StringUtils.isEmpty(name)) {
+                this.showFailedMsg("请输入用户名");
+                return;
+            }
+            if (StringUtils.isEmpty(phone)) {
+                this.showFailedMsg("请输入手机号");
+                return;
+            }
+            if (!RegexUtils.isMobileSimple(phone)) {
+                this.showFailedMsg("手机号格式不正确");
+            } else {
+                getHoldingActivity().hideSoftKeyBoard(mEtUserInfo[0], getContext());
+                final UserBean user = new UserBean.Builder()
+                        .username(name)
+                        .phone(phone)
+                        .build();
+                mPresenter.crudUser(user, "updateInfo");
+                dialog.dismiss();
+            }
+        }).show();
     }
 
     public void showModifyPasswordDialog() {
         @SuppressLint("InflateParams") final View view = this.getLayoutInflater().inflate(R.layout.dialog_new_password, null);
         final TextInputLayout mLayoutUserPassword2 = view.findViewById(R.id.TextInputLayout_user_password2);
         final TextInputEditText[] mEtPassword = {view.findViewById(R.id.EditText_user_password), view.findViewById(R.id.EditText_user_password2)};
-        mEtPassword[1].addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(final CharSequence charSequence, final int i, final int i1, final int i2) {
-            }
-
-            @Override
-            public void afterTextChanged(final Editable editable) {
-            }
-
+        mEtPassword[1].addTextChangedListener(new MyTextWatcher() {
             @Override
             public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
                 if (!mEtPassword[0].getText().toString().equals(mEtPassword[1].getText().toString())) {
@@ -247,27 +267,27 @@ public class UserDetailFragment extends BaseFragment {
                 }
             }
         });
-        final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
-                .init(R.string.user_detail_new_password,
-                        null,
-                        R.drawable.ic_update,
-                        R.string.all_update);
-        dialog
-                .setCustomView(view, getHoldingActivity())
-                .setButton1Click(v -> {
-                    if (mEtPassword[0].getText().length() > 0
-                            && mEtPassword[1].getText().length() > 0
-                            && mEtPassword[0].getError() == null
-                            && mEtPassword[1].getError() == null) {
-                        getHoldingActivity().hideSoftKeyBoard(mEtPassword[0], getContext());
-                        final String password = mEtPassword[0].getText().toString();
-                        final UserBean user = new UserBean();
-                        user.setPassword(password);
-                        mPresenter.crudUser(user, "updatePassword");
-                        dialog.dismiss();
-                    }
-                })
-                .show();
+        final NiftyDialog dialog = new NiftyDialogUtil()
+                .setView(view, getHoldingActivity())
+                .setIcon(R.drawable.ic_update)
+                .setTitle(R.string.user_detail_new_password)
+                .setMessage(null)
+                .setButton1Text(R.string.all_update);
+        dialog.setButton1Click(v -> {
+            String password1 = mEtPassword[0].getText().toString();
+            String password2 = mEtPassword[1].getText().toString();
+            if (StringUtils.isEmpty(password1) || StringUtils.isEmpty(password2)) {
+                this.showFailedMsg("密码不能为空");
+                return;
+            }
+            if (mLayoutUserPassword2.getError() == null) {
+                getHoldingActivity().hideSoftKeyBoard(mEtPassword[0], getContext());
+                final UserBean userBean = new UserBean();
+                userBean.setPassword(password1);
+                mPresenter.crudUser(userBean, "updatePassword");
+                dialog.dismiss();
+            }
+        }).show();
     }
 
     /**
@@ -275,7 +295,7 @@ public class UserDetailFragment extends BaseFragment {
      */
     private void userLogout() {
         mSPUtil.clear();
-        mSPUtil.put("first_open", true);
+        mSPUtil.put("not_first_open", true);
         CacheUtils.getInstance().clear();
         // 重启APP
         final Intent intent = getHoldingActivity()
@@ -297,7 +317,6 @@ public class UserDetailFragment extends BaseFragment {
 
     public void showSuccessMsg(final String msg) {
         AlerterUtil.showInfo(getHoldingActivity(), msg);
-        mPresenter.crudUser(null, "list");
     }
 
     public void showFailedMsg(final String msg) {

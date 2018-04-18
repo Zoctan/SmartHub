@@ -8,11 +8,10 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.TimePicker;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.model.bean.smart.HubBean;
@@ -21,6 +20,7 @@ import com.zoctan.smarthub.presenter.BasePresenter;
 import com.zoctan.smarthub.presenter.HubDetailTimerPresenter;
 import com.zoctan.smarthub.ui.adapter.HubDetailTimerListAdapter;
 import com.zoctan.smarthub.ui.base.BaseFragment;
+import com.zoctan.smarthub.ui.custom.MyTextWatcher;
 import com.zoctan.smarthub.utils.AlerterUtil;
 import com.zoctan.smarthub.utils.NiftyDialog;
 import com.zoctan.smarthub.utils.NiftyDialogUtil;
@@ -133,17 +133,12 @@ public class HubDetailTimerFragment extends BaseFragment {
 
     private void showTimerDialog(final TimerBean timer, final String action) {
         @SuppressLint("InflateParams") final View view = getLayoutInflater().inflate(R.layout.dialog_timer, null);
-
         final TextInputEditText mEtTimerName = view.findViewById(R.id.EditText_timer_name);
         final TextInputLayout mLayoutTimerName = view.findViewById(R.id.TextInputLayout_timer_name);
 
         mEtTimerName.setText(timer.getName());
         mEtTimerName.setSelection(mEtTimerName.getText().length());
-        mEtTimerName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(final CharSequence charSequence, final int i, final int i1, final int i2) {
-            }
-
+        mEtTimerName.addTextChangedListener(new MyTextWatcher() {
             @Override
             public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
                 if (s.length() > 12) {
@@ -152,10 +147,6 @@ public class HubDetailTimerFragment extends BaseFragment {
                 } else {
                     mEtTimerName.setError(null);
                 }
-            }
-
-            @Override
-            public void afterTextChanged(final Editable editable) {
             }
         });
         // 下拉菜单
@@ -190,30 +181,32 @@ public class HubDetailTimerFragment extends BaseFragment {
             hour = calendar.get(Calendar.HOUR_OF_DAY);
             minute = Calendar.MINUTE;
         }
-        mTimePicker.setHour(hour);
-        mTimePicker.setMinute(minute);
+        mTimePicker.setCurrentHour(hour);
+        mTimePicker.setCurrentMinute(minute);
 
-        final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
-                .init(R.string.hub_detail_timer_setting,
-                        null,
-                        R.drawable.ic_edit,
-                        R.string.all_ensure);
-        dialog
-                .setCustomView(view, getHoldingActivity())
-                .setButton1Click(v -> {
-                    if (mEtTimerName.getText().length() > 0
-                            && mLayoutTimerName.getError() == null) {
-                        getHoldingActivity().hideSoftKeyBoard(mEtTimerName, getContext());
-                        // 补零
-                        final String hour1 = String.format(Locale.CHINA, "%02d", mTimePicker.getHour());
-                        final String minute1 = String.format(Locale.CHINA, "%02d", mTimePicker.getMinute());
-                        timer.setTime(String.format("%s:%s", hour1, minute1));
-                        timer.setName(mEtTimerName.getText().toString());
-                        mPresenter.crudTimer(timer, action);
-                        dialog.dismiss();
-                    }
-                })
-                .show();
+        final NiftyDialog dialog = new NiftyDialogUtil()
+                .setView(view, getHoldingActivity())
+                .setIcon(R.drawable.ic_edit)
+                .setTitle(R.string.hub_detail_timer_setting)
+                .setMessage(null)
+                .setButton1Text(R.string.all_ensure);
+        dialog.setButton1Click(v -> {
+            String name = mEtTimerName.getText().toString();
+            if (StringUtils.isEmpty(name)) {
+                this.showFailedMsg("定时器名称不能为空");
+                return;
+            }
+            if (mLayoutTimerName.getError() == null) {
+                getHoldingActivity().hideSoftKeyBoard(mEtTimerName, getContext());
+                // 补零
+                final String hour1 = String.format(Locale.CHINA, "%02d", mTimePicker.getCurrentHour());
+                final String minute1 = String.format(Locale.CHINA, "%02d", mTimePicker.getCurrentMinute());
+                timer.setTime(String.format("%s:%s", hour1, minute1));
+                timer.setName(name);
+                mPresenter.crudTimer(timer, action);
+                dialog.dismiss();
+            }
+        }).show();
     }
 
     public void refreshTimerList() {
@@ -242,7 +235,6 @@ public class HubDetailTimerFragment extends BaseFragment {
 
     public void showSuccessMsg(final String msg) {
         AlerterUtil.showInfo(getHoldingActivity(), msg);
-        refreshTimerList();
     }
 
     public void showFailedMsg(final String msg) {

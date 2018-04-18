@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/primary"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/primary">
 
     <RelativeLayout
         android:id="@+id/RelativeLayout_hub_detail_now_appliances"
@@ -19,7 +19,7 @@
             android:layout_marginBottom="12dp"
             android:gravity="center"
             android:text="@string/hub_detail_now_current_electrical_appliances"
-            android:textColor="@color/third_text" />
+            android:textColor="@color/white" />
 
         <ImageView
             android:id="@+id/ImageView_hub_detail_now_appliances"
@@ -38,7 +38,7 @@
             android:layout_marginTop="16dp"
             android:gravity="center"
             android:text="@string/find_device"
-            android:textColor="@color/third_text" />
+            android:textColor="@color/white" />
 
         <com.zyao89.view.zloading.ZLoadingView
             android:id="@+id/ZLoadingView_hub_detail_now"
@@ -47,7 +47,7 @@
             android:layout_below="@+id/TextView_hub_detail_now_appliances_name"
             android:layout_centerHorizontal="true"
             android:visibility="gone"
-            app:z_color="@color/icon"
+            app:z_color="@color/white"
             app:z_type="DoubleCircleBuilder" />
 
         <io.github.yavski.fabspeeddial.FabSpeedDial
@@ -60,207 +60,50 @@
             app:fabBackgroundTint="@color/primary"
             app:fabGravity="top_end"
             app:fabMenu="@menu/menu_hub_detail"
-            app:miniFabBackgroundTint="@color/icon"
+            app:miniFabBackgroundTint="@color/white"
             app:miniFabDrawableTint="@color/primary"
             app:miniFabTitleTextColor="@color/primary_text" />
     </RelativeLayout>
 
-    <GridLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/inverse_bg"
-        android:paddingTop="14dp"
-        android:columnCount="3"
-        android:rowCount="2">
+        android:layout_height="70dp"
+        android:orientation="horizontal">
 
-        <GridLayout
+        <me.itangqi.waveloadingview.WaveLoadingView
+            android:id="@+id/WaveLoadingView_V"
             android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_column="0"
-            android:layout_columnWeight="1"
-            android:layout_row="0"
-            android:columnCount="2"
-            android:padding="12dp"
-            android:rowCount="2">
+            android:layout_height="wrap_content"
+            app:wlv_borderColor="@color/white"
+            app:wlv_borderWidth="3dp"
+            app:wlv_progressValue="40"
+            app:wlv_round_rectangle="true"
+            app:wlv_shapeType="circle"
+            app:wlv_titleCenter="Center Title"
+            app:wlv_titleCenterColor="@color/white"
+            app:wlv_titleCenterSize="24sp"
+            app:wlv_titleCenterStrokeColor="@android:color/holo_blue_dark"
+            app:wlv_titleCenterStrokeWidth="3dp"
+            app:wlv_triangle_direction="north"
+            app:wlv_waveAmplitude="70"
+            app:wlv_waveColor="@color/white" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="0"
-                android:layout_marginStart="12dp"
-                android:layout_row="0"
-                android:textColor="@color/primary_text"
-                android:text="@string/hub_detail_now_voltage" />
-
-            <TextView
-                android:id="@+id/TextView_hub_detail_now_voltage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="0"
-                android:layout_gravity="center"
-                android:layout_marginStart="12dp"
-                android:layout_row="1"
-                android:text="@string/all_zero"
-                android:textColor="@color/primary_text" />
-
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_column="1"
-                android:layout_gravity="center|end"
-                android:layout_marginEnd="24dp"
-                android:layout_row="0"
-                android:layout_rowSpan="2"
-                android:tint="@color/orange"
-                android:src="@drawable/ic_v"
-                tools:ignore="ContentDescription" />
-        </GridLayout>
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="60dp"
-            android:layout_row="0"
-            android:layout_column="1"
-            android:background="@color/primary" />
-
-        <GridLayout
+        <me.itangqi.waveloadingview.WaveLoadingView
+            android:id="@+id/WaveLoadingView_I"
             android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_column="2"
-            android:layout_columnWeight="1"
-            android:layout_row="0"
-            android:columnCount="2"
-            android:padding="12dp"
-            android:rowCount="2">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="0"
-                android:layout_marginStart="12dp"
-                android:layout_row="0"
-                android:textColor="@color/primary_text"
-                android:text="@string/hub_detail_now_ampere" />
-
-            <TextView
-                android:id="@+id/TextView_hub_detail_now_ampere"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="0"
-                android:layout_gravity="center"
-                android:layout_marginStart="12dp"
-                android:layout_row="1"
-                android:text="@string/all_zero"
-                android:textColor="@color/primary_text" />
-
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_column="1"
-                android:layout_gravity="center|end"
-                android:layout_marginEnd="24dp"
-                android:layout_row="0"
-                android:layout_rowSpan="2"
-                android:tint="@color/orange"
-                android:src="@drawable/ic_i"
-                tools:ignore="ContentDescription" />
-        </GridLayout>
-
-        <GridLayout
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_column="0"
-            android:layout_columnWeight="1"
-            android:layout_row="1"
-            android:columnCount="2"
-            android:padding="12dp"
-            android:rowCount="2">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="0"
-                android:layout_marginStart="12dp"
-                android:layout_row="0"
-                android:textColor="@color/primary_text"
-                android:text="@string/hub_detail_now_power_factor" />
-
-            <TextView
-                android:id="@+id/TextView_hub_detail_now_power_factor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="0"
-                android:layout_gravity="center"
-                android:layout_marginStart="12dp"
-                android:layout_row="1"
-                android:text="@string/all_zero"
-                android:textColor="@color/primary_text" />
-
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_column="1"
-                android:layout_gravity="center|end"
-                android:layout_marginEnd="24dp"
-                android:layout_row="0"
-                android:layout_rowSpan="2"
-                android:tint="@color/orange"
-                android:src="@drawable/ic_cos"
-                tools:ignore="ContentDescription" />
-        </GridLayout>
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="60dp"
-            android:layout_row="1"
-            android:layout_column="1"
-            android:background="@color/primary" />
-
-        <GridLayout
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_column="2"
-            android:layout_columnWeight="1"
-            android:layout_row="1"
-            android:columnCount="2"
-            android:padding="12dp"
-            android:layout_marginBottom="8dp"
-            android:rowCount="2">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="0"
-                android:layout_marginStart="12dp"
-                android:layout_row="0"
-                android:textColor="@color/primary_text"
-                android:text="@string/hub_detail_now_power" />
-
-            <TextView
-                android:id="@+id/TextView_hub_detail_now_power"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="0"
-                android:layout_gravity="center"
-                android:layout_marginStart="12dp"
-                android:layout_row="1"
-                android:text="@string/all_zero"
-                android:textColor="@color/primary_text" />
-
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_column="1"
-                android:layout_gravity="center|end"
-                android:layout_marginEnd="24dp"
-                android:layout_row="0"
-                android:layout_rowSpan="2"
-                android:tint="@color/orange"
-                android:src="@drawable/ic_p"
-                tools:ignore="ContentDescription" />
-
-        </GridLayout>
-    </GridLayout>
-
+            android:layout_height="wrap_content"
+            app:wlv_borderColor="@color/colorAccent"
+            app:wlv_borderWidth="3dp"
+            app:wlv_progressValue="40"
+            app:wlv_round_rectangle="true"
+            app:wlv_shapeType="circle"
+            app:wlv_titleCenter="Center Title"
+            app:wlv_titleCenterColor="@android:color/white"
+            app:wlv_titleCenterSize="24sp"
+            app:wlv_titleCenterStrokeColor="@android:color/holo_blue_dark"
+            app:wlv_titleCenterStrokeWidth="3dp"
+            app:wlv_triangle_direction="north"
+            app:wlv_waveAmplitude="70"
+            app:wlv_waveColor="@color/colorAccent" />
+    </LinearLayout>
 </RelativeLayout>

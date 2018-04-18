@@ -10,8 +10,8 @@ public class CharSetUtil {
     /**
      * 解码 Unicode \\uXXXX
      *
-     * @param str
-     * @return
+     * @param str 包含 unicode 的字符串
+     * @return utf8 字符串
      */
     public static String decodeUnicode(final String str) {
         final Charset set = Charset.forName("UTF-16");

@@ -33,6 +33,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 public class UserLoginActivity extends BaseActivity {
     @BindView(R.id.TextInputLayout_user_name)
@@ -52,7 +53,7 @@ public class UserLoginActivity extends BaseActivity {
     @BindView(R.id.TextView_app)
     TextView mTvApp;
     @BindView(R.id.Button_user_login)
-    Button mBtnLogin;
+    FancyButton mBtnLogin;
     @BindView(R.id.Button_user_register)
     Button mBtnRegister;
     @BindView(R.id.ZLoadingView_user_login)
@@ -117,14 +118,14 @@ public class UserLoginActivity extends BaseActivity {
     @OnClick(R.id.Button_user_register)
     public void exchangeButton() {
         if (mBtnLogin.getText() == getString(R.string.user_register)) {
-            mBtnLogin.setText(R.string.user_login);
+            mBtnLogin.setText(getString(R.string.user_login));
             mBtnRegister.setText(R.string.user_register);
             mViewRegisterLine.setVisibility(View.GONE);
             mLayoutRegister.setVisibility(View.GONE);
             mIvApp.setVisibility(View.VISIBLE);
             mTvApp.setTextSize(14);
         } else {
-            mBtnLogin.setText(R.string.user_register);
+            mBtnLogin.setText(getString(R.string.user_register));
             mBtnRegister.setText(R.string.user_login);
             mViewRegisterLine.setVisibility(View.VISIBLE);
             mLayoutRegister.setVisibility(View.VISIBLE);

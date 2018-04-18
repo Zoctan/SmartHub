@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:background="@color/primary"
+    android:fitsSystemWindows="true"
     tools:context=".ui.activity.UserLoginActivity">
 
     <!-- 注册按钮 -->
@@ -17,7 +18,7 @@
         android:background="@android:color/transparent"
         android:padding="5dp"
         android:text="@string/user_register"
-        android:textColor="@color/third_text"
+        android:textColor="@color/white"
         android:textSize="16sp" />
 
     <LinearLayout
@@ -45,7 +46,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="5dp"
             android:text="@string/app"
-            android:textColor="@color/third_text"
+            android:textColor="@color/white"
             android:textSize="14sp" />
     </LinearLayout>
 
@@ -179,9 +180,9 @@
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="50dp"
+                    android:layout_marginBottom="6dp"
                     android:layout_marginEnd="4dp"
                     android:layout_marginStart="4dp"
-                    android:layout_marginBottom="6dp"
                     android:src="@drawable/ic_password"
                     tools:ignore="ContentDescription" />
 
@@ -211,18 +212,25 @@
     </RelativeLayout>
 
     <!-- 登录按钮 -->
-    <Button
+    <mehdi.sakout.fancybuttons.FancyButton
         android:id="@+id/Button_user_login"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/RelativeLayout_user_login"
         android:layout_centerInParent="true"
         android:layout_marginTop="32dp"
-        android:background="@drawable/radius_button"
-        android:text="@string/user_login"
-        android:textColor="@color/third_text"
-        android:textSize="16sp" />
+        android:paddingBottom="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="10dp"
+        android:textSize="16sp"
+        fancy:fb_borderColor="#FFFFFF"
+        fancy:fb_borderWidth="1dp"
+        fancy:fb_defaultColor="@color/transparent"
+        fancy:fb_focusColor="@color/half_transparent"
+        fancy:fb_radius="30dp"
+        fancy:fb_text="@string/user_login"
+        fancy:fb_textColor="@color/white" />
 
     <com.zyao89.view.zloading.ZLoadingView
         android:id="@+id/ZLoadingView_user_login"
@@ -232,6 +240,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="24dp"
         android:visibility="gone"
-        app:z_type="DoubleCircleBuilder"
-        app:z_color="@color/icon" />
+        app:z_color="@color/white"
+        app:z_type="DoubleCircleBuilder" />
 </RelativeLayout>

@@ -14,10 +14,9 @@ import com.zoctan.smarthub.model.bean.smart.SmartResponseListBean;
 import com.zoctan.smarthub.ui.fragment.HubDetailNowFragment;
 import com.zoctan.smarthub.utils.JsonUtil;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -53,9 +52,11 @@ public class HubDetailNowPresenter extends BasePresenter {
                         if (response.getErrno() > 0) {
                             view.showFailedMsg(response.getError());
                         } else {
-                            final Map<String, String> streams = Stream.of(response.getData())
-                                    .map(object -> JsonUtil.deserialize(object.toString(), OneNetDataStreamsBean.class))
-                                    .collect(Collectors.toMap(OneNetDataStreamsBean::getId, OneNetDataStreamsBean::getCurrent_value));
+                            final Map<String, String> streams = new HashMap<>();
+                            for (final Object object : response.getData()) {
+                                final OneNetDataStreamsBean bean = JsonUtil.deserialize(object.toString(), OneNetDataStreamsBean.class);
+                                streams.put(bean.getId(), bean.getCurrent_value());
+                            }
                             view.setData(streams);
                         }
                     }
@@ -135,7 +136,8 @@ public class HubDetailNowPresenter extends BasePresenter {
                         if (response.getError() > 0) {
                             view.showFailedMsg(response.getMsg());
                         } else {
-                            view.showDoDeviceSuccessMsg(response.getMsg());
+                            view.showSuccessMsg(response.getMsg());
+                            listDevice(device.getHub_id());
                         }
                     }
 
@@ -241,7 +243,8 @@ public class HubDetailNowPresenter extends BasePresenter {
                                                     if (response.getError() > 0) {
                                                         view.showFailedMsg(response.getMsg());
                                                     } else {
-                                                        view.showDoDeviceSuccessMsg(response.getMsg());
+                                                        view.showSuccessMsg(response.getMsg());
+                                                        listDevice(device.getHub_id());
                                                     }
                                                 }
 

@@ -18,7 +18,7 @@ public class SplashActivity extends Activity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // 如果是第一次启动，则先进入功能引导页
-        if (!mSPUtil.getBoolean("first_open")) {
+        if (!mSPUtil.getBoolean("not_first_open")) {
             final Intent intent = new Intent(this, GuideActivity.class);
             startActivity(intent);
             finish();
@@ -33,10 +33,10 @@ public class SplashActivity extends Activity {
         }
         // 如果不是第一次启动app，则显示启动屏
         setContentView(R.layout.activity_splash);
-        new Handler().postDelayed(this::enterMainActivity, 1500);
+        new Handler().postDelayed(this::toMainActivity, 1500);
     }
 
-    private void enterMainActivity() {
+    private void toMainActivity() {
         final Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();

@@ -1,5 +1,6 @@
 package com.zoctan.smarthub.ui.fragment;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -18,6 +19,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.ImageUtils;
+import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.PermissionUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.squareup.picasso.Picasso;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.model.bean.smart.DeviceBean;
@@ -179,23 +183,22 @@ public class HubDetailNowFragment extends BaseFragment {
         mBtnDeviceImg.setOnClickListener(v -> showUpdateImgDialog());
 
         final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
-                .init(R.string.hub_detail_update_device,
-                        null,
-                        R.drawable.ic_update,
-                        R.string.all_edit);
-        dialog
-                .setCustomView(view, getHoldingActivity())
-                .setButton1Click(v -> {
-                    if (mEtDeviceName.getText().length() > 0) {
-                        getHoldingActivity().hideSoftKeyBoard(mEtDeviceName, getContext());
-                        device.setName(mEtDeviceName.getText().toString());
-                        mPresenter.crudDevice(device, "update");
-                        dialog.dismiss();
-                    }
-                })
-                .show();
+                .setIcon(R.drawable.ic_update)
+                .setTitle(R.string.hub_detail_update_device)
+                .setMessage(null)
+                .setButton1Text(R.string.all_edit);
+        dialog.setButton1Click(v -> {
+            final String name = mEtDeviceName.getText().toString();
+            if (StringUtils.isEmpty(name)) {
+                this.showFailedMsg("用电器名称不能为空");
+                return;
+            }
+            getHoldingActivity().hideSoftKeyBoard(mEtDeviceName, getContext());
+            final DeviceBean deviceBean = new DeviceBean(name);
+            mPresenter.crudDevice(deviceBean, "update");
+            dialog.dismiss();
+        }).show();
     }
-
 
     public void showUpdateImgDialog() {
         @SuppressWarnings("ConstantConditions") final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -215,6 +218,11 @@ public class HubDetailNowFragment extends BaseFragment {
                     break;
                 // 拍照
                 case TAKE_PICTURE:
+                    // 先检查有没有相机权限
+                    if (!PermissionUtils.isGranted(Manifest.permission.CAMERA)) {
+                        this.showFailedMsg("没有相机权限");
+                        return;
+                    }
                     final Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                     startActivityForResult(openCameraIntent, TAKE_PICTURE);
@@ -227,7 +235,7 @@ public class HubDetailNowFragment extends BaseFragment {
     // 裁剪图片
     public void startPhotoZoom(final Uri uri) {
         if (uri == null) {
-            AlerterUtil.showDanger(getHoldingActivity(), "图片路径不存在");
+            this.showFailedMsg("图片路径不存在");
             return;
         }
         try {
@@ -245,8 +253,8 @@ public class HubDetailNowFragment extends BaseFragment {
             intent.putExtra("return-data", true);
             startActivityForResult(intent, CROP_SMALL_PICTURE);
         } catch (final ActivityNotFoundException e) {
-            e.printStackTrace();
-            AlerterUtil.showDanger(getHoldingActivity(), "设备不支持裁剪行为");
+            LogUtils.e(e.getMessage());
+            this.showFailedMsg("设备不支持裁剪行为");
         }
     }
 
@@ -287,17 +295,15 @@ public class HubDetailNowFragment extends BaseFragment {
 
     public void resetHub() {
         final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
-                .init(R.string.nav_clear,
-                        R.string.msg_hub_reset,
-                        R.drawable.ic_clear,
-                        R.string.all_ensure);
-        dialog
-                .setButton1Click(v -> {
-                    final OrderBean resetOrder = new OrderBean(hubBean.getOnenet_id(), "reset", 1);
-                    mPresenter.sendOrder(resetOrder);
-                    dialog.dismiss();
-                })
-                .show();
+                .setIcon(R.drawable.ic_update)
+                .setTitle(R.string.msg_alert_cleared)
+                .setMessage(R.string.msg_hub_reset)
+                .setButton1Text(R.string.all_ensure);
+        dialog.setButton1Click(v -> {
+            final OrderBean resetOrder = new OrderBean(hubBean.getOnenet_id(), "reset", 1);
+            mPresenter.sendOrder(resetOrder);
+            dialog.dismiss();
+        }).show();
     }
 
     private TextView mTvStore = null;
@@ -334,31 +340,33 @@ public class HubDetailNowFragment extends BaseFragment {
         final OrderBean matchOrder = new OrderBean(hubBean.getOnenet_id(), "match", 1);
         mBtnMatch.setOnClickListener(v -> mPresenter.sendOrder(matchOrder));
 
-        final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
-                .init(R.string.hub_detail_add_device,
-                        null,
-                        R.drawable.ic_update,
-                        R.string.all_add);
-        dialog
-                .setCustomView(view, getHoldingActivity())
-                .setButton1Click(v -> {
-                    try {
-                        if (mEtDeviceName.getText().length() > 0
-                                && mTvStore.getText().toString().equals("有效")
-                                && mTvMatch.getText().toString().equals("有效")
-                                && list != 0) {
-                            getHoldingActivity().hideSoftKeyBoard(mEtDeviceName, getContext());
-                            final DeviceBean deviceBean = new DeviceBean();
-                            deviceBean.setName(mEtDeviceName.getText().toString());
-                            deviceBean.setEigenvalue(list);
-                            deviceBean.setHub_id(hubBean.getOnenet_id());
-                            mPresenter.crudDevice(deviceBean, "add");
-                            dialog.dismiss();
-                        }
-                    } catch (final NullPointerException ignored) {
-                    }
-                })
-                .show();
+        final NiftyDialog dialog = new NiftyDialogUtil()
+                .setView(view, getHoldingActivity())
+                .setIcon(R.drawable.ic_update)
+                .setTitle(R.string.hub_detail_add_device)
+                .setMessage(null)
+                .setButton1Text(R.string.all_add);
+        dialog.setButton1Click(v -> {
+            try {
+                String name = mEtDeviceName.getText().toString();
+                if (StringUtils.isEmpty(name)) {
+                    this.showFailedMsg("用电器名称不能为空");
+                    return;
+                }
+                if (mTvStore.getText() == "有效" && mTvMatch.getText() == "有效"
+                        && list != 0) {
+                    getHoldingActivity().hideSoftKeyBoard(mEtDeviceName, getContext());
+                    final DeviceBean deviceBean = new DeviceBean.Builder()
+                            .name(name)
+                            .eigenvalue(list)
+                            .hub_id(hubBean.getOnenet_id())
+                            .build();
+                    mPresenter.crudDevice(deviceBean, "add");
+                    dialog.dismiss();
+                }
+            } catch (final NullPointerException ignored) {
+            }
+        }).show();
     }
 
     public void setHubStore(final boolean flag) {
@@ -391,11 +399,6 @@ public class HubDetailNowFragment extends BaseFragment {
         mTvAmpere.setText(data.get("I"));
         mTvPowerFactor.setText(data.get("Q"));
         mTvPower.setText(data.get("W"));
-    }
-
-    public void showDoDeviceSuccessMsg(final String msg) {
-        AlerterUtil.showInfo(getHoldingActivity(), msg);
-        mPresenter.listDevice(hubBean.getOnenet_id());
     }
 
     public void showListDeviceLoading() {

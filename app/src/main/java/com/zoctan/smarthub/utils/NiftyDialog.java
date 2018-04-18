@@ -79,7 +79,6 @@ public class NiftyDialog extends Dialog implements DialogInterface {
     }
 
     private void init(final Context context) {
-
         final View mDialogView = View.inflate(context, com.gitonway.lee.niftymodaldialogeffects.lib.R.layout.dialog_layout, null);
 
         mLinearLayoutView = mDialogView.findViewById(com.gitonway.lee.niftymodaldialogeffects.lib.R.id.parentPanel);
@@ -205,7 +204,6 @@ public class NiftyDialog extends Dialog implements DialogInterface {
     public NiftyDialog withButton1Text(final CharSequence text) {
         mButton1.setVisibility(View.VISIBLE);
         mButton1.setText(text);
-
         return this;
     }
 
