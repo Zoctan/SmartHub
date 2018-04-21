@@ -42,12 +42,12 @@ public class HubDetailActivity extends BaseActivity {
             R.string.hub_detail_energy_used,
             R.string.hub_detail_timer};
     private final int[] mIconUnSelectIds = {
-            R.drawable.ic_realtime,
-            R.drawable.ic_line_chart,
+            R.drawable.ic_now,
+            R.drawable.ic_spare,
             R.drawable.ic_timer};
     private final int[] mIconSelectIds = {
-            R.drawable.ic_realtime_select,
-            R.drawable.ic_line_chart_select,
+            R.drawable.ic_now_select,
+            R.drawable.ic_spare_select,
             R.drawable.ic_timer_select};
 
     @Override

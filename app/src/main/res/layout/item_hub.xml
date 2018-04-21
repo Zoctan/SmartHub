@@ -15,7 +15,7 @@
         android:id="@+id/RelativeLayout_hub"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/detail_icon_select">
+        android:background="@color/select">
 
         <ImageView
             android:id="@+id/ImageView_hub_room"
@@ -23,7 +23,7 @@
             android:layout_height="match_parent"
             android:contentDescription="@null"
             android:scaleType="fitXY"
-            android:src="@drawable/room_badroom" />
+            android:src="@drawable/room_bad" />
 
         <TextView
             android:id="@+id/TextView_hub"

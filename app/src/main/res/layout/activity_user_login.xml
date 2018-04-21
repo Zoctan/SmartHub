@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -85,6 +84,7 @@
                     android:layout_marginEnd="4dp"
                     android:layout_marginStart="4dp"
                     android:paddingTop="4dp"
+                    android:tint="@color/un_select"
                     android:src="@drawable/ic_user_name"
                     tools:ignore="ContentDescription" />
 
@@ -134,6 +134,7 @@
                     android:layout_marginEnd="4dp"
                     android:layout_marginStart="4dp"
                     android:paddingTop="8dp"
+                    android:tint="@color/un_select"
                     android:src="@drawable/ic_password"
                     tools:ignore="ContentDescription" />
 
@@ -183,6 +184,7 @@
                     android:layout_marginBottom="6dp"
                     android:layout_marginEnd="4dp"
                     android:layout_marginStart="4dp"
+                    android:tint="@color/un_select"
                     android:src="@drawable/ic_password"
                     tools:ignore="ContentDescription" />
 
@@ -224,13 +226,13 @@
         android:paddingRight="20dp"
         android:paddingTop="10dp"
         android:textSize="16sp"
-        fancy:fb_borderColor="#FFFFFF"
-        fancy:fb_borderWidth="1dp"
-        fancy:fb_defaultColor="@color/transparent"
-        fancy:fb_focusColor="@color/half_transparent"
-        fancy:fb_radius="30dp"
-        fancy:fb_text="@string/user_login"
-        fancy:fb_textColor="@color/white" />
+        app:fb_borderColor="#FFFFFF"
+        app:fb_borderWidth="1dp"
+        app:fb_defaultColor="@color/transparent"
+        app:fb_focusColor="@color/half_transparent"
+        app:fb_radius="30dp"
+        app:fb_text="@string/user_login"
+        app:fb_textColor="@color/white" />
 
     <com.zyao89.view.zloading.ZLoadingView
         android:id="@+id/ZLoadingView_user_login"

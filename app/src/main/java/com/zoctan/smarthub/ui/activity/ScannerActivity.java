@@ -75,7 +75,7 @@ public class ScannerActivity extends BaseActivity {
             isTorchOpen = false;
             // 关闪光灯
             mDecoratedBarcodeView.setTorchOff();
-            Icon.on(mIvTorch).color(R.color.detail_icon_unselect).icon(R.drawable.ic_torch_off).put();
+            Icon.on(mIvTorch).color(R.color.un_select).icon(R.drawable.ic_torch_off).put();
         } else {
             isTorchOpen = true;
             // 开闪光灯

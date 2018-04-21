@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.CacheUtils;
 import com.blankj.utilcode.util.FragmentUtils;
 import com.blankj.utilcode.util.ImageUtils;
@@ -51,6 +52,8 @@ public class UserDetailFragment extends BaseFragment implements FragmentUtils.On
     TextView mTvUserName;
     @BindView(R.id.TextView_user_phone)
     TextView mTvUserPhone;
+    @BindView(R.id.TextView_user_mail)
+    TextView mTvUserMail;
     @BindView(R.id.FabSpeedDial_user_detail)
     FabSpeedDial mFabSpeedDial;
     @BindView(R.id.ZLoadingView_user_detail)
@@ -82,6 +85,7 @@ public class UserDetailFragment extends BaseFragment implements FragmentUtils.On
     protected void initView(final View view, final Bundle savedInstanceState) {
         mTvUserName.setText(mSPUtil.getString("user_name"));
         mTvUserPhone.setText(mSPUtil.getString("user_phone"));
+        mTvUserMail.setText(mSPUtil.getString("user_email"));
         Picasso.get()
                 .load(mSPUtil.getString("user_avatar"))
                 .into(mCircleImageView);
@@ -215,41 +219,89 @@ public class UserDetailFragment extends BaseFragment implements FragmentUtils.On
     }
 
     public void showUpdateInfoDialog() {
-        @SuppressLint("InflateParams") final View view = this.getLayoutInflater().inflate(R.layout.dialog_new_info, null);
-        final TextInputEditText[] mEtUserInfo = {view.findViewById(R.id.EditText_user_username), view.findViewById(R.id.EditText_user_phone)};
-        mEtUserInfo[0].setText(mTvUserName.getText());
-        mEtUserInfo[1].setText(mTvUserPhone.getText());
-        mEtUserInfo[0].setSelection(mEtUserInfo[0].getText().length());
+        final TextInputEditText[] mEtUserInfo = new TextInputEditText[3];
+        final TextInputLayout[] mLayoutUserInfo = new TextInputLayout[3];
+        final MaterialDialog dialog = new MaterialDialog.Builder(getHoldingActivity())
+                .title(R.string.user_detail_new_info)
+                .customView(R.layout.dialog_new_info, true)
+                .negativeText(R.string.all_cancel)
+                .positiveText(R.string.all_update)
+                .onPositive((_dialog, which) -> {
+                    String name = mEtUserInfo[0].getText().toString();
+                    String phone = mEtUserInfo[1].getText().toString();
+                    String mail = mEtUserInfo[2].getText().toString();
+                    if (StringUtils.isEmpty(name)) {
+                        this.showFailedMsg("请输入用户名");
+                        return;
+                    }
+                    if (StringUtils.isEmpty(phone)) {
+                        this.showFailedMsg("请输入手机号");
+                        return;
+                    }
+                    if (StringUtils.isEmpty(mail)) {
+                        this.showFailedMsg("请输入邮箱");
+                        return;
+                    }
+                    if (mLayoutUserInfo[0].getError() != null
+                            && mLayoutUserInfo[1].getError() != null
+                            && mLayoutUserInfo[2].getError() != null) {
+                        mPresenter.crudUser(new UserBean.Builder()
+                                .username(name)
+                                .phone(phone)
+                                .build(), "updateInfo");
+                        _dialog.dismiss();
+                    }
+                })
+                .build();
 
-        final NiftyDialog dialog = new NiftyDialogUtil()
-                .setView(view, getHoldingActivity())
-                .setIcon(R.drawable.ic_update)
-                .setTitle(R.string.user_detail_new_info)
-                .setMessage(null)
-                .setButton1Text(R.string.all_update);
-        dialog.setButton1Click(v -> {
-            String name = mEtUserInfo[0].getText().toString();
-            String phone = mEtUserInfo[1].getText().toString();
-            if (StringUtils.isEmpty(name)) {
-                this.showFailedMsg("请输入用户名");
-                return;
-            }
-            if (StringUtils.isEmpty(phone)) {
-                this.showFailedMsg("请输入手机号");
-                return;
-            }
-            if (!RegexUtils.isMobileSimple(phone)) {
-                this.showFailedMsg("手机号格式不正确");
-            } else {
-                getHoldingActivity().hideSoftKeyBoard(mEtUserInfo[0], getContext());
-                final UserBean user = new UserBean.Builder()
-                        .username(name)
-                        .phone(phone)
-                        .build();
-                mPresenter.crudUser(user, "updateInfo");
-                dialog.dismiss();
-            }
-        }).show();
+        final View view = dialog.getCustomView();
+        if (view != null) {
+            mLayoutUserInfo[0] = view.findViewById(R.id.TextInputLayout_user_username);
+            mLayoutUserInfo[1] = view.findViewById(R.id.TextInputLayout_user_phone);
+            mLayoutUserInfo[2] = view.findViewById(R.id.TextInputLayout_user_mail);
+            mEtUserInfo[0] = view.findViewById(R.id.EditText_user_username);
+            mEtUserInfo[1] = view.findViewById(R.id.EditText_user_phone);
+            mEtUserInfo[2] = view.findViewById(R.id.EditText_user_mail);
+            mEtUserInfo[0].setText(mTvUserName.getText());
+            mEtUserInfo[1].setText(mTvUserPhone.getText());
+            mEtUserInfo[2].setText(mTvUserMail.getText());
+            mEtUserInfo[0].setSelection(mEtUserInfo[0].getText().length());
+            mEtUserInfo[0].addTextChangedListener(new MyTextWatcher() {
+                @Override
+                public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
+                    if (s.length() > 12) {
+                        mLayoutUserInfo[0].setErrorEnabled(true);
+                        mEtUserInfo[0].setError(getString(R.string.all_max_name));
+                    } else {
+                        mEtUserInfo[0].setError(null);
+                    }
+                }
+            });
+            mEtUserInfo[1].addTextChangedListener(new MyTextWatcher() {
+                @Override
+                public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
+                    if (!RegexUtils.isMobileSimple(mEtUserInfo[1].getText().toString())) {
+                        mLayoutUserInfo[1].setErrorEnabled(true);
+                        mEtUserInfo[1].setError(getString(R.string.error_phone_format));
+                    } else {
+                        mEtUserInfo[1].setError(null);
+                    }
+                }
+            });
+            mEtUserInfo[2].addTextChangedListener(new MyTextWatcher() {
+                @Override
+                public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
+                    if (!RegexUtils.isEmail(mEtUserInfo[2].getText().toString())) {
+                        mLayoutUserInfo[2].setErrorEnabled(true);
+                        mEtUserInfo[2].setError(getString(R.string.error_mail_format));
+                    } else {
+                        mEtUserInfo[2].setError(null);
+                    }
+                }
+            });
+        }
+
+        dialog.show();
     }
 
     public void showModifyPasswordDialog() {

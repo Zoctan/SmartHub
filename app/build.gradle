@@ -64,9 +64,14 @@ dependencies {
     implementation "com.android.support:design:27.1.0"
     implementation "com.android.support:cardview-v7:27.1.0"
     implementation "com.android.support:support-v4:27.1.0"
-    implementation "com.android.support:multidex:1.0.3"
     implementation "com.android.support:recyclerview-v7:27.1.0"
     implementation "com.android.support:support-annotations:27.1.0"
+    implementation "com.android.support:multidex:1.0.3"
+    /**
+     * AboutLibraries is a library to offer some information of libraries
+     * https://github.com/mikepenz/AboutLibraries
+     */
+    implementation "com.mikepenz:aboutlibraries:6.0.8"
     /**
      * MaterialDrawer
      * https://github.com/mikepenz/MaterialDrawer
@@ -160,6 +165,21 @@ dependencies {
      * https://github.com/tangqi92/WaveLoadingView
      */
     implementation 'me.itangqi.waveloadingview:library:0.3.5'
+    /**
+     * https://github.com/KeepSafe/TapTargetView
+     * An implementation of tap targets from the Material Design guidelines for feature discovery
+     */
+    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.11.0'
+    /**
+     * PopupMenuView
+     * https://github.com/kareluo/PopupMenuView
+     */
+    implementation 'me.kareluo.ui:popmenu:1.1.0'
+    /**
+     * A beautiful, fluid, and customizable dialogs
+     * https://github.com/afollestad/material-dialogs
+     */
+    implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
     /**
      * 出入场动画
      * https://github.com/JakeWharton/NineOldAndroids

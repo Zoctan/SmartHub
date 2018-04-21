@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,9 +8,6 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginTop="8dp"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:gravity="center_vertical"
@@ -18,16 +16,23 @@
         <ImageView
             android:layout_width="30dp"
             android:layout_height="50dp"
-            android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
             android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
             android:src="@drawable/ic_user_name"
             tools:ignore="ContentDescription" />
 
         <android.support.design.widget.TextInputLayout
+            android:id="@+id/TextInputLayout_user_username"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@null">
+            android:background="@null"
+            app:counterEnabled="true"
+            app:counterMaxLength="12"
+            app:counterOverflowTextAppearance="@style/TextErrorAppearance"
+            app:errorEnabled="true"
+            app:errorTextAppearance="@style/TextErrorAppearance"
+            app:hintTextAppearance="@style/HintAppearance">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/EditText_user_username"
@@ -48,9 +53,6 @@
         android:background="@color/primary" />
 
     <LinearLayout
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginTop="8dp"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:gravity="center_vertical"
@@ -59,17 +61,23 @@
         <ImageView
             android:layout_width="30dp"
             android:layout_height="50dp"
-            android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
             android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
             android:src="@drawable/ic_phone"
             tools:ignore="ContentDescription" />
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/TextInputLayout_user_password2"
+            android:id="@+id/TextInputLayout_user_phone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@null">
+            android:background="@null"
+            app:counterEnabled="true"
+            app:counterMaxLength="11"
+            app:counterOverflowTextAppearance="@style/TextErrorAppearance"
+            app:errorEnabled="true"
+            app:errorTextAppearance="@style/TextErrorAppearance"
+            app:hintTextAppearance="@style/HintAppearance">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/EditText_user_phone"
@@ -77,6 +85,48 @@
                 android:layout_height="match_parent"
                 android:background="@null"
                 android:hint="@string/user_hint_input_phone"
+                android:inputType="text"
+                android:textColor="@color/primary_text"
+                android:textSize="@dimen/edit_size" />
+        </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="5dp"
+        android:background="@color/primary" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/ic_mail"
+            tools:ignore="ContentDescription" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/TextInputLayout_user_mail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            app:errorEnabled="true"
+            app:errorTextAppearance="@style/TextErrorAppearance"
+            app:hintTextAppearance="@style/HintAppearance">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/EditText_user_mail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:hint="@string/user_hint_input_mail"
                 android:inputType="text"
                 android:textColor="@color/primary_text"
                 android:textSize="@dimen/edit_size" />

@@ -10,10 +10,13 @@ import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.widget.ImageView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.CacheUtils;
 import com.blankj.utilcode.util.FragmentUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.mikepenz.aboutlibraries.Libs;
+import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -32,13 +35,10 @@ import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.presenter.BasePresenter;
 import com.zoctan.smarthub.ui.base.BaseActivity;
 import com.zoctan.smarthub.ui.custom.TitleBar;
-import com.zoctan.smarthub.ui.fragment.AboutFragment;
 import com.zoctan.smarthub.ui.fragment.FeedbackFragment;
 import com.zoctan.smarthub.ui.fragment.HubListFragment;
 import com.zoctan.smarthub.ui.fragment.UserDetailFragment;
 import com.zoctan.smarthub.utils.AlerterUtil;
-import com.zoctan.smarthub.utils.NiftyDialog;
-import com.zoctan.smarthub.utils.NiftyDialogUtil;
 
 import butterknife.BindView;
 
@@ -60,7 +60,7 @@ public class MainActivity extends BaseActivity {
     private IProfile profile;//登录用户信息
     private AccountHeader headerResult;//head头布局
 
-    private final Fragment[] mFragments = new Fragment[4];
+    private final Fragment[] mFragments = new Fragment[3];
     private int currentFragmentIndex;
 
     @Override
@@ -86,8 +86,7 @@ public class MainActivity extends BaseActivity {
         }
         mFragments[0] = HubListFragment.newInstance();
         mFragments[1] = UserDetailFragment.newInstance();
-        mFragments[2] = AboutFragment.newInstance();
-        mFragments[3] = FeedbackFragment.newInstance();
+        mFragments[2] = FeedbackFragment.newInstance();
         FragmentUtils.add(getSupportFragmentManager(), mFragments, R.id.FrameLayout_main_content, currentFragmentIndex);
     }
 
@@ -119,7 +118,6 @@ public class MainActivity extends BaseActivity {
                 .withAccountHeader(headerResult)
                 .withToolbar(mTitleBar)// 和toolbar关联
                 .withShowDrawerOnFirstLaunch(false) // 默认开启抽屉
-                //.withDisplayBelowStatusBar(true)
                 .withDrawerGravity(Gravity.START) // 设置抽屉打开方向默认从左
                 .withActionBarDrawerToggle(true) // 启用toolbar的ActionBarDrawerToggle动画
                 .addDrawerItems(
@@ -149,12 +147,23 @@ public class MainActivity extends BaseActivity {
                     mTitleBar.setCenterText(R.string.nav_user);
                     break;
                 case ABOUT:
-                    showCurrentFragment(ABOUT);
-                    mTitleBar.setCenterText(R.string.nav_about);
+                    new LibsBuilder()
+                            .withActivityTheme(R.style.AppTheme)
+                            .withActivityTitle(getString(R.string.nav_about))
+                            .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
+                            .withAboutAppName(getString(R.string.app))
+                            .withVersionShown(false)
+                            .withAboutIconShown(true)
+                            .withAboutVersionShown(true)
+                            .withAboutDescription(getString(R.string.about_app))
+                            .withFields(R.string.class.getFields())
+                            .withLicenseDialog(true)
+                            .withLicenseShown(true)
+                            .start(this);
                     break;
                 case FEEDBACK:
                     showCurrentFragment(FEEDBACK);
-                    mTitleBar.setCenterText(R.string.nav_feedback);
+                    mTitleBar.setCenterText(R.string.app);
                     break;
                 case CLEAR:
                     clearApp();
@@ -211,7 +220,7 @@ public class MainActivity extends BaseActivity {
                 .withName(R.string.nav_about)
                 .withIcon(R.drawable.ic_about)
                 .withIdentifier(ABOUT)
-                .withSelectable(true);
+                .withSelectable(false);
     }
 
     private PrimaryDrawerItem setFeedbackItem() {
@@ -260,6 +269,7 @@ public class MainActivity extends BaseActivity {
         if (drawerItem instanceof Nameable) {
             switch ((int) drawerItem.getIdentifier()) {
                 case DAY_NIGHT:
+                    drawer.closeDrawer();
                     setDayNightMode(true);
                     recreate();
                     break;
@@ -269,23 +279,24 @@ public class MainActivity extends BaseActivity {
 
     public void clearApp() {
         final CacheUtils cacheUtils = CacheUtils.getInstance();
-        final NiftyDialog dialog = new NiftyDialogUtil(this)
-                .setIcon(R.drawable.ic_add)
-                .setTitle(R.string.nav_clear)
-                .setMessage("共 " + cacheUtils.getCacheSize() + " ，确定清理吗？")
-                .setButton1Text(R.string.all_ensure);
-        dialog.setButton1Click(v -> {
-            cacheUtils.clear();
-            // 点击“确认”后的操作
-            ToastUtils.showShort("缓存已清理");
-            // 重启APP
-            final Intent intent = getApplicationContext().getPackageManager()
-                    .getLaunchIntentForPackage(getApplicationContext().getPackageName());
-            if (intent != null) {
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            }
-        }).show();
+        new MaterialDialog.Builder(this)
+                .title(R.string.nav_clear)
+                .iconRes(R.drawable.ic_alert)
+                .content("共 " + cacheUtils.getCacheSize() + " ，确定清理吗？")
+                .negativeText(R.string.all_cancel)
+                .positiveText(R.string.all_ensure)
+                .onPositive((dialog, which) -> {
+                    cacheUtils.clear();
+                    // 点击“确认”后的操作
+                    ToastUtils.showShort("缓存已清理");
+                    // 重启APP
+                    final Intent intent = getApplicationContext().getPackageManager()
+                            .getLaunchIntentForPackage(getApplicationContext().getPackageName());
+                    if (intent != null) {
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    }
+                }).show();
     }
 
     private void showCurrentFragment(final int index) {

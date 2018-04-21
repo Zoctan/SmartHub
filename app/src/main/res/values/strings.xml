@@ -13,7 +13,7 @@
 
     <string name="user_detail_info">用户信息</string>
     <string name="user_detail_name">用户名</string>
-    <string name="user_detail_email">邮箱</string>
+    <string name="user_detail_mail">邮箱</string>
     <string name="user_detail_phone">手机号</string>
     <string name="user_detail_logout">登出</string>
     <string name="user_detail_new_avatar">修改头像</string>
@@ -26,6 +26,9 @@
     <string name="user_hint_input_password_again">请再次输入密码</string>
     <string name="user_hint_input_username">请输入用户名</string>
     <string name="user_hint_input_phone">请输入手机号</string>
+    <string name="error_phone_format">手机号格式不正确</string>
+    <string name="user_hint_input_mail">请输入邮箱</string>
+    <string name="error_mail_format">邮箱格式不正确</string>
 
     <string name="main_drawer_open">open</string>
     <string name="main_drawer_close">close</string>
@@ -44,7 +47,6 @@
     <string name="nav_clear">清除缓存</string>
     <string name="nav_exit">退出</string>
 
-    <string name="feedback_msg">感谢你的建议/反馈！</string>
     <string name="feedback_content">建议/反馈内容</string>
 
     <string name="all_exit_app">再按一次退出程序</string>
@@ -64,7 +66,6 @@
     <string name="hub_add_msg">确定添加插座吗？</string>
     <string name="hub_delete">删除插座</string>
     <string name="msg_hub_delete">确定删除插座吗？</string>
-    <string name="msg_hub_reset">确定清除存储的所有用电器特征值吗？</string>
 
     <string name="find_device">正在查询当前用电器…</string>
     <string name="none_device">空载</string>
@@ -78,7 +79,8 @@
     <string name="hub_detail_add_device">添加当前用电器</string>
     <string name="hub_detail_update_device">更新当前用电器</string>
     <string name="hub_detail_update_device_img">更新当前用电器图片</string>
-    <string name="hub_detail_reset_hub">清除存储的所有用电器特征值</string>
+    <string name="hub_detail_reset_hub">确定清除存储的所有用电器特征值吗？</string>
+    <string name="msg_hub_reset">清除</string>
     <string name="msg_do_when_no_electric">继电器已断电，请通电后再设置</string>
     <string name="msg_can_not_load_when_no_electric">继电器已断电，无法查询当前用电器</string>
     <string name="msg_do_when_none">空载，请插上用电器后再设置</string>
@@ -94,47 +96,25 @@
     <string name="qr_smart_hub">智能插座扫描</string>
     <string name="qr_msg">请将二维码/条形码置于框内</string>
 
-    <string name="hub_detail_now_voltage">电压(V)</string>
-    <string name="hub_detail_now_ampere">电流(A)</string>
+    <string name="hub_detail_now_voltage">电压</string>
+    <string name="voltage">V</string>
+    <string name="hub_detail_now_ampere">电流</string>
+    <string name="ampere">A</string>
     <string name="hub_detail_now_power_factor">功率因数</string>
-    <string name="hub_detail_now_power">功率(W)</string>
+    <string name="hub_detail_now_power">功率</string>
+    <string name="power">W</string>
     <string name="hub_detail_now_current_electrical_appliances">当前电器</string>
     <string name="none">无</string>
 
     <string name="hub_detail_spare_electrical_bill">电费(元)</string>
     <string name="hub_detail_spare_electrical_degree">电度(KWh)</string>
 
-    <string name="about_app_function">功能介绍</string>
-    <string name="about_app_function_introduction">
-        1.遵循 Material Design 风格\n
-        2.兼容 6.0 ＜= x ＜= 8.0 及各种分辨率\n
-        3.支持扫码添加插座\n
-        4.支持对插座的状态、日用电量查看、设置定时开关\n
-        5.多时间段用电量\n
-        5.支持日夜间模式\n
-        6.目前基本功能已完成\n
-    </string>
-    <string name="about_library">用到的开源库</string>
-    <string name="about_library_introduction">
-        picasso\n
-        circleimageview\n
-        MPAndroidChart\n
-        qiniu-android-sdk\n
-        android-async-http\n
-        happy-dns\n
-        zxing\n
-        butterknife\n
-        permissionsdispatcher-processor\n
-        SwipeDelMenuLayout\n
-        SmartRefreshLayout\n
-        android-gif-drawable\n
-        nice-spinner\n
-        utilcode\n
-        barlibrary\n
-        FlycoRoundView_Lib\n
-        alerter\n
-        fab-speed-dial\n
-        NiftyDialogEffects\n
-        IconHandler\n
+    <string name="about_app">
+        兼容 6.0 ＜= x ＜= 8.0 及各种分辨率，
+        支持扫码添加插座，
+        支持对插座的状态、日用电量查看、设置定时开关，
+        多时间段用电量，
+        支持日夜间模式，
+        目前基本功能已完成。
     </string>
 </resources>

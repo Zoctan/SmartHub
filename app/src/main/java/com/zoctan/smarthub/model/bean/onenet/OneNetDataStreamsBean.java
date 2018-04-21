@@ -8,7 +8,7 @@ public class OneNetDataStreamsBean {
     private String unit;
     private String unit_symbol;
     private String create_time;
-    private String current_value;
+    private Double current_value;
     private String update_at;
 
     public String getId() {
@@ -51,11 +51,11 @@ public class OneNetDataStreamsBean {
         this.create_time = create_time;
     }
 
-    public String getCurrent_value() {
+    public Double getCurrent_value() {
         return current_value;
     }
 
-    public void setCurrent_value(final String current_value) {
+    public void setCurrent_value(final Double current_value) {
         this.current_value = current_value;
     }
 

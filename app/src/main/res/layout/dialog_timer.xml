@@ -1,90 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
-    android:columnCount="2"
-    android:orientation="vertical"
-    android:padding="2dp"
-    android:rowCount="3">
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/TextInputLayout_timer_name"
         android:layout_width="match_parent"
-        android:layout_column="0"
-        android:layout_columnSpan="2"
-        android:layout_row="0"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        tools:ignore="UselessParent">
+        android:layout_height="match_parent"
+        android:background="@null"
+        app:counterEnabled="true"
+        app:counterMaxLength="12"
+        app:counterOverflowTextAppearance="@style/TextErrorAppearance"
+        app:errorEnabled="true"
+        app:errorTextAppearance="@style/TextErrorAppearance"
+        app:hintTextAppearance="@style/HintAppearance">
 
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="50dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginStart="4dp"
-            android:paddingTop="20dp"
-            android:src="@drawable/ic_timer"
-            tools:ignore="ContentDescription" />
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/TextInputLayout_timer_name"
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/EditText_timer_name"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="4dp"
+            android:layout_height="40dp"
             android:background="@null"
-            app:counterOverflowTextAppearance="@style/TextErrorAppearance"
-            app:errorTextAppearance="@style/TextErrorAppearance"
-            app:hintTextAppearance="@style/HintAppearance"
-            app:counterEnabled="true"
-            app:counterMaxLength="12"
-            app:errorEnabled="true">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/EditText_timer_name"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:background="@null"
-                android:hint="@string/timer_hint_name"
-                android:inputType="text"
-                android:textColor="@color/primary_text"
-                android:textSize="@dimen/edit_size" />
-        </android.support.design.widget.TextInputLayout>
-    </LinearLayout>
+            android:hint="@string/timer_hint_name"
+            android:inputType="text"
+            android:textColor="@color/primary_text"
+            android:textSize="@dimen/edit_size" />
+    </android.support.design.widget.TextInputLayout>
 
     <TimePicker
         android:id="@+id/TimePicker_timer"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_column="0"
-        android:layout_columnWeight="1"
-        android:layout_row="1"
-        android:layout_rowSpan="2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:timePickerMode="spinner" />
 
-    <org.angmarch.views.NiceSpinner
-        android:id="@+id/NiceSpinner_timer_open_close"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_column="1"
-        android:layout_columnWeight="1"
-        android:layout_row="1"
-        android:layout_rowWeight="1"
-        app:arrowTint="@color/primary"
-        app:textTint="@color/primary_text" />
+        android:orientation="horizontal">
 
-    <org.angmarch.views.NiceSpinner
-        android:id="@+id/NiceSpinner_timer_repeat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_column="1"
-        android:layout_columnWeight="1"
-        android:layout_row="2"
-        android:layout_rowWeight="1"
-        app:arrowTint="@color/primary"
-        app:textTint="@color/primary_text" />
+        <org.angmarch.views.NiceSpinner
+            android:id="@+id/NiceSpinner_timer_open_close"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:arrowTint="@color/primary"
+            app:textTint="@color/primary_text" />
 
-</GridLayout>
+        <org.angmarch.views.NiceSpinner
+            android:id="@+id/NiceSpinner_timer_repeat"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:arrowTint="@color/primary"
+            app:textTint="@color/primary_text" />
+    </LinearLayout>
+</LinearLayout>

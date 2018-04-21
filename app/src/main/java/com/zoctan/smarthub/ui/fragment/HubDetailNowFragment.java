@@ -1,7 +1,6 @@
 package com.zoctan.smarthub.ui.fragment;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -12,12 +11,14 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.ImageUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.PermissionUtils;
@@ -30,19 +31,21 @@ import com.zoctan.smarthub.model.bean.smart.OrderBean;
 import com.zoctan.smarthub.presenter.BasePresenter;
 import com.zoctan.smarthub.presenter.HubDetailNowPresenter;
 import com.zoctan.smarthub.ui.base.BaseFragment;
+import com.zoctan.smarthub.ui.custom.MyTextWatcher;
 import com.zoctan.smarthub.utils.AlerterUtil;
-import com.zoctan.smarthub.utils.NiftyDialog;
-import com.zoctan.smarthub.utils.NiftyDialogUtil;
 import com.zyao89.view.zloading.ZLoadingView;
 
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
+import me.itangqi.waveloadingview.WaveLoadingView;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -51,18 +54,26 @@ public class HubDetailNowFragment extends BaseFragment {
     ImageView mIvAppliances;
     @BindView(R.id.TextView_hub_detail_now_appliances_name)
     TextView mTvAppliances;
-    @BindView(R.id.TextView_hub_detail_now_voltage)
-    TextView mTvVoltage;
-    @BindView(R.id.TextView_hub_detail_now_ampere)
-    TextView mTvAmpere;
-    @BindView(R.id.TextView_hub_detail_now_power_factor)
-    TextView mTvPowerFactor;
-    @BindView(R.id.TextView_hub_detail_now_power)
-    TextView mTvPower;
     @BindView(R.id.FabSpeedDial_hub_detail)
     FabSpeedDial mFabSpeedDial;
     @BindView(R.id.ZLoadingView_hub_detail_now)
     ZLoadingView zLoadingView;
+    @BindView(R.id.WaveLoadingView_V)
+    WaveLoadingView mWvV;
+    @BindView(R.id.TextView_V)
+    TextView mTvV;
+    @BindView(R.id.WaveLoadingView_I)
+    WaveLoadingView mWvI;
+    @BindView(R.id.TextView_I)
+    TextView mTvI;
+    @BindView(R.id.WaveLoadingView_Q)
+    WaveLoadingView mWvQ;
+    @BindView(R.id.TextView_Q)
+    TextView mTvQ;
+    @BindView(R.id.WaveLoadingView_P)
+    WaveLoadingView mWvP;
+    @BindView(R.id.TextView_P)
+    TextView mTvP;
     private final Handler handler = new Handler();
     private final HubDetailNowPresenter mPresenter = new HubDetailNowPresenter(this);
     protected static Uri imageUri;
@@ -73,7 +84,10 @@ public class HubDetailNowFragment extends BaseFragment {
     private static final int CROP_SMALL_PICTURE = 2;
 
     public static HubDetailNowFragment newInstance() {
-        return new HubDetailNowFragment();
+        final Bundle args = new Bundle();
+        final HubDetailNowFragment fragment = new HubDetailNowFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -173,31 +187,50 @@ public class HubDetailNowFragment extends BaseFragment {
     };
 
     public void updateDevice() {
-        @SuppressLint("InflateParams") final View view = getLayoutInflater().inflate(R.layout.dialog_update_device, null);
-        final TextInputEditText mEtDeviceName = view.findViewById(R.id.EditText_device_name);
-        mEtDeviceName.setText(device.getName());
-        mEtDeviceName.setSelection(mEtDeviceName.getText().length());
+        final TextInputEditText[] mEtDeviceName = new TextInputEditText[1];
+        final TextInputLayout[] mLayoutDeviceName = new TextInputLayout[1];
+        final FancyButton[] mBtnUpdate = new FancyButton[1];
 
-        final Button mBtnDeviceImg = view.findViewById(R.id.Button_device_img);
+        final MaterialDialog dialog = new MaterialDialog.Builder(getHoldingActivity())
+                .title(R.string.hub_detail_update_device)
+                .iconRes(R.drawable.ic_edit)
+                .customView(R.layout.dialog_update_device, true)
+                .negativeText(R.string.all_cancel)
+                .positiveText(R.string.all_update)
+                .onPositive((_dialog, which) -> {
+                    String name = mEtDeviceName[0].getText().toString();
+                    if (StringUtils.isEmpty(name)) {
+                        this.showFailedMsg("用电器名称不能为空");
+                        return;
+                    }
+                    final DeviceBean deviceBean = new DeviceBean(name);
+                    mPresenter.crudDevice(deviceBean, "update");
+                    _dialog.dismiss();
+                })
+                .build();
 
-        mBtnDeviceImg.setOnClickListener(v -> showUpdateImgDialog());
+        final View view = dialog.getCustomView();
+        if (view != null) {
+            mLayoutDeviceName[0] = view.findViewById(R.id.TextInputLayout_device_name);
+            mEtDeviceName[0] = view.findViewById(R.id.EditText_device_name);
+            mEtDeviceName[0].setText(device.getName());
+            mEtDeviceName[0].setSelection(mEtDeviceName[0].getText().length());
+            mBtnUpdate[0] = view.findViewById(R.id.Button_device_img);
+            mEtDeviceName[0].addTextChangedListener(new MyTextWatcher() {
+                @Override
+                public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
+                    if (s.length() > 12) {
+                        mLayoutDeviceName[0].setErrorEnabled(true);
+                        mEtDeviceName[0].setError(getString(R.string.all_max_name));
+                    } else {
+                        mEtDeviceName[0].setError(null);
+                    }
+                }
+            });
+            mBtnUpdate[0].setOnClickListener(v -> showUpdateImgDialog());
+        }
 
-        final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
-                .setIcon(R.drawable.ic_update)
-                .setTitle(R.string.hub_detail_update_device)
-                .setMessage(null)
-                .setButton1Text(R.string.all_edit);
-        dialog.setButton1Click(v -> {
-            final String name = mEtDeviceName.getText().toString();
-            if (StringUtils.isEmpty(name)) {
-                this.showFailedMsg("用电器名称不能为空");
-                return;
-            }
-            getHoldingActivity().hideSoftKeyBoard(mEtDeviceName, getContext());
-            final DeviceBean deviceBean = new DeviceBean(name);
-            mPresenter.crudDevice(deviceBean, "update");
-            dialog.dismiss();
-        }).show();
+        dialog.show();
     }
 
     public void showUpdateImgDialog() {
@@ -294,16 +327,17 @@ public class HubDetailNowFragment extends BaseFragment {
     }
 
     public void resetHub() {
-        final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
-                .setIcon(R.drawable.ic_update)
-                .setTitle(R.string.msg_alert_cleared)
-                .setMessage(R.string.msg_hub_reset)
-                .setButton1Text(R.string.all_ensure);
-        dialog.setButton1Click(v -> {
-            final OrderBean resetOrder = new OrderBean(hubBean.getOnenet_id(), "reset", 1);
-            mPresenter.sendOrder(resetOrder);
-            dialog.dismiss();
-        }).show();
+        new MaterialDialog.Builder(getHoldingActivity())
+                .title(R.string.msg_hub_reset)
+                .iconRes(R.drawable.ic_alert)
+                .content(R.string.hub_detail_reset_hub)
+                .negativeText(R.string.all_cancel)
+                .positiveText(R.string.all_ensure)
+                .onPositive((dialog, which) -> {
+                    final OrderBean resetOrder = new OrderBean(hubBean.getOnenet_id(), "reset", 1);
+                    mPresenter.sendOrder(resetOrder);
+                    dialog.dismiss();
+                }).show();
     }
 
     private TextView mTvStore = null;
@@ -326,47 +360,74 @@ public class HubDetailNowFragment extends BaseFragment {
     }
 
     public void addDevice() {
-        @SuppressLint("InflateParams") final View view = getLayoutInflater().inflate(R.layout.dialog_new_device, null);
-        final TextInputEditText mEtDeviceName = view.findViewById(R.id.EditText_device_name);
-        mTvStore = view.findViewById(R.id.TextView_store);
-        mTvMatch = view.findViewById(R.id.TextView_match);
-        storeOrMatchLoading = view.findViewById(R.id.ZLoadingView_new_device);
-        mBtnStore = view.findViewById(R.id.Button_store_device);
-        mBtnMatch = view.findViewById(R.id.Button_match_device);
+        final TextInputEditText[] mEtDeviceName = new TextInputEditText[1];
+        final TextInputLayout[] mLayoutDeviceName = new TextInputLayout[1];
 
-        final OrderBean storeOrder = new OrderBean(hubBean.getOnenet_id(), "store", 1);
-        mBtnStore.setOnClickListener(v -> mPresenter.sendOrder(storeOrder));
+        final MaterialDialog dialog = new MaterialDialog.Builder(getHoldingActivity())
+                .title(R.string.hub_detail_add_device)
+                .iconRes(R.drawable.ic_edit)
+                .customView(R.layout.dialog_new_device, true)
+                .negativeText(R.string.all_cancel)
+                .positiveText(R.string.all_add)
+                .onPositive((_dialog, which) -> {
+                    String name = mEtDeviceName[0].getText().toString();
+                    if (StringUtils.isEmpty(name)) {
+                        showFailedMsg("用电器名称不能为空");
+                        return;
+                    }
+                    if (mTvStore.getText() != "有效") {
+                        showFailedMsg("插座没有保存到该电器特征值");
+                        return;
+                    }
+                    if (mTvMatch.getText() != "有效") {
+                        showFailedMsg("插座没能匹配到该电器特征值");
+                        return;
+                    }
+                    if (mLayoutDeviceName[0].getError() == null) {
+                        getHoldingActivity().hideSoftKeyBoard(mEtDeviceName[0], getContext());
+                        mPresenter.crudDevice(new DeviceBean.Builder()
+                                .name(name)
+                                .eigenvalue(list)
+                                .hub_id(hubBean.getOnenet_id())
+                                .build(), "add");
+                        _dialog.dismiss();
+                    }
+                })
+                .build();
 
-        final OrderBean matchOrder = new OrderBean(hubBean.getOnenet_id(), "match", 1);
-        mBtnMatch.setOnClickListener(v -> mPresenter.sendOrder(matchOrder));
+        final View view = dialog.getCustomView();
+        if (view != null) {
+            mLayoutDeviceName[0] = view.findViewById(R.id.TextInputLayout_device_name);
+            mEtDeviceName[0] = view.findViewById(R.id.EditText_device_name);
+            mEtDeviceName[0].setText(device.getName());
+            mEtDeviceName[0].setSelection(mEtDeviceName[0].getText().length());
 
-        final NiftyDialog dialog = new NiftyDialogUtil()
-                .setView(view, getHoldingActivity())
-                .setIcon(R.drawable.ic_update)
-                .setTitle(R.string.hub_detail_add_device)
-                .setMessage(null)
-                .setButton1Text(R.string.all_add);
-        dialog.setButton1Click(v -> {
-            try {
-                String name = mEtDeviceName.getText().toString();
-                if (StringUtils.isEmpty(name)) {
-                    this.showFailedMsg("用电器名称不能为空");
-                    return;
+            mTvStore = view.findViewById(R.id.TextView_store);
+            mTvMatch = view.findViewById(R.id.TextView_match);
+            storeOrMatchLoading = view.findViewById(R.id.ZLoadingView_new_device);
+            mBtnStore = view.findViewById(R.id.Button_store_device);
+            mBtnMatch = view.findViewById(R.id.Button_match_device);
+
+            mEtDeviceName[0].addTextChangedListener(new MyTextWatcher() {
+                @Override
+                public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
+                    if (s.length() > 12) {
+                        mLayoutDeviceName[0].setErrorEnabled(true);
+                        mEtDeviceName[0].setError(getString(R.string.all_max_name));
+                    } else {
+                        mEtDeviceName[0].setError(null);
+                    }
                 }
-                if (mTvStore.getText() == "有效" && mTvMatch.getText() == "有效"
-                        && list != 0) {
-                    getHoldingActivity().hideSoftKeyBoard(mEtDeviceName, getContext());
-                    final DeviceBean deviceBean = new DeviceBean.Builder()
-                            .name(name)
-                            .eigenvalue(list)
-                            .hub_id(hubBean.getOnenet_id())
-                            .build();
-                    mPresenter.crudDevice(deviceBean, "add");
-                    dialog.dismiss();
-                }
-            } catch (final NullPointerException ignored) {
-            }
-        }).show();
+            });
+
+            final OrderBean storeOrder = new OrderBean(hubBean.getOnenet_id(), "store", 1);
+            mBtnStore.setOnClickListener(v -> mPresenter.sendOrder(storeOrder));
+
+            final OrderBean matchOrder = new OrderBean(hubBean.getOnenet_id(), "match", 1);
+            mBtnMatch.setOnClickListener(v -> mPresenter.sendOrder(matchOrder));
+        }
+
+        dialog.show();
     }
 
     public void setHubStore(final boolean flag) {
@@ -394,11 +455,29 @@ public class HubDetailNowFragment extends BaseFragment {
         }
     }
 
-    public void setData(final Map<String, String> data) {
-        mTvVoltage.setText(data.get("V"));
-        mTvAmpere.setText(data.get("I"));
-        mTvPowerFactor.setText(data.get("Q"));
-        mTvPower.setText(data.get("W"));
+    public void setData(final Map<String, Double> data) {
+        for (final String id : data.keySet()) {
+            switch (id) {
+                case "V":
+                    LogUtils.d(data.get(id).intValue());
+                    LogUtils.d(data.get(id).intValue() / 230 * 100);
+                    mWvV.setProgressValue(data.get(id).intValue() / 230 * 100);
+                    mTvV.setText(String.format(Locale.CHINA, "%f", data.get(id)));
+                    break;
+                case "I":
+                    mWvI.setProgressValue((int) ((data.get(id).intValue() / 0.8) * 100));
+                    mTvI.setText(String.format(Locale.CHINA, "%f", data.get(id)));
+                    break;
+                case "W":
+                    mWvP.setProgressValue(data.get(id).intValue() / 200 * 100);
+                    mTvP.setText(String.format(Locale.CHINA, "%f", data.get(id)));
+                    break;
+                case "Q":
+                    mWvQ.setProgressValue(data.get(id).intValue() * 100);
+                    mTvQ.setText(String.format(Locale.CHINA, "%f", data.get(id)));
+                    break;
+            }
+        }
     }
 
     public void showListDeviceLoading() {

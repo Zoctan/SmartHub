@@ -33,6 +33,6 @@
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/ic_torch_off"
-        android:tint="@color/detail_icon_unselect"
+        android:tint="@color/un_select"
         tools:ignore="ContentDescription" />
 </FrameLayout>

@@ -9,8 +9,8 @@
     <color name="white">#FFFFFF</color>
     <color name="inverse_bg">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
-    <color name="detail_icon_select">#FFFFFF</color>
-    <color name="detail_icon_unselect">#BDBDBD</color>
+    <color name="select">#FFFFFF</color>
+    <color name="un_select">#BDBDBD</color>
     <!-- 常见颜色 -->
     <color name="cyan">#00FFFF</color>
     <color name="danger">#BD362F</color>

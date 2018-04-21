@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/primary">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/RelativeLayout_hub_detail_now_appliances"
@@ -19,7 +18,7 @@
             android:layout_marginBottom="12dp"
             android:gravity="center"
             android:text="@string/hub_detail_now_current_electrical_appliances"
-            android:textColor="@color/white" />
+            android:textColor="@color/primary_text" />
 
         <ImageView
             android:id="@+id/ImageView_hub_detail_now_appliances"
@@ -28,6 +27,7 @@
             android:layout_below="@+id/TextView_hub_detail_now_appliances_title"
             android:layout_centerHorizontal="true"
             android:src="@drawable/ic_hub_head"
+            android:tint="@color/accent"
             tools:ignore="ContentDescription" />
 
         <TextView
@@ -38,7 +38,7 @@
             android:layout_marginTop="16dp"
             android:gravity="center"
             android:text="@string/find_device"
-            android:textColor="@color/white" />
+            android:textColor="@color/primary_text" />
 
         <com.zyao89.view.zloading.ZLoadingView
             android:id="@+id/ZLoadingView_hub_detail_now"
@@ -47,7 +47,7 @@
             android:layout_below="@+id/TextView_hub_detail_now_appliances_name"
             android:layout_centerHorizontal="true"
             android:visibility="gone"
-            app:z_color="@color/white"
+            app:z_color="@color/primary"
             app:z_type="DoubleCircleBuilder" />
 
         <io.github.yavski.fabspeeddial.FabSpeedDial
@@ -57,53 +57,240 @@
             android:layout_alignParentBottom="false"
             android:layout_alignParentEnd="true"
             android:layout_gravity="top"
-            app:fabBackgroundTint="@color/primary"
+            app:fabBackgroundTint="@color/accent"
             app:fabGravity="top_end"
             app:fabMenu="@menu/menu_hub_detail"
             app:miniFabBackgroundTint="@color/white"
-            app:miniFabDrawableTint="@color/primary"
+            app:miniFabDrawableTint="@color/accent"
             app:miniFabTitleTextColor="@color/primary_text" />
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="85dp"
+        android:layout_below="@+id/RelativeLayout_hub_detail_now_appliances"
+        android:layout_marginTop="48dp"
+        android:baselineAligned="false"
         android:orientation="horizontal">
 
-        <me.itangqi.waveloadingview.WaveLoadingView
-            android:id="@+id/WaveLoadingView_V"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:wlv_borderColor="@color/white"
-            app:wlv_borderWidth="3dp"
-            app:wlv_progressValue="40"
-            app:wlv_round_rectangle="true"
-            app:wlv_shapeType="circle"
-            app:wlv_titleCenter="Center Title"
-            app:wlv_titleCenterColor="@color/white"
-            app:wlv_titleCenterSize="24sp"
-            app:wlv_titleCenterStrokeColor="@android:color/holo_blue_dark"
-            app:wlv_titleCenterStrokeWidth="3dp"
-            app:wlv_triangle_direction="north"
-            app:wlv_waveAmplitude="70"
-            app:wlv_waveColor="@color/white" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-        <me.itangqi.waveloadingview.WaveLoadingView
-            android:id="@+id/WaveLoadingView_I"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:wlv_borderColor="@color/colorAccent"
-            app:wlv_borderWidth="3dp"
-            app:wlv_progressValue="40"
-            app:wlv_round_rectangle="true"
-            app:wlv_shapeType="circle"
-            app:wlv_titleCenter="Center Title"
-            app:wlv_titleCenterColor="@android:color/white"
-            app:wlv_titleCenterSize="24sp"
-            app:wlv_titleCenterStrokeColor="@android:color/holo_blue_dark"
-            app:wlv_titleCenterStrokeWidth="3dp"
-            app:wlv_triangle_direction="north"
-            app:wlv_waveAmplitude="70"
-            app:wlv_waveColor="@color/colorAccent" />
+            <me.itangqi.waveloadingview.WaveLoadingView
+                android:id="@+id/WaveLoadingView_V"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_gravity="center"
+                app:wlv_borderColor="@color/accent"
+                app:wlv_borderWidth="3dp"
+                app:wlv_progressValue="40"
+                app:wlv_round_rectangle="true"
+                app:wlv_shapeType="circle"
+                app:wlv_titleCenter="V"
+                app:wlv_titleCenterColor="@color/white"
+                app:wlv_titleCenterSize="24sp"
+                app:wlv_titleCenterStrokeColor="@color/white"
+                app:wlv_titleCenterStrokeWidth="3dp"
+                app:wlv_triangle_direction="north"
+                app:wlv_waveAmplitude="70"
+                app:wlv_waveColor="@color/accent" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hub_detail_now_voltage"
+                    android:textColor="@color/primary_text" />
+
+                <TextView
+                    android:id="@+id/TextView_V"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/all_zero"
+                    android:textColor="@color/primary_text" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/voltage"
+                    android:textColor="@color/primary_text" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/white" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <me.itangqi.waveloadingview.WaveLoadingView
+                android:id="@+id/WaveLoadingView_I"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_gravity="center"
+                app:wlv_borderColor="@color/accent"
+                app:wlv_borderWidth="3dp"
+                app:wlv_progressValue="40"
+                app:wlv_round_rectangle="true"
+                app:wlv_shapeType="circle"
+                app:wlv_titleCenter="I"
+                app:wlv_titleCenterColor="@color/white"
+                app:wlv_titleCenterSize="24sp"
+                app:wlv_titleCenterStrokeColor="@color/white"
+                app:wlv_titleCenterStrokeWidth="3dp"
+                app:wlv_triangle_direction="north"
+                app:wlv_waveAmplitude="70"
+                app:wlv_waveColor="@color/accent" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hub_detail_now_ampere"
+                    android:textColor="@color/primary_text" />
+
+                <TextView
+                    android:id="@+id/TextView_I"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/all_zero"
+                    android:textColor="@color/primary_text" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ampere"
+                    android:textColor="@color/primary_text" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/white" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <me.itangqi.waveloadingview.WaveLoadingView
+                android:id="@+id/WaveLoadingView_P"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_gravity="center"
+                app:wlv_borderColor="@color/accent"
+                app:wlv_borderWidth="3dp"
+                app:wlv_progressValue="40"
+                app:wlv_round_rectangle="true"
+                app:wlv_shapeType="circle"
+                app:wlv_titleCenter="P"
+                app:wlv_titleCenterColor="@color/white"
+                app:wlv_titleCenterSize="24sp"
+                app:wlv_titleCenterStrokeColor="@color/white"
+                app:wlv_titleCenterStrokeWidth="3dp"
+                app:wlv_triangle_direction="north"
+                app:wlv_waveAmplitude="70"
+                app:wlv_waveColor="@color/accent" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hub_detail_now_power"
+                    android:textColor="@color/primary_text" />
+
+                <TextView
+                    android:id="@+id/TextView_P"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/all_zero"
+                    android:textColor="@color/primary_text" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/power"
+                    android:textColor="@color/primary_text" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/white" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <me.itangqi.waveloadingview.WaveLoadingView
+                android:id="@+id/WaveLoadingView_Q"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_gravity="center"
+                app:wlv_borderColor="@color/accent"
+                app:wlv_borderWidth="3dp"
+                app:wlv_progressValue="40"
+                app:wlv_round_rectangle="true"
+                app:wlv_shapeType="circle"
+                app:wlv_titleCenter="Q"
+                app:wlv_titleCenterColor="@color/white"
+                app:wlv_titleCenterSize="24sp"
+                app:wlv_titleCenterStrokeColor="@color/white"
+                app:wlv_titleCenterStrokeWidth="3dp"
+                app:wlv_triangle_direction="north"
+                app:wlv_waveAmplitude="70"
+                app:wlv_waveColor="@color/accent" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hub_detail_now_power_factor"
+                    android:textColor="@color/primary_text" />
+
+                <TextView
+                    android:id="@+id/TextView_Q"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/all_zero"
+                    android:textColor="@color/primary_text" />
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

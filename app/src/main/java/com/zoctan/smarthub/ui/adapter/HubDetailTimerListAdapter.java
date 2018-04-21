@@ -5,11 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nightonke.jellytogglebutton.JellyToggleButton;
-import com.vansuita.library.Icon;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.model.bean.smart.TimerBean;
 import com.zoctan.smarthub.ui.custom.PopupList;
@@ -56,12 +54,10 @@ public class HubDetailTimerListAdapter extends RecyclerView.Adapter<RecyclerView
                 }
             });
 
-            if (timer.getPower() == 1) {
-                Icon.on(((ItemViewHolder) holder).mTvTimerPic).color(R.color.accent).icon(R.drawable.ic_switch).put();
-            }
+            ((ItemViewHolder) holder).mTvTimerTime.setText(timer.getTime());
             ((ItemViewHolder) holder).mTvTimerName.setText(timer.getName());
-            final String power = timer.getPower() == 0 ? "定时关机 " : "定时开机 ";
-            final String detail_time = power + timer.getRepeat() + " " + timer.getTime();
+            final String power = timer.getPower() == 0 ? "关机" : "开机";
+            final String detail_time = timer.getRepeat() + " " + power;
             ((ItemViewHolder) holder).mTvTimerRepeat.setText(detail_time);
             ((ItemViewHolder) holder).mSwitchOpenClose.setChecked(timer.getStatus() == 1);
         }
@@ -88,11 +84,11 @@ public class HubDetailTimerListAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.ImageView_timer_pic)
-        ImageView mTvTimerPic;
-        @BindView(R.id.ImageView_timer_name)
+        @BindView(R.id.TextView_timer_name)
         TextView mTvTimerName;
-        @BindView(R.id.ImageView_timer_repeat)
+        @BindView(R.id.TextView_timer_time)
+        TextView mTvTimerTime;
+        @BindView(R.id.TextView_timer_repeat)
         TextView mTvTimerRepeat;
         @BindView(R.id.Switch_timer_open_close)
         JellyToggleButton mSwitchOpenClose;
@@ -102,7 +98,7 @@ public class HubDetailTimerListAdapter extends RecyclerView.Adapter<RecyclerView
             ButterKnife.bind(this, view);
         }
 
-        @OnClick({R.id.Switch_timer_open_close, R.id.GridLayout_timer})
+        @OnClick({R.id.Switch_timer_open_close, R.id.CardView_timer})
         public void onClick(final View view) {
             if (mOnItemClickListener == null) {
                 return;
@@ -112,7 +108,7 @@ public class HubDetailTimerListAdapter extends RecyclerView.Adapter<RecyclerView
                 case R.id.Switch_timer_open_close:
                     action = mSwitchOpenClose.isChecked() ? "open" : "close";
                     break;
-                case R.id.GridLayout_timer:
+                case R.id.CardView_timer:
                     action = "update";
                     break;
             }

@@ -52,7 +52,7 @@ public class HubDetailNowPresenter extends BasePresenter {
                         if (response.getErrno() > 0) {
                             view.showFailedMsg(response.getError());
                         } else {
-                            final Map<String, String> streams = new HashMap<>();
+                            final Map<String, Double> streams = new HashMap<>();
                             for (final Object object : response.getData()) {
                                 final OneNetDataStreamsBean bean = JsonUtil.deserialize(object.toString(), OneNetDataStreamsBean.class);
                                 streams.put(bean.getId(), bean.getCurrent_value());

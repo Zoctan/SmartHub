@@ -1,181 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="bottom"
     android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="@color/primary">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="@string/nav_feedback"
+            android:textColor="@color/white" />
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="60dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-        <ScrollView
-            android:id="@+id/scrollView"
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/ic_mail"
+            android:tint="@color/un_select"
+            tools:ignore="ContentDescription" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/TextInputLayout_email"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/EditText_email"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:hint="@string/user_detail_mail"
+                android:inputType="text"
+                android:textColor="@color/primary_text"
+                android:textSize="@dimen/edit_size" />
+        </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="5dp"
+        android:background="@color/primary" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/ic_phone"
+            android:tint="@color/un_select"
+            tools:ignore="ContentDescription" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/TextInputLayout_phone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/EditText_phone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:hint="@string/user_detail_phone"
+                android:inputType="text"
+                android:textColor="@color/primary_text"
+                android:textSize="@dimen/edit_size" />
+        </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="5dp"
+        android:background="@color/primary" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/ic_feedback"
+            android:tint="@color/un_select"
+            tools:ignore="ContentDescription" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/TextInputLayout_msg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fadeScrollbars="false">
+            android:background="@null">
 
-            <LinearLayout
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/EditText_msg"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginEnd="12dp"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="50dp"
-                        android:layout_marginEnd="4dp"
-                        android:layout_marginStart="4dp"
-                        android:layout_marginTop="4dp"
-                        android:src="@drawable/ic_mail"
-                        tools:ignore="ContentDescription" />
-
-                    <android.support.design.widget.TextInputLayout
-                        android:id="@+id/TextInputLayout_email"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@null">
-
-                        <android.support.design.widget.TextInputEditText
-                            android:id="@+id/EditText_email"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:hint="@string/user_detail_email"
-                            android:inputType="text"
-                            android:textColor="@color/primary_text"
-                            android:textSize="@dimen/edit_size" />
-                    </android.support.design.widget.TextInputLayout>
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:layout_marginTop="5dp"
-                    android:background="@color/primary" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginEnd="12dp"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="50dp"
-                        android:layout_marginEnd="4dp"
-                        android:layout_marginStart="4dp"
-                        android:layout_marginTop="4dp"
-                        android:src="@drawable/ic_phone"
-                        tools:ignore="ContentDescription" />
-
-                    <android.support.design.widget.TextInputLayout
-                        android:id="@+id/TextInputLayout_phone"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@null">
-
-                        <android.support.design.widget.TextInputEditText
-                            android:id="@+id/EditText_phone"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:hint="@string/user_detail_phone"
-                            android:inputType="text"
-                            android:textColor="@color/primary_text"
-                            android:textSize="@dimen/edit_size" />
-                    </android.support.design.widget.TextInputLayout>
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:layout_marginTop="5dp"
-                    android:background="@color/primary" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="50dp"
-                        android:layout_marginEnd="4dp"
-                        android:layout_marginStart="4dp"
-                        android:layout_marginTop="4dp"
-                        android:src="@drawable/ic_feedback"
-                        tools:ignore="ContentDescription" />
-
-                    <android.support.design.widget.TextInputLayout
-                        android:id="@+id/TextInputLayout_msg"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@null">
-
-                        <android.support.design.widget.TextInputEditText
-                            android:id="@+id/EditText_msg"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:gravity="start|top"
-                            android:hint="@string/feedback_content"
-                            android:inputType="textMultiLine"
-                            android:maxLines="5"
-                            android:minLines="1"
-                            android:textColor="@color/primary_text"
-                            android:textSize="@dimen/edit_size"
-                            android:windowSoftInputMode="adjustResize" />
-                    </android.support.design.widget.TextInputLayout>
-                </LinearLayout>
-
-                <mehdi.sakout.fancybuttons.FancyButton
-                    android:id="@+id/Button_submit"
-                    android:layout_width="130dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="12dp"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
-                    android:paddingTop="10dp"
-                    android:textSize="16sp"
-                    fancy:fb_borderColor="@color/primary"
-                    fancy:fb_borderWidth="1dp"
-                    fancy:fb_defaultColor="@color/primary"
-                    fancy:fb_focusColor="@color/half_transparent"
-                    fancy:fb_radius="30dp"
-                    fancy:fb_text="@string/all_ensure"
-                    fancy:fb_textColor="@color/white" />
-
-                <com.zyao89.view.zloading.ZLoadingView
-                    android:id="@+id/ZLoadingView_feedback"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|center_horizontal"
-                    android:visibility="gone"
-                    app:z_color="@color/primary"
-                    app:z_type="DoubleCircleBuilder" />
-
-            </LinearLayout>
-        </ScrollView>
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:gravity="start|top"
+                android:hint="@string/feedback_content"
+                android:inputType="textMultiLine"
+                android:maxLines="5"
+                android:minLines="1"
+                android:textColor="@color/primary_text"
+                android:textSize="@dimen/edit_size"
+                android:windowSoftInputMode="adjustResize" />
+        </android.support.design.widget.TextInputLayout>
     </LinearLayout>
+
+    <mehdi.sakout.fancybuttons.FancyButton
+        android:id="@+id/Button_submit"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="10dp"
+        android:textSize="16sp"
+        app:fb_borderColor="@color/primary"
+        app:fb_borderWidth="1dp"
+        app:fb_defaultColor="@color/primary"
+        app:fb_focusColor="@color/half_transparent"
+        app:fb_radius="30dp"
+        app:fb_text="@string/all_ensure"
+        app:fb_textColor="@color/white" />
+
+    <com.zyao89.view.zloading.ZLoadingView
+        android:id="@+id/ZLoadingView_feedback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:visibility="gone"
+        app:z_color="@color/white"
+        app:z_type="DoubleCircleBuilder" />
 </LinearLayout>

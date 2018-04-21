@@ -1,6 +1,5 @@
 package com.zoctan.smarthub.ui.fragment;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -11,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TimePicker;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.StringUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.zoctan.smarthub.R;
@@ -22,8 +22,6 @@ import com.zoctan.smarthub.ui.adapter.HubDetailTimerListAdapter;
 import com.zoctan.smarthub.ui.base.BaseFragment;
 import com.zoctan.smarthub.ui.custom.MyTextWatcher;
 import com.zoctan.smarthub.utils.AlerterUtil;
-import com.zoctan.smarthub.utils.NiftyDialog;
-import com.zoctan.smarthub.utils.NiftyDialogUtil;
 import com.zyao89.view.zloading.ZLoadingView;
 
 import org.angmarch.views.NiceSpinner;
@@ -52,7 +50,10 @@ public class HubDetailTimerFragment extends BaseFragment {
     protected HubBean hubBean;
 
     public static HubDetailTimerFragment newInstance() {
-        return new HubDetailTimerFragment();
+        final Bundle args = new Bundle();
+        final HubDetailTimerFragment fragment = new HubDetailTimerFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -132,81 +133,90 @@ public class HubDetailTimerFragment extends BaseFragment {
     }
 
     private void showTimerDialog(final TimerBean timer, final String action) {
-        @SuppressLint("InflateParams") final View view = getLayoutInflater().inflate(R.layout.dialog_timer, null);
-        final TextInputEditText mEtTimerName = view.findViewById(R.id.EditText_timer_name);
-        final TextInputLayout mLayoutTimerName = view.findViewById(R.id.TextInputLayout_timer_name);
-
-        mEtTimerName.setText(timer.getName());
-        mEtTimerName.setSelection(mEtTimerName.getText().length());
-        mEtTimerName.addTextChangedListener(new MyTextWatcher() {
-            @Override
-            public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
-                if (s.length() > 12) {
-                    mLayoutTimerName.setErrorEnabled(true);
-                    mEtTimerName.setError(getString(R.string.all_max_name));
-                } else {
-                    mEtTimerName.setError(null);
-                }
-            }
-        });
+        final TextInputEditText[] mEtTimerName = new TextInputEditText[1];
+        final TextInputLayout[] mLayoutTimerName = new TextInputLayout[1];
         // 下拉菜单
-        final NiceSpinner mSpinnerOpenClose = view.findViewById(R.id.NiceSpinner_timer_open_close);
-        final LinkedList<String> openCloseList = new LinkedList<>(Arrays.asList("定时关机", "定时开机"));
-        timer.setPower(timer.getPower());
-        mSpinnerOpenClose.attachDataSource(openCloseList);
-        mSpinnerOpenClose.addOnItemClickListener((adapterView, view1, i, l) -> {
-            if (openCloseList.get(i).equals("定时关机")) {
-                timer.setPower(0);
-            } else {
-                timer.setPower(1);
-            }
-        });
-
-        final NiceSpinner mSpinnerRepeat = view.findViewById(R.id.NiceSpinner_timer_repeat);
-        final LinkedList<String> repeatList = new LinkedList<>(Arrays.asList("每天", "每周1-5", "一次性"));
-        timer.setRepeat(timer.getRepeat());
-        mSpinnerRepeat.attachDataSource(repeatList);
-        mSpinnerRepeat.addOnItemClickListener((adapterView, v, i, l) -> timer.setRepeat(repeatList.get(i)));
-
+        final NiceSpinner mSpinnerOpenClose;
+        final NiceSpinner mSpinnerRepeat;
         // 时间选择器
-        final TimePicker mTimePicker = view.findViewById(R.id.TimePicker_timer);
-        mTimePicker.setIs24HourView(true);
-        final int hour;
-        final int minute;
-        if (timer.getTime() != null) {
-            hour = Integer.parseInt(timer.getTime().split(":")[0]);
-            minute = Integer.parseInt(timer.getTime().split(":")[1]);
-        } else {
-            calendar.setTimeInMillis(System.currentTimeMillis());
-            hour = calendar.get(Calendar.HOUR_OF_DAY);
-            minute = Calendar.MINUTE;
-        }
-        mTimePicker.setCurrentHour(hour);
-        mTimePicker.setCurrentMinute(minute);
+        final TimePicker[] mTimePicker = new TimePicker[1];
 
-        final NiftyDialog dialog = new NiftyDialogUtil()
-                .setView(view, getHoldingActivity())
-                .setIcon(R.drawable.ic_edit)
-                .setTitle(R.string.hub_detail_timer_setting)
-                .setMessage(null)
-                .setButton1Text(R.string.all_ensure);
-        dialog.setButton1Click(v -> {
-            String name = mEtTimerName.getText().toString();
-            if (StringUtils.isEmpty(name)) {
-                this.showFailedMsg("定时器名称不能为空");
-                return;
+        final MaterialDialog dialog = new MaterialDialog.Builder(getHoldingActivity())
+                .title(R.string.hub_detail_timer_setting)
+                .customView(R.layout.dialog_timer, true)
+                .negativeText(R.string.all_cancel)
+                .positiveText(R.string.all_ensure)
+                .onPositive((_dialog, which) -> {
+                    String name = mEtTimerName[0].getText().toString();
+                    if (StringUtils.isEmpty(name)) {
+                        this.showFailedMsg("定时器名称不能为空");
+                        return;
+                    }
+                    if (mLayoutTimerName[0].getError() == null) {
+                        // 补零
+                        final String hour1 = String.format(Locale.CHINA, "%02d", mTimePicker[0].getCurrentHour());
+                        final String minute1 = String.format(Locale.CHINA, "%02d", mTimePicker[0].getCurrentMinute());
+                        timer.setTime(String.format("%s:%s", hour1, minute1));
+                        timer.setName(name);
+                        mPresenter.crudTimer(timer, action);
+                        _dialog.dismiss();
+                    }
+                })
+                .build();
+
+        final View view = dialog.getCustomView();
+        if (view != null) {
+            mEtTimerName[0] = view.findViewById(R.id.EditText_timer_name);
+            mLayoutTimerName[0] = view.findViewById(R.id.TextInputLayout_timer_name);
+            mEtTimerName[0].setText(timer.getName());
+            mEtTimerName[0].setSelection(mEtTimerName[0].getText().length());
+            mEtTimerName[0].addTextChangedListener(new MyTextWatcher() {
+                @Override
+                public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
+                    if (s.length() > 12) {
+                        mLayoutTimerName[0].setErrorEnabled(true);
+                        mEtTimerName[0].setError(getString(R.string.all_max_name));
+                    } else {
+                        mEtTimerName[0].setError(null);
+                    }
+                }
+            });
+            // 下拉菜单
+            mSpinnerOpenClose = view.findViewById(R.id.NiceSpinner_timer_open_close);
+            final LinkedList<String> openCloseList = new LinkedList<>(Arrays.asList("定时关机", "定时开机"));
+            timer.setPower(timer.getPower());
+            mSpinnerOpenClose.attachDataSource(openCloseList);
+            mSpinnerOpenClose.addOnItemClickListener((adapterView, view1, i, l) -> {
+                if (openCloseList.get(i).equals("定时关机")) {
+                    timer.setPower(0);
+                } else {
+                    timer.setPower(1);
+                }
+            });
+
+            final LinkedList<String> repeatList = new LinkedList<>(Arrays.asList("每天", "每周1-5", "一次性"));
+            timer.setRepeat(timer.getRepeat());
+            mSpinnerRepeat = view.findViewById(R.id.NiceSpinner_timer_repeat);
+            mSpinnerRepeat.attachDataSource(repeatList);
+            mSpinnerRepeat.addOnItemClickListener((adapterView, v, i, l) -> timer.setRepeat(repeatList.get(i)));
+
+            mTimePicker[0] = view.findViewById(R.id.TimePicker_timer);
+            mTimePicker[0].setIs24HourView(true);
+            final int hour;
+            final int minute;
+            if (timer.getTime() != null) {
+                hour = Integer.parseInt(timer.getTime().split(":")[0]);
+                minute = Integer.parseInt(timer.getTime().split(":")[1]);
+            } else {
+                calendar.setTimeInMillis(System.currentTimeMillis());
+                hour = calendar.get(Calendar.HOUR_OF_DAY);
+                minute = Calendar.MINUTE;
             }
-            if (mLayoutTimerName.getError() == null) {
-                getHoldingActivity().hideSoftKeyBoard(mEtTimerName, getContext());
-                // 补零
-                final String hour1 = String.format(Locale.CHINA, "%02d", mTimePicker.getCurrentHour());
-                final String minute1 = String.format(Locale.CHINA, "%02d", mTimePicker.getCurrentMinute());
-                timer.setTime(String.format("%s:%s", hour1, minute1));
-                timer.setName(name);
-                mPresenter.crudTimer(timer, action);
-                dialog.dismiss();
-            }
-        }).show();
+            mTimePicker[0].setCurrentHour(hour);
+            mTimePicker[0].setCurrentMinute(minute);
+        }
+
+        dialog.show();
     }
 
     public void refreshTimerList() {

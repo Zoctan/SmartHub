@@ -1,16 +1,15 @@
 package com.zoctan.smarthub.ui.fragment;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.View;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.EncodeUtils;
 import com.blankj.utilcode.util.FragmentUtils;
 import com.blankj.utilcode.util.LogUtils;
@@ -27,10 +26,7 @@ import com.zoctan.smarthub.presenter.HubListPresenter;
 import com.zoctan.smarthub.ui.activity.ScannerActivity;
 import com.zoctan.smarthub.ui.adapter.HubListAdapter;
 import com.zoctan.smarthub.ui.base.BaseFragment;
-import com.zoctan.smarthub.ui.custom.MyTextWatcher;
 import com.zoctan.smarthub.utils.AlerterUtil;
-import com.zoctan.smarthub.utils.NiftyDialog;
-import com.zoctan.smarthub.utils.NiftyDialogUtil;
 import com.zyao89.view.zloading.ZLoadingView;
 
 import java.util.ArrayList;
@@ -128,67 +124,48 @@ public class HubListFragment extends BaseFragment implements FragmentUtils.OnBac
     };
 
     private void showAddDialog(final HubBean hub) {
-        final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
-                .setIcon(R.drawable.ic_hub)
-                .setTitle(R.string.hub_add)
-                .setMessage(R.string.hub_add_msg)
-                .setButton1Text(R.string.all_ensure);
-        dialog.setButton1Click(v -> {
-            mPresenter.crudHub(hub, "add");
-            dialog.dismiss();
-        }).show();
+        new MaterialDialog.Builder(getHoldingActivity())
+                .title(R.string.hub_add)
+                .iconRes(R.drawable.ic_hub)
+                .content(R.string.hub_add_msg)
+                .negativeText(R.string.all_cancel)
+                .positiveText(R.string.all_ensure)
+                .onPositive((dialog, which) -> {
+                    mPresenter.crudHub(hub, "add");
+                    dialog.dismiss();
+                }).show();
     }
 
     private void showDeleteDialog(final HubBean hub) {
-        final NiftyDialog dialog = new NiftyDialogUtil(getHoldingActivity())
-                .setIcon(R.drawable.ic_alert)
-                .setTitle(R.string.hub_delete)
-                .setMessage(R.string.msg_hub_delete)
-                .setButton1Text(R.string.all_ensure);
-        dialog.setButton1Click(v -> {
-            mPresenter.crudHub(hub, "delete");
-            dialog.dismiss();
-        }).show();
+        new MaterialDialog.Builder(getHoldingActivity())
+                .title(R.string.hub_delete)
+                .iconRes(R.drawable.ic_alert)
+                .negativeText(R.string.all_cancel)
+                .positiveText(R.string.all_ensure)
+                .onPositive((dialog, which) -> {
+                    mPresenter.crudHub(hub, "delete");
+                    dialog.dismiss();
+                }).show();
     }
 
     private void showUpdateDialog(final HubBean hub) {
-        @SuppressLint("InflateParams") final View view = getLayoutInflater().inflate(R.layout.dialog_edit_hub, null);
-        final TextInputEditText mEtHubName = view.findViewById(R.id.EditText_hub_name);
-        final TextInputLayout mLayoutHubName = view.findViewById(R.id.TextInputLayout_hub_name);
-        mEtHubName.setText(hub.getName());
-        mEtHubName.setSelection(mEtHubName.getText().length());
-        mEtHubName.addTextChangedListener(new MyTextWatcher() {
-            @Override
-            public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
-                if (s.length() > 12) {
-                    mLayoutHubName.setErrorEnabled(true);
-                    mLayoutHubName.setError(getString(R.string.all_max_name));
-                } else {
-                    mLayoutHubName.setError(null);
-                }
-            }
-        });
-
-        final NiftyDialog dialog = new NiftyDialogUtil()
-                .setView(view, getHoldingActivity())
-                .setIcon(R.drawable.ic_edit)
-                .setTitle(R.string.all_edit)
-                .setMessage(null)
-                .setButton1Text(R.string.all_update);
-        dialog.setButton1Click(v -> {
-            String name = mEtHubName.getText().toString();
-            if (StringUtils.isEmpty(name)) {
-                this.showFailedMsg("请输入插座名称");
-                return;
-            }
-            if (mLayoutHubName.getError() == null) {
-                getHoldingActivity().hideSoftKeyBoard(mEtHubName, getContext());
-                HubBean hubBean = new HubBean();
-                hubBean.setName(name);
-                mPresenter.crudHub(hubBean, "update");
-                dialog.dismiss();
-            }
-        }).show();
+        new MaterialDialog.Builder(getHoldingActivity())
+                .title(R.string.all_edit)
+                .iconRes(R.drawable.ic_edit)
+                .negativeText(R.string.all_cancel)
+                .inputRangeRes(1, 12, R.color.danger)
+                .inputType(InputType.TYPE_CLASS_TEXT)
+                .input(getString(R.string.hub_hint_name), hub.getName(), (dialog, input) -> {
+                    String name = input.toString();
+                    if (StringUtils.isEmpty(name)) {
+                        this.showFailedMsg("请输入插座名称");
+                        return;
+                    }
+                    HubBean hubBean = new HubBean();
+                    hubBean.setName(name);
+                    mPresenter.crudHub(hubBean, "update");
+                    dialog.dismiss();
+                }).show();
     }
 
     public void refreshHubList() {

@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.GridLayout;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -43,8 +42,6 @@ public class HubDetailSpareFragment extends BaseFragment {
     TextView mTvBill;
     @BindView(R.id.LineChart_hub_detail_spare)
     LineChart mLineChart;
-    @BindView(R.id.GridLayout_hub_detail_spare)
-    GridLayout mGridLayout;
     @BindView(R.id.ZLoadingView_hub_detail_spare)
     ZLoadingView zLoadingView;
     private final Handler handler = new Handler();
@@ -52,7 +49,10 @@ public class HubDetailSpareFragment extends BaseFragment {
     protected HubBean hubBean = new HubBean();
 
     public static HubDetailSpareFragment newInstance() {
-        return new HubDetailSpareFragment();
+        final Bundle args = new Bundle();
+        final HubDetailSpareFragment fragment = new HubDetailSpareFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -152,7 +152,7 @@ public class HubDetailSpareFragment extends BaseFragment {
 
     public void setSpareData(final String electricalDegree, final String electricalBill, final int currentMonth) {
         mTvDegree.setText(electricalDegree);
-        final String billTip = String.format(Locale.CHINA, "%d月份%s", currentMonth, getString(R.string.hub_detail_spare_electrical_bill));
+        final String billTip = String.format(Locale.CHINA, "%d月%s", currentMonth, getString(R.string.hub_detail_spare_electrical_bill));
         mTvBillTip.setText(billTip);
         mTvBill.setText(electricalBill);
     }
