@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from flask import current_app
-from itsdangerous import (TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired)
+from itsdangerous import (
+    TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired)
 from passlib.apps import custom_app_context as pwd_context
 
 from app import db
@@ -22,6 +23,7 @@ db.session.flush()
 hub = models.Hub()
 hub.name='可识别智能插座测试机'
 hub.mac='2e:3a:e8:3e:7b:f8'
+hub.room='room_bed'
 hub.user_id=1
 hub.onenet_id='19959358'
 db.session.add(hub)
@@ -37,6 +39,11 @@ hour.ten=6
 hour.eleven=6
 hour.twelve=3
 hour.fourteen=12
+hour.thirteen=6
+hour.fourteen=7
+hour.fifteen=8
+hour.sixteen=10
+hour.seventeen=9
 db.session.add(hour)
 timer = models.Timer(hub_id='19959358', name='test', power=1, repeat='每天', time='16:55', status=0)
 db.session.add(timer)
@@ -49,12 +56,15 @@ db.session.commit()
 class User(db.Model):
     __tablename__ = 'smart_users'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.Unicode(32, collation='utf8_bin'), nullable=False, unique=True, index=True)
-    password_hash = db.Column(db.Unicode(256, collation='utf8_bin'), nullable=False)
+    username = db.Column(db.Unicode(32, collation='utf8_bin'),
+            nullable=False, unique=True, index=True)
+    password_hash = db.Column(db.Unicode(
+            256, collation='utf8_bin'), nullable=False)
     avatar = db.Column(db.Unicode(256, collation='utf8_bin'),
             server_default="http://p0qgwnuel.bkt.clouddn.com/default.png",
             default="http://p0qgwnuel.bkt.clouddn.com/default.png")
-    hubs = db.relationship('Hub', backref='User', lazy='dynamic', cascade='all, delete-orphan')
+    hubs = db.relationship('Hub', backref='User',
+            lazy='dynamic', cascade='all, delete-orphan')
     phone = db.Column(db.Unicode(20, collation='utf8_bin'))
     email = db.Column(db.Unicode(30, collation='utf8_bin'))
 
@@ -106,20 +116,29 @@ class AnonymousUser(User):
 
 class Hub(db.Model):
     __tablename__ = 'smart_hubs'
-    onenet_id = db.Column(db.Unicode(64, collation='utf8_bin'), primary_key=True)
+    onenet_id = db.Column(db.Unicode(
+            64, collation='utf8_bin'), primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('smart_users.id'))
-    name = db.Column(db.Unicode(64, collation='utf8_bin'), server_default='插座', default='插座')
+    name = db.Column(db.Unicode(64, collation='utf8_bin'),
+            server_default='插座', default='插座')
     mac = db.Column(db.Unicode(64, collation='utf8_bin'), nullable=False)
-    timers = db.relationship('Timer', backref='Hub', lazy='dynamic', cascade='all, delete-orphan')
-    devices = db.relationship('Device', backref='Hub', lazy='dynamic', cascade='all, delete-orphan')
-    month_spare = db.relationship('MonthSpare', backref='Hub', lazy='dynamic', cascade='all, delete-orphan')
-    hour_spare = db.relationship('HourSpare', backref='Hub', lazy='dynamic', cascade='all, delete-orphan')
+    timers = db.relationship('Timer', backref='Hub',
+            lazy='dynamic', cascade='all, delete-orphan')
+    devices = db.relationship('Device', backref='Hub',
+            lazy='dynamic', cascade='all, delete-orphan')
+    room = db.Column(db.Unicode(64, collation='utf8_bin'),
+            server_default='room_bed', default='room_bed')
+    month_spare = db.relationship(
+            'MonthSpare', backref='Hub', lazy='dynamic', cascade='all, delete-orphan')
+    hour_spare = db.relationship(
+            'HourSpare', backref='Hub', lazy='dynamic', cascade='all, delete-orphan')
 
     def to_json(self):
         json = {
             'onenet_id': self.onenet_id,
             'name': self.name,
             'mac': self.mac,
+            'room': self.room
         }
         return json
 
@@ -130,7 +149,8 @@ class Hub(db.Model):
 class Device(db.Model):
     __tablename__ = 'smart_devices'
     id = db.Column(db.Integer, primary_key=True)
-    hub_id = db.Column(db.Unicode(64, collation='utf8_bin'), db.ForeignKey('smart_hubs.onenet_id'))
+    hub_id = db.Column(db.Unicode(64, collation='utf8_bin'),
+            db.ForeignKey('smart_hubs.onenet_id'))
     name = db.Column(db.Unicode(256, collation='utf8_bin'), nullable=False)
     img = db.Column(db.Unicode(256, collation='utf8_bin'))
     eigenvalue = db.Column(db.Integer, nullable=False)
@@ -152,16 +172,19 @@ class Device(db.Model):
 class Timer(db.Model):
     __tablename__ = 'smart_timers'
     id = db.Column(db.Integer, primary_key=True)
-    hub_id = db.Column(db.Unicode(64, collation='utf8_bin'), db.ForeignKey('smart_hubs.onenet_id'))
+    hub_id = db.Column(db.Unicode(64, collation='utf8_bin'),
+            db.ForeignKey('smart_hubs.onenet_id'))
     name = db.Column(db.Unicode(256, collation='utf8_bin'), nullable=False)
     # 0: 关 1: 开
-    power = db.Column(db.SmallInteger, server_default='0', default='0', nullable=False)
+    power = db.Column(db.SmallInteger, server_default='0',
+            default='0', nullable=False)
     # 每天|每周1-5|一次性
     repeat = db.Column(db.Unicode(256, collation='utf8_bin'), nullable=False)
     # 15:26
     time = db.Column(db.Unicode(32, collation='utf8_bin'), nullable=False)
     # 0: 关 1: 开
-    status = db.Column(db.SmallInteger, server_default='0', default='0', nullable=False)
+    status = db.Column(db.SmallInteger, server_default='0',
+            default='0', nullable=False)
 
     def to_json(self):
         json = {
@@ -183,9 +206,11 @@ class Timer(db.Model):
 class MonthSpare(db.Model):
     __tablename__ = 'smart_month_spare'
     id = db.Column(db.Integer, primary_key=True)
-    hub_id = db.Column(db.Unicode(64, collation='utf8_bin'), db.ForeignKey('smart_hubs.onenet_id'))
+    hub_id = db.Column(db.Unicode(64, collation='utf8_bin'),
+            db.ForeignKey('smart_hubs.onenet_id'))
     # 电价，暂时以广东为主
-    price = db.Column(db.Float, server_default='0.6', default='0.6', nullable=False)
+    price = db.Column(db.Float, server_default='0.6',
+            default='0.6', nullable=False)
     watt = db.Column(db.Float, server_default='0.0', default='0.0')
     current_month = db.Column(db.SmallInteger, nullable=False)
 
@@ -208,7 +233,8 @@ class MonthSpare(db.Model):
 class HourSpare(db.Model):
     __tablename__ = 'smart_hour_spare'
     id = db.Column(db.Integer, primary_key=True)
-    hub_id = db.Column(db.Unicode(64, collation='utf8_bin'), db.ForeignKey('smart_hubs.onenet_id'))
+    hub_id = db.Column(db.Unicode(64, collation='utf8_bin'),
+            db.ForeignKey('smart_hubs.onenet_id'))
     zero = db.Column(db.Float, server_default='0.0', default='0.0')
     one = db.Column(db.Float, server_default='0.0', default='0.0')
     two = db.Column(db.Float, server_default='0.0', default='0.0')

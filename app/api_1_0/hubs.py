@@ -88,6 +88,16 @@ def update_hub():
     return Result.success('成功修改插座')
 
 
+@decorators.composed(decorators.route('/api/hubs/room', methods=['PUT']), decorators.json_required)
+def update_hub_room():
+    onenet_id = request.json.get('onenet_id')
+    hub = Hub.query.filter_by(onenet_id=onenet_id).first()
+    if not hub:
+        return Result.error('插座不存在')
+    hub.room = request.json.get('room')
+    return Result.success('成功修改插座')
+
+
 @decorators.composed(decorators.route('/api/hubs/order', methods=['POST']), decorators.json_required)
 def hub_order():
     onenet_id = request.json.get('onenet_id')
