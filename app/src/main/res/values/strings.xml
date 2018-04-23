@@ -63,6 +63,7 @@
     <string name="hub_not_electric">已断电</string>
 
     <string name="hub_add">添加插座</string>
+    <string name="hub_update_room">修改插座所在房间</string>
     <string name="hub_add_msg">确定添加插座吗？</string>
     <string name="hub_delete">删除插座</string>
     <string name="msg_hub_delete">确定删除插座吗？</string>

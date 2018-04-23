@@ -118,6 +118,9 @@ public class HubListFragment extends BaseFragment implements FragmentUtils.OnBac
                 case "update":
                     showUpdateDialog(hub);
                     break;
+                case "updateRoom":
+                    showUpdateRoomDialog(hub);
+                    break;
                 case "delete":
                     showDeleteDialog(hub);
                     break;
@@ -149,6 +152,30 @@ public class HubListFragment extends BaseFragment implements FragmentUtils.OnBac
                     dialog.dismiss();
                 }).show();
     }
+
+    private void showUpdateRoomDialog(final HubBean hub) {
+        new MaterialDialog.Builder(getHoldingActivity())
+                .title(R.string.hub_update_room)
+                .iconRes(R.drawable.ic_edit)
+                .negativeText(R.string.all_cancel)
+                .items(R.array.room_values)
+                .itemsCallback((dialog, view, which, text) -> {
+                    switch (which) {
+                        case 0:
+                            hub.setRoom("room_living");
+                            break;
+                        case 1:
+                            hub.setRoom("room_bed");
+                            break;
+                        case 2:
+                            hub.setRoom("room_kitchen");
+                            break;
+                    }
+                    mPresenter.crudHub(hub, "updateRoom");
+                    dialog.dismiss();
+                }).show();
+    }
+
 
     private void showUpdateDialog(final HubBean hub) {
         new MaterialDialog.Builder(getHoldingActivity())

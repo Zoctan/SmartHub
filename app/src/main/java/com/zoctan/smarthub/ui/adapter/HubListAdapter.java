@@ -87,7 +87,7 @@ public class HubListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             });
         }
 
-        @OnClick({R.id.Switch_hub, R.id.CardView_hub, R.id.Button_hub_edit, R.id.Button_hub_delete})
+        @OnClick({R.id.Switch_hub, R.id.CardView_hub, R.id.Button_hub_edit, R.id.Button_hub_delete, R.id.Button_hub_room})
         public void onClick(final View view) {
             if (mOnItemClickListener == null) {
                 return;
@@ -109,6 +109,9 @@ public class HubListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     break;
                 case R.id.Button_hub_edit:
                     action = "update";
+                    break;
+                case R.id.Button_hub_room:
+                    action = "updateRoom";
                     break;
                 case R.id.Button_hub_delete:
                     action = "delete";

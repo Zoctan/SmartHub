@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="room_values">
+        <item>客厅</item>
+        <item>卧室</item>
+        <item>厨房</item>
+    </string-array>
+</resources>

@@ -132,6 +132,7 @@ public class HubListPresenter extends BasePresenter {
                             view.showFailedMsg(response.getMsg());
                         } else {
                             view.showSuccessMsg(response.getMsg());
+                            listHub();
                         }
                     }
 
