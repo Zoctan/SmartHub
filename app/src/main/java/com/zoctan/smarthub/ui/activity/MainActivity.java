@@ -51,8 +51,8 @@ public class MainActivity extends BaseActivity {
     private long exitTime = 0;
     private final int HUB_LIST = 0;
     private final int USER_CENTER = 1;
-    private final int ABOUT = 2;
-    private final int FEEDBACK = 3;
+    private final int FEEDBACK = 2;
+    private final int ABOUT = 3;
     private final int DAY_NIGHT = 4;
     private final int CLEAR = 5;
     private final int EXIT = 6;
@@ -169,7 +169,13 @@ public class MainActivity extends BaseActivity {
                     clearApp();
                     break;
                 case EXIT:
-                    finish();
+                    new MaterialDialog.Builder(this)
+                            .title(R.string.nav_exit)
+                            .iconRes(R.drawable.ic_alert)
+                            .content("确定退出吗？")
+                            .negativeText(R.string.all_cancel)
+                            .positiveText(R.string.all_ensure)
+                            .onPositive((dialog, which) -> finish()).show();
                     break;
             }
             return false;

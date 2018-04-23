@@ -4,45 +4,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/AppBarLayout"
+    <RelativeLayout
+        android:id="@+id/LinearLayout_user_bg"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:background="@color/primary"
-        android:fitsSystemWindows="true">
+        android:background="@color/primary">
 
-        <GridLayout
+        <ImageView
+            android:id="@+id/ImageView_hub_room"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:columnCount="2"
-            android:orientation="horizontal"
-            android:paddingEnd="12dp"
-            android:paddingStart="12dp">
+            android:layout_height="match_parent"
+            android:alpha="0.1"
+            android:background="@drawable/user_bg"
+            android:contentDescription="@null"
+            android:scaleType="fitXY" />
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/CircleImageView_user_avatar"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_column="0"
-                android:layout_gravity="bottom|start"
-                android:src="@mipmap/ic_launcher"
-                app:civ_border_color="@color/cyan"
-                app:civ_border_width="2dp" />
-
-            <ImageView
-                android:layout_width="160dp"
-                android:layout_height="120dp"
-                android:layout_column="1"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/panda"
-                tools:ignore="ContentDescription" />
-        </GridLayout>
-    </android.support.design.widget.AppBarLayout>
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/CircleImageView_user_avatar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerHorizontal="false"
+            android:layout_centerInParent="true"
+            android:src="@mipmap/ic_launcher"
+            app:civ_border_color="@color/cyan"
+            app:civ_border_width="2dp" />
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/AppBarLayout"
+        android:layout_below="@id/LinearLayout_user_bg"
         android:layout_marginEnd="12dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="18dp"
@@ -61,7 +52,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="@color/primary" />
+            android:background="@color/grey" />
 
         <GridLayout
             android:layout_width="match_parent"
@@ -80,6 +71,7 @@
                 android:layout_rowSpan="2"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_user_name"
+                android:tint="@color/purple"
                 tools:ignore="ContentDescription" />
 
             <TextView
@@ -101,7 +93,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="@color/primary" />
+            android:background="@color/grey" />
 
         <GridLayout
             android:layout_width="match_parent"
@@ -120,6 +112,7 @@
                 android:layout_rowSpan="2"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_phone"
+                android:tint="@color/green"
                 tools:ignore="ContentDescription" />
 
             <TextView
@@ -141,7 +134,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="@color/primary" />
+            android:background="@color/grey" />
 
         <GridLayout
             android:layout_width="match_parent"
@@ -160,6 +153,7 @@
                 android:layout_rowSpan="2"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_mail"
+                android:tint="@color/orange"
                 tools:ignore="ContentDescription" />
 
             <TextView
@@ -196,7 +190,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_gravity="bottom|end"
-        app:fabBackgroundTint="@color/primary"
+        app:fabBackgroundTint="@color/amber"
         app:fabGravity="bottom_end"
         app:fabMenu="@menu/menu_user_detail"
         app:miniFabBackgroundTint="@color/white"

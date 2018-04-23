@@ -109,6 +109,9 @@ public class HubListPresenter extends BasePresenter {
             case "update":
                 observable = api.updateHub(SMART_TOKEN, hub);
                 break;
+            case "updateRoom":
+                observable = api.updateHubRoom(SMART_TOKEN, hub);
+                break;
             case "delete":
                 observable = api.deleteHub(SMART_TOKEN, hub);
                 break;

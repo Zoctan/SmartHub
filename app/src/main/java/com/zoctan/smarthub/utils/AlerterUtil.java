@@ -30,7 +30,7 @@ public class AlerterUtil {
     }
 
     public static void showDanger(final Activity activity, final String msg) {
-        show(activity, msg, R.color.danger);
+        show(activity, msg, R.color.red);
     }
 
     public static void show(final Activity activity, final String msg, final int color) {

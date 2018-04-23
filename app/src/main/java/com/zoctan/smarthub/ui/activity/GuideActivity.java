@@ -14,12 +14,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.SPUtils;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.ui.adapter.GuideViewPagerAdapter;
 import com.zoctan.smarthub.utils.AlerterUtil;
-import com.zoctan.smarthub.utils.NiftyDialog;
-import com.zoctan.smarthub.utils.NiftyDialogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -156,18 +155,21 @@ public class GuideActivity extends Activity implements OnClickListener {
     // 给用户解释要请求什么权限，为什么需要此权限
     @OnShowRationale({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
     public void showRationale(final PermissionRequest request) {
-        final NiftyDialog dialog = new NiftyDialogUtil(this)
-                .setIcon(R.drawable.ic_alert)
-                .setTitle(R.string.permission_request)
-                .setMessage(R.string.permission_need)
-                .setButton1Text(R.string.all_ensure);
-        dialog.setButton1Click(v -> {
-            dialog.dismiss();
-            request.proceed();//继续执行请求
-        }).setButton2Click(v -> {
-            dialog.dismiss();
-            request.cancel();//取消执行请求
-        }).show();
+        new MaterialDialog.Builder(this)
+                .title(R.string.permission_request)
+                .iconRes(R.drawable.ic_alert)
+                .content(R.string.permission_need)
+                .negativeText(R.string.all_cancel)
+                .positiveText(R.string.all_ensure)
+                .onPositive((dialog, which) -> {
+                    dialog.dismiss();
+                    request.proceed();//继续执行请求
+                })
+                .onNegative((dialog, which) -> {
+                    dialog.dismiss();
+                    request.cancel();//取消执行请求
+                })
+                .show();
     }
 
     // 一旦用户拒绝了

@@ -10,6 +10,6 @@
         android:title="@string/hub_detail_update_device" />
     <item
         android:id="@+id/action_reset_hub"
-        android:icon="@drawable/ic_torch_off"
+        android:icon="@drawable/ic_clear"
         android:title="@string/hub_detail_reset_hub" />
 </menu>

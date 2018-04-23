@@ -5,7 +5,6 @@ import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.TextView;
@@ -46,24 +45,14 @@ public class HubDetailSpareFragment extends BaseFragment {
     ZLoadingView zLoadingView;
     private final Handler handler = new Handler();
     private final HubDetailSparePresenter mPresenter = new HubDetailSparePresenter(this);
-    protected HubBean hubBean = new HubBean();
+    protected static HubBean hubBean;
 
-    public static HubDetailSpareFragment newInstance() {
+    public static HubDetailSpareFragment newInstance(final HubBean hub) {
         final Bundle args = new Bundle();
         final HubDetailSpareFragment fragment = new HubDetailSpareFragment();
         fragment.setArguments(args);
+        hubBean = hub;
         return fragment;
-    }
-
-    @Override
-    public void onCreate(@Nullable final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            hubBean.setName(getArguments().getString("hub_name"));
-            hubBean.setOnenet_id(getArguments().getString("hub_onenet_id"));
-            hubBean.setIs_electric(getArguments().getBoolean("hub_is_electric"));
-            hubBean.setConnected(getArguments().getBoolean("hub_connected"));
-        }
     }
 
     @Override
@@ -199,7 +188,7 @@ public class HubDetailSpareFragment extends BaseFragment {
 
             if (Utils.getSDKInt() >= 18) {
                 // 填充背景只支持SDK18以上
-                @SuppressWarnings("ConstantConditions") final Drawable drawable = ContextCompat.getDrawable(getContext(), R.color.danger);
+                @SuppressWarnings("ConstantConditions") final Drawable drawable = ContextCompat.getDrawable(getContext(), R.color.red);
                 lineDataSet.setFillDrawable(drawable);//设置范围背景填充
                 lineDataSet.setFillColor(Color.YELLOW);
             } else {

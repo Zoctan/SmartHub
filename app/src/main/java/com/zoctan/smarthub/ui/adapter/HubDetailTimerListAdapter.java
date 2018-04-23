@@ -10,9 +10,7 @@ import android.widget.TextView;
 import com.nightonke.jellytogglebutton.JellyToggleButton;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.model.bean.smart.TimerBean;
-import com.zoctan.smarthub.ui.custom.PopupList;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -42,18 +40,6 @@ public class HubDetailTimerListAdapter extends RecyclerView.Adapter<RecyclerView
             if (timer == null) {
                 return;
             }
-
-            final List<String> popupMenuItemList = new ArrayList<>();
-            popupMenuItemList.add("删除");
-            final PopupList popupList = new PopupList(holder.itemView.getContext());
-            popupList.setIndicatorSize(30, 40);
-            popupList.bind(holder.itemView, popupMenuItemList, new PopupList.PopupListListener() {
-                @Override
-                public void onPopupListClick(final View contextView, final int contextPosition, final int position) {
-                    mOnItemClickListener.onItemClick("delete", holder.itemView, holder.getAdapterPosition());
-                }
-            });
-
             ((ItemViewHolder) holder).mTvTimerTime.setText(timer.getTime());
             ((ItemViewHolder) holder).mTvTimerName.setText(timer.getName());
             final String power = timer.getPower() == 0 ? "关机" : "开机";
@@ -98,7 +84,7 @@ public class HubDetailTimerListAdapter extends RecyclerView.Adapter<RecyclerView
             ButterKnife.bind(this, view);
         }
 
-        @OnClick({R.id.Switch_timer_open_close, R.id.CardView_timer})
+        @OnClick({R.id.Switch_timer_open_close, R.id.CardView_timer, R.id.Button_timer_delete})
         public void onClick(final View view) {
             if (mOnItemClickListener == null) {
                 return;
@@ -110,6 +96,9 @@ public class HubDetailTimerListAdapter extends RecyclerView.Adapter<RecyclerView
                     break;
                 case R.id.CardView_timer:
                     action = "update";
+                    break;
+                case R.id.Button_timer_delete:
+                    action = "delete";
                     break;
             }
             mOnItemClickListener.onItemClick(action, view, this.getLayoutPosition());

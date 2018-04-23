@@ -45,12 +45,12 @@
 
     <style name="HintErrorAppearance" parent="TextAppearance.AppCompat">
         <item name="android:textSize">@dimen/edit_hint_size</item>
-        <item name="android:textColor">@color/danger</item>
+        <item name="android:textColor">@color/red</item>
     </style>
 
     <style name="TextErrorAppearance" parent="TextAppearance.AppCompat">
         <item name="android:textSize">@dimen/edit_hint_size</item>
-        <item name="android:textColor">@color/danger</item>
+        <item name="android:textColor">@color/red</item>
     </style>
 
     <style name="Theme.AppCompat.DayNight.DarkActionBar" />

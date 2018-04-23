@@ -10,6 +10,7 @@ import android.text.InputType;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.EncodeUtils;
 import com.blankj.utilcode.util.FragmentUtils;
 import com.blankj.utilcode.util.LogUtils;
@@ -98,6 +99,7 @@ public class HubListFragment extends BaseFragment implements FragmentUtils.OnBac
                     final Bundle bundle = new Bundle();
                     bundle.putString("hub_name", hub.getName());
                     bundle.putString("hub_onenet_id", hub.getOnenet_id());
+                    bundle.putString("hub_room", hub.getRoom());
                     bundle.putBoolean("hub_is_electric", hub.getIs_electric());
                     bundle.putBoolean("hub_connected", hub.getConnected());
                     intent.putExtras(bundle);
@@ -153,7 +155,7 @@ public class HubListFragment extends BaseFragment implements FragmentUtils.OnBac
                 .title(R.string.all_edit)
                 .iconRes(R.drawable.ic_edit)
                 .negativeText(R.string.all_cancel)
-                .inputRangeRes(1, 12, R.color.danger)
+                .inputRangeRes(1, 12, R.color.red)
                 .inputType(InputType.TYPE_CLASS_TEXT)
                 .input(getString(R.string.hub_hint_name), hub.getName(), (dialog, input) -> {
                     String name = input.toString();
@@ -254,8 +256,12 @@ public class HubListFragment extends BaseFragment implements FragmentUtils.OnBac
     public void loadHubList(final List<HubBean> hubList) {
         mData = new ArrayList<>();
         if (hubList != null) {
+            final List<Integer> roomResId = new ArrayList<>();
+            for (final HubBean hub : hubList) {
+                roomResId.add(getResources().getIdentifier(hub.getRoom(), "drawable", AppUtils.getAppPackageName()));
+            }
             mData.addAll(hubList);
-            mAdapter.setData(mData);
+            mAdapter.setData(mData, roomResId);
         } else {
             this.showFailedMsg("添加一个「插座」吧~");
         }

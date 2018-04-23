@@ -1,7 +1,6 @@
 package com.zoctan.smarthub.ui.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -47,25 +46,14 @@ public class HubDetailTimerFragment extends BaseFragment {
     private final HubDetailTimerPresenter mPresenter = new HubDetailTimerPresenter(this);
     private HubDetailTimerListAdapter mAdapter;
     private List<TimerBean> mData;
-    protected HubBean hubBean;
+    protected static HubBean hubBean;
 
-    public static HubDetailTimerFragment newInstance() {
+    public static HubDetailTimerFragment newInstance(final HubBean hub) {
         final Bundle args = new Bundle();
         final HubDetailTimerFragment fragment = new HubDetailTimerFragment();
         fragment.setArguments(args);
+        hubBean = hub;
         return fragment;
-    }
-
-    @Override
-    public void onCreate(@Nullable final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            hubBean = new HubBean();
-            hubBean.setName(getArguments().getString("hub_name"));
-            hubBean.setOnenet_id(getArguments().getString("hub_onenet_id"));
-            hubBean.setIs_electric(getArguments().getBoolean("hub_is_electric"));
-            hubBean.setConnected(getArguments().getBoolean("hub_connected"));
-        }
     }
 
     @Override
@@ -143,6 +131,7 @@ public class HubDetailTimerFragment extends BaseFragment {
 
         final MaterialDialog dialog = new MaterialDialog.Builder(getHoldingActivity())
                 .title(R.string.hub_detail_timer_setting)
+                .iconRes(R.drawable.ic_edit)
                 .customView(R.layout.dialog_timer, true)
                 .negativeText(R.string.all_cancel)
                 .positiveText(R.string.all_ensure)

@@ -1,7 +1,6 @@
 package com.zoctan.smarthub.ui.fragment;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -32,8 +31,6 @@ import com.zoctan.smarthub.presenter.UserDetailPresenter;
 import com.zoctan.smarthub.ui.base.BaseFragment;
 import com.zoctan.smarthub.ui.custom.MyTextWatcher;
 import com.zoctan.smarthub.utils.AlerterUtil;
-import com.zoctan.smarthub.utils.NiftyDialog;
-import com.zoctan.smarthub.utils.NiftyDialogUtil;
 import com.zyao89.view.zloading.ZLoadingView;
 
 import java.io.File;
@@ -223,6 +220,7 @@ public class UserDetailFragment extends BaseFragment implements FragmentUtils.On
         final TextInputLayout[] mLayoutUserInfo = new TextInputLayout[3];
         final MaterialDialog dialog = new MaterialDialog.Builder(getHoldingActivity())
                 .title(R.string.user_detail_new_info)
+                .iconRes(R.drawable.ic_edit)
                 .customView(R.layout.dialog_new_info, true)
                 .negativeText(R.string.all_cancel)
                 .positiveText(R.string.all_update)
@@ -242,9 +240,9 @@ public class UserDetailFragment extends BaseFragment implements FragmentUtils.On
                         this.showFailedMsg("请输入邮箱");
                         return;
                     }
-                    if (mLayoutUserInfo[0].getError() != null
-                            && mLayoutUserInfo[1].getError() != null
-                            && mLayoutUserInfo[2].getError() != null) {
+                    if (mLayoutUserInfo[0].getError() == null
+                            && mLayoutUserInfo[1].getError() == null
+                            && mLayoutUserInfo[2].getError() == null) {
                         mPresenter.crudUser(new UserBean.Builder()
                                 .username(name)
                                 .phone(phone)
@@ -305,41 +303,53 @@ public class UserDetailFragment extends BaseFragment implements FragmentUtils.On
     }
 
     public void showModifyPasswordDialog() {
-        @SuppressLint("InflateParams") final View view = this.getLayoutInflater().inflate(R.layout.dialog_new_password, null);
-        final TextInputLayout mLayoutUserPassword2 = view.findViewById(R.id.TextInputLayout_user_password2);
-        final TextInputEditText[] mEtPassword = {view.findViewById(R.id.EditText_user_password), view.findViewById(R.id.EditText_user_password2)};
-        mEtPassword[1].addTextChangedListener(new MyTextWatcher() {
-            @Override
-            public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
-                if (!mEtPassword[0].getText().toString().equals(mEtPassword[1].getText().toString())) {
-                    mLayoutUserPassword2.setErrorEnabled(true);
-                    mLayoutUserPassword2.setError(getString(R.string.all_different_password));
-                } else {
-                    mLayoutUserPassword2.setError(null);
+        final TextInputEditText[] mEtPassword = new TextInputEditText[2];
+        final TextInputLayout[] mLayoutUserPassword2 = new TextInputLayout[1];
+        final MaterialDialog dialog = new MaterialDialog.Builder(getHoldingActivity())
+                .title(R.string.user_detail_new_password)
+                .iconRes(R.drawable.ic_edit)
+                .customView(R.layout.dialog_new_password, true)
+                .negativeText(R.string.all_cancel)
+                .positiveText(R.string.all_update)
+                .onPositive((_dialog, which) -> {
+                    String password1 = mEtPassword[0].getText().toString();
+                    String password2 = mEtPassword[1].getText().toString();
+                    if (StringUtils.isEmpty(password1)) {
+                        this.showFailedMsg("请输入密码");
+                        return;
+                    }
+                    if (StringUtils.isEmpty(password2)) {
+                        this.showFailedMsg("请输入密码");
+                        return;
+                    }
+                    if (mLayoutUserPassword2[0].getError() == null) {
+                        final UserBean userBean = new UserBean();
+                        userBean.setPassword(password1);
+                        mPresenter.crudUser(userBean, "updatePassword");
+                        _dialog.dismiss();
+                    }
+                })
+                .build();
+
+        final View view = dialog.getCustomView();
+        if (view != null) {
+            mLayoutUserPassword2[0] = view.findViewById(R.id.TextInputLayout_user_password2);
+            mEtPassword[0] = view.findViewById(R.id.EditText_user_password);
+            mEtPassword[1] = view.findViewById(R.id.EditText_user_password2);
+            mEtPassword[1].addTextChangedListener(new MyTextWatcher() {
+                @Override
+                public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
+                    if (!mEtPassword[0].getText().toString().equals(mEtPassword[1].getText().toString())) {
+                        mLayoutUserPassword2[0].setErrorEnabled(true);
+                        mLayoutUserPassword2[0].setError(getString(R.string.all_different_password));
+                    } else {
+                        mLayoutUserPassword2[0].setError(null);
+                    }
                 }
-            }
-        });
-        final NiftyDialog dialog = new NiftyDialogUtil()
-                .setView(view, getHoldingActivity())
-                .setIcon(R.drawable.ic_update)
-                .setTitle(R.string.user_detail_new_password)
-                .setMessage(null)
-                .setButton1Text(R.string.all_update);
-        dialog.setButton1Click(v -> {
-            String password1 = mEtPassword[0].getText().toString();
-            String password2 = mEtPassword[1].getText().toString();
-            if (StringUtils.isEmpty(password1) || StringUtils.isEmpty(password2)) {
-                this.showFailedMsg("密码不能为空");
-                return;
-            }
-            if (mLayoutUserPassword2.getError() == null) {
-                getHoldingActivity().hideSoftKeyBoard(mEtPassword[0], getContext());
-                final UserBean userBean = new UserBean();
-                userBean.setPassword(password1);
-                mPresenter.crudUser(userBean, "updatePassword");
-                dialog.dismiss();
-            }
-        }).show();
+            });
+        }
+
+        dialog.show();
     }
 
     /**

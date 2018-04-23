@@ -14,6 +14,7 @@ public class SmartUrl {
     public static final String USERS_PASSWORD = USERS + "/password";
 
     public static final String HUBS = "hubs";
+    public static final String ROOM = HUBS + "/room";
     public static final String ORDERS = HUBS + "/order";
     public static final String SPARES = HUBS + "/spares";
     public static final String TIMERS = HUBS + "/timers";

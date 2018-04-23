@@ -1,35 +1,26 @@
 package com.zoctan.smarthub.ui.adapter;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.zoctan.smarthub.model.bean.smart.HubBean;
+import java.util.List;
 
 public class HubDetailViewPagerAdapter extends FragmentPagerAdapter {
-    private final Fragment[] mList;
-    private final HubBean hub;
+    private final List<Fragment> mFragmentList;
 
-    public HubDetailViewPagerAdapter(final FragmentManager fragmentManager, final Fragment[] fragments, final HubBean hubBean) {
+    public HubDetailViewPagerAdapter(final FragmentManager fragmentManager, final List<Fragment> mFragmentList) {
         super(fragmentManager);
-        mList = fragments;
-        hub = hubBean;
+        this.mFragmentList = mFragmentList;
     }
 
     @Override
     public Fragment getItem(final int position) {
-        final Bundle bundle = new Bundle();
-        bundle.putString("hub_name", hub.getName());
-        bundle.putString("hub_onenet_id", hub.getOnenet_id());
-        bundle.putBoolean("hub_is_electric", hub.getIs_electric());
-        bundle.putBoolean("hub_connected", hub.getConnected());
-        mList[position].setArguments(bundle);
-        return mList[position];
+        return mFragmentList.get(position);
     }
 
     @Override
     public int getCount() {
-        return mList.length;
+        return mFragmentList.size();
     }
 }

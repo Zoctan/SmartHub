@@ -120,12 +120,12 @@
     <orderEntry type="library" name="Gradle: com.android.support:multidex-1.0.3" level="project" />
     <orderEntry type="library" name="Gradle: cz.msebera.android:httpclient:4.3.6@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-core-ui-27.1.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.mcxtzhang:SwipeDelMenuLayout-V1.3.0" level="project" />
     <orderEntry type="library" name="Gradle: com.mikepenz:iconics-core-3.0.3" level="project" />
     <orderEntry type="library" name="Gradle: com.github.sd6352051:NiftyDialogEffects-v1.0.3" level="project" />
     <orderEntry type="library" name="Gradle: com.mikepenz:materialdrawer-6.0.7" level="project" />
     <orderEntry type="library" name="Gradle: com.qiniu:qiniu-android-sdk:7.3.10@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.okio:okio:1.14.0@jar" level="project" />
-    <orderEntry type="library" name="Gradle: com.flyco.roundview:FlycoRoundView_Lib-1.1.4" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-fragment-27.1.0" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:design-27.1.0" level="project" />
     <orderEntry type="library" name="Gradle: android.arch.core:runtime-1.1.0" level="project" />
@@ -154,7 +154,6 @@
     <orderEntry type="library" name="Gradle: org.reactivestreams:reactive-streams:1.0.2@jar" level="project" />
     <orderEntry type="library" name="Gradle: me.zhanghai.android.materialprogressbar:library-1.4.2" level="project" />
     <orderEntry type="library" name="Gradle: com.mikepenz:fastadapter-extensions-expandable-3.2.4" level="project" />
-    <orderEntry type="library" name="Gradle: com.flyco.tablayout:FlycoTabLayout_Lib-2.1.2" level="project" />
     <orderEntry type="library" name="Gradle: com.github.jrvansuita:IconHandler-v2.0.0" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-vector-drawable-27.1.0" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-annotations:27.1.0@jar" level="project" />
@@ -173,11 +172,11 @@
     <orderEntry type="library" name="Gradle: com.android.support:exifinterface-27.1.0" level="project" />
     <orderEntry type="library" name="Gradle: android.arch.lifecycle:livedata-core-1.1.0" level="project" />
     <orderEntry type="library" name="Gradle: io.github.yavski:fab-speed-dial-1.0.6" level="project" />
-    <orderEntry type="library" name="Gradle: me.kareluo.ui:popmenu-1.1.0" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.picasso:picasso-2.71828" level="project" />
     <orderEntry type="library" name="Gradle: com.nightonke:jellytogglebutton-1.0.2" level="project" />
     <orderEntry type="library" name="Gradle: android.arch.core:common:1.1.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.scwang.smartrefresh:SmartRefreshLayout-1.0.5.1" level="project" />
+    <orderEntry type="library" name="Gradle: eu.long1:spacetablayout-1.0.4" level="project" />
     <orderEntry type="library" name="Gradle: com.gyf.barlibrary:barlibrary-2.3.0" level="project" />
   </component>
 </module>

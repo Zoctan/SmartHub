@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.view.MenuItem;
@@ -77,29 +76,18 @@ public class HubDetailNowFragment extends BaseFragment {
     private final Handler handler = new Handler();
     private final HubDetailNowPresenter mPresenter = new HubDetailNowPresenter(this);
     protected static Uri imageUri;
-    protected HubBean hubBean;
+    protected static HubBean hubBean;
     private DeviceBean device;
     private static final int CHOOSE_PICTURE = 0;
     private static final int TAKE_PICTURE = 1;
     private static final int CROP_SMALL_PICTURE = 2;
 
-    public static HubDetailNowFragment newInstance() {
+    public static HubDetailNowFragment newInstance(final HubBean hub) {
         final Bundle args = new Bundle();
         final HubDetailNowFragment fragment = new HubDetailNowFragment();
         fragment.setArguments(args);
+        hubBean = hub;
         return fragment;
-    }
-
-    @Override
-    public void onCreate(@Nullable final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            hubBean = new HubBean();
-            hubBean.setName(getArguments().getString("hub_name"));
-            hubBean.setOnenet_id(getArguments().getString("hub_onenet_id"));
-            hubBean.setIs_electric(getArguments().getBoolean("hub_is_electric"));
-            hubBean.setConnected(getArguments().getBoolean("hub_connected"));
-        }
     }
 
     @Override

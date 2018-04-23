@@ -73,6 +73,10 @@ public interface HubApi {
     Observable<SmartResponseBean> updateHub(@Header(SmartUrl.HEADER_AUTH_KEY) String token,
                                             @Body HubBean hubBean);
 
+    @PUT(SmartUrl.ROOM)
+    Observable<SmartResponseBean> updateHubRoom(@Header(SmartUrl.HEADER_AUTH_KEY) String token,
+                                                @Body HubBean hubBean);
+
     /*********** 用电器 ************/
     @GET(SmartUrl.DEVICE + "/{onenetId}")
     Observable<SmartResponseListBean> listDevice(@Header(SmartUrl.HEADER_AUTH_KEY) String token,

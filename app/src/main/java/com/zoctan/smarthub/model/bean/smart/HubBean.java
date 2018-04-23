@@ -5,6 +5,7 @@ public class HubBean {
     private String name;
     private String mac;
     private Boolean connected;
+    private String room;
     private Boolean is_electric;
     private String eigenvalue;
 
@@ -18,6 +19,7 @@ public class HubBean {
         setConnected(builder.connected);
         setIs_electric(builder.is_electric);
         setEigenvalue(builder.eigenvalue);
+        setRoom(builder.room);
     }
 
     public String getOnenet_id() {
@@ -68,12 +70,21 @@ public class HubBean {
         this.eigenvalue = eigenvalue;
     }
 
+    public String getRoom() {
+        return room;
+    }
+
+    public void setRoom(final String room) {
+        this.room = room;
+    }
+
     public static final class Builder {
         private String onenet_id;
         private String name;
         private String mac;
         private Boolean connected;
         private Boolean is_electric;
+        private String room;
         private String eigenvalue;
 
         public Builder() {
@@ -106,6 +117,11 @@ public class HubBean {
 
         public Builder eigenvalue(final String val) {
             eigenvalue = val;
+            return this;
+        }
+
+        public Builder room(final String val) {
+            room = val;
             return this;
         }
 

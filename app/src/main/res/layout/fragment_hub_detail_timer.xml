@@ -1,30 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    app:cardCornerRadius="12dp"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true">
 
     <com.scwang.smartrefresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/SmartRefreshLayout_timer_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <!--
-        <com.scwang.smartrefresh.layout.header.ClassicsHeader xmlns:app="http://schemas.android.com/apk/res-auto"
-            app:srlDragRate="0.7"
-            app:srlHeaderMaxDragRate="1.3"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content">
-            <pl.droidsonroids.gif.GifImageView
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/gif_header_repast"
-                app:layout_srlSpinnerStyle="Scale"
-                app:layout_srlBackgroundColor="@android:color/transparent"/>
-        </com.scwang.smartrefresh.layout.header.ClassicsHeader>
-        -->
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/RecyclerView_hub_detail_timer"
@@ -38,8 +25,7 @@
         android:id="@+id/ZLoadingView_hub_detail_timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="bottom|center_horizontal"
         android:visibility="gone"
         app:z_color="@color/primary"
         app:z_type="DoubleCircleBuilder" />
@@ -50,10 +36,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:layout_gravity="bottom|end"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:src="@drawable/ic_add"
         android:tint="@color/white"
         app:backgroundTint="@color/primary"
         app:fabSize="normal" />
-</RelativeLayout>
+</android.support.v7.widget.CardView>

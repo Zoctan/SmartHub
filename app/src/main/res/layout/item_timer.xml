@@ -1,106 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mcxtzhang.swipemenulib.SwipeMenuLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/CardView_timer"
     android:layout_width="match_parent"
-    android:layout_height="130dp"
-    android:layout_marginEnd="5dp"
-    android:layout_marginStart="5dp"
-    android:clickable="true"
-    android:focusable="true"
-    app:cardCornerRadius="12dp"
-    app:cardPreventCornerOverlap="false"
-    app:cardUseCompatPadding="true">
+    android:layout_height="100dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
+    app:ios="false"
+    app:swipeEnable="true">
 
-    <LinearLayout
+    <android.support.v7.widget.CardView
+        android:id="@+id/CardView_timer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:baselineAligned="false"
-        android:orientation="horizontal">
+        android:clickable="true"
+        android:focusable="true"
+        app:cardCornerRadius="12dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/accent"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/TextView_timer_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="1"
-                android:text="@string/app"
-                android:textColor="@color/white"
-                android:textSize="14sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="6"
-            android:background="@color/primary"
-            android:orientation="vertical">
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="90dp"
-                android:orientation="horizontal">
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/amber"
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/TextView_timer_time"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="12dp"
-                    android:layout_weight="6"
-                    android:text="@string/app"
-                    android:textColor="@color/white"
-                    android:textSize="42sp" />
-
-                <com.nightonke.jellytogglebutton.JellyToggleButton
-                    android:id="@+id/Switch_timer_open_close"
+                    android:id="@+id/TextView_timer_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginEnd="12dp"
-                    app:jtbDraggable="false"
-                    app:jtbDuration="500"
-                    app:jtbLeftBackgroundColor="@color/half_transparent"
-                    app:jtbLeftText="关闭"
-                    app:jtbLeftTextColor="@color/white"
-                    app:jtbLeftTextSize="12sp"
-                    app:jtbLeftThumbColor="@color/danger"
-                    app:jtbRightBackgroundColor="@color/half_transparent"
-                    app:jtbRightText="开启"
-                    app:jtbRightTextColor="@color/white"
-                    app:jtbRightTextSize="12sp"
-                    app:jtbRightThumbColor="@color/accent"
-                    app:jtbTextMarginBottom="1dp"
-                    app:jtbTextMarginCenter="9dp"
-                    app:jtbTextMarginLeft="8dp"
-                    app:jtbTextMarginRight="8dp"
-                    app:jtbTextMarginTop="1dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/TextView_timer_repeat"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="12dp"
+                    android:ems="1"
                     android:text="@string/app"
                     android:textColor="@color/white"
                     android:textSize="14sp" />
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="6"
+                android:background="@color/primary"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/TextView_timer_time"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="6"
+                        android:text="@string/app"
+                        android:textColor="@color/white"
+                        android:textSize="24sp" />
+
+                    <com.nightonke.jellytogglebutton.JellyToggleButton
+                        android:id="@+id/Switch_timer_open_close"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="12dp"
+                        app:jtbDraggable="false"
+                        app:jtbDuration="500"
+                        app:jtbLeftBackgroundColor="@color/half_transparent"
+                        app:jtbLeftText="关闭"
+                        app:jtbLeftTextColor="@color/white"
+                        app:jtbLeftTextSize="12sp"
+                        app:jtbLeftThumbColor="@color/red"
+                        app:jtbRightBackgroundColor="@color/half_transparent"
+                        app:jtbRightText="开启"
+                        app:jtbRightTextColor="@color/white"
+                        app:jtbRightTextSize="12sp"
+                        app:jtbRightThumbColor="@color/accent"
+                        app:jtbTextMarginBottom="1dp"
+                        app:jtbTextMarginCenter="9dp"
+                        app:jtbTextMarginLeft="8dp"
+                        app:jtbTextMarginRight="8dp"
+                        app:jtbTextMarginTop="1dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/TextView_timer_repeat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="12dp"
+                        android:text="@string/app"
+                        android:textColor="@color/white"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </LinearLayout>
+
         </LinearLayout>
 
-    </LinearLayout>
+    </android.support.v7.widget.CardView>
 
-</android.support.v7.widget.CardView>
+    <!-- 以下都是侧滑菜单的内容依序排列 -->
+    <Button
+        android:id="@+id/Button_timer_delete"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:background="@color/red"
+        android:text="@string/all_delete"
+        android:textColor="@android:color/white" />
+</com.mcxtzhang.swipemenulib.SwipeMenuLayout>

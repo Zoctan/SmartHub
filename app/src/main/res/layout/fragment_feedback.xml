@@ -42,7 +42,11 @@
             android:id="@+id/TextInputLayout_email"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@null">
+            android:background="@null"
+            app:errorEnabled="true"
+            app:errorTextAppearance="@style/TextErrorAppearance"
+            app:hintTextAppearance="@style/HintAppearance"
+            app:passwordToggleEnabled="true">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/EditText_email"
@@ -85,7 +89,11 @@
             android:id="@+id/TextInputLayout_phone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@null">
+            android:background="@null"
+            app:errorEnabled="true"
+            app:errorTextAppearance="@style/TextErrorAppearance"
+            app:hintTextAppearance="@style/HintAppearance"
+            app:passwordToggleEnabled="true">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/EditText_phone"
@@ -128,7 +136,11 @@
             android:id="@+id/TextInputLayout_msg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@null">
+            android:background="@null"
+            app:errorEnabled="true"
+            app:errorTextAppearance="@style/TextErrorAppearance"
+            app:hintTextAppearance="@style/HintAppearance"
+            app:passwordToggleEnabled="true">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/EditText_msg"

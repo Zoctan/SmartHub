@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mcxtzhang.swipemenulib.SwipeMenuLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="180dp"
-    android:layout_marginEnd="5dp"
-    android:layout_marginStart="5dp"
-    android:clickable="true"
-    android:focusable="true"
-    app:cardCornerRadius="12dp"
-    app:cardPreventCornerOverlap="false"
-    app:cardUseCompatPadding="true">
+    android:layout_marginEnd="12dp"
+    android:layout_marginStart="12dp"
+    app:ios="false"
+    app:swipeEnable="true">
 
-    <RelativeLayout
-        android:id="@+id/RelativeLayout_hub"
+    <android.support.v7.widget.CardView
+        android:id="@+id/CardView_hub"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/select">
+        android:clickable="true"
+        android:focusable="true"
+        app:cardCornerRadius="12dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true">
 
         <ImageView
             android:id="@+id/ImageView_hub_room"
@@ -23,14 +24,13 @@
             android:layout_height="match_parent"
             android:contentDescription="@null"
             android:scaleType="fitXY"
-            android:src="@drawable/room_bad" />
+            android:src="@drawable/arrow" />
 
         <TextView
             android:id="@+id/TextView_hub"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/ImageView_hub_room"
-            android:layout_gravity="start"
+            android:layout_gravity="bottom|start"
             android:gravity="center"
             android:paddingBottom="10dp"
             android:paddingLeft="18dp"
@@ -44,7 +44,7 @@
             android:id="@+id/Switch_hub"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@id/ImageView_hub_room"
+            android:layout_gravity="end"
             android:layout_marginEnd="18dp"
             android:layout_marginStart="18dp"
             android:layout_marginTop="18dp"
@@ -54,7 +54,7 @@
             app:jtbLeftText="断电"
             app:jtbLeftTextColor="@color/white"
             app:jtbLeftTextSize="12sp"
-            app:jtbLeftThumbColor="@color/danger"
+            app:jtbLeftThumbColor="@color/red"
             app:jtbRightBackgroundColor="@color/half_transparent"
             app:jtbRightText="通电"
             app:jtbRightTextColor="@color/white"
@@ -65,6 +65,23 @@
             app:jtbTextMarginLeft="8dp"
             app:jtbTextMarginRight="8dp"
             app:jtbTextMarginTop="1dp" />
-    </RelativeLayout>
 
-</android.support.v7.widget.CardView>
+    </android.support.v7.widget.CardView>
+
+    <!-- 以下都是侧滑菜单的内容依序排列 -->
+    <Button
+        android:id="@+id/Button_hub_edit"
+        android:layout_width="120dp"
+        android:layout_height="match_parent"
+        android:background="@color/accent"
+        android:text="@string/all_edit"
+        android:textColor="@android:color/white" />
+
+    <Button
+        android:id="@+id/Button_hub_delete"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:background="@color/red"
+        android:text="@string/all_delete"
+        android:textColor="@android:color/white" />
+</com.mcxtzhang.swipemenulib.SwipeMenuLayout>

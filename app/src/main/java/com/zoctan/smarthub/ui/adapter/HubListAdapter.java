@@ -5,15 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nightonke.jellytogglebutton.JellyToggleButton;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.model.bean.smart.HubBean;
-import com.zoctan.smarthub.ui.custom.PopupList;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -22,10 +20,12 @@ import butterknife.OnClick;
 
 public class HubListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<HubBean> mData;
+    private List<Integer> roomResId;
     private OnItemClickListener mOnItemClickListener;
 
-    public void setData(final List<HubBean> data) {
-        mData = data;
+    public void setData(final List<HubBean> data, final List<Integer> roomResId) {
+        this.mData = data;
+        this.roomResId = roomResId;
         notifyDataSetChanged();
     }
 
@@ -43,27 +43,8 @@ public class HubListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             if (hub == null) {
                 return;
             }
-
-            final List<String> popupMenuItemList = new ArrayList<>();
-            popupMenuItemList.add("更新");
-            popupMenuItemList.add("删除");
-            final PopupList popupList = new PopupList(holder.itemView.getContext());
-            popupList.setIndicatorSize(30, 40);
-            popupList.bind(holder.itemView, popupMenuItemList, new PopupList.PopupListListener() {
-                @Override
-                public void onPopupListClick(final View contextView, final int contextPosition, final int position) {
-                    switch (position) {
-                        case 0:
-                            mOnItemClickListener.onItemClick("update", holder.itemView, holder.getAdapterPosition());
-                            break;
-                        case 1:
-                            mOnItemClickListener.onItemClick("delete", holder.itemView, holder.getAdapterPosition());
-                            break;
-                    }
-                }
-            });
-
-            ((ItemViewHolder) holder).mTvHub.setText((hub.getName()));
+            ((ItemViewHolder) holder).mIvRoom.setImageResource(roomResId.get(position));
+            ((ItemViewHolder) holder).mTvHub.setText(hub.getName());
             ((ItemViewHolder) holder).mSwitchHub.setChecked(hub.getIs_electric());
         }
     }
@@ -91,10 +72,10 @@ public class HubListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.TextView_hub)
         TextView mTvHub;
+        @BindView(R.id.ImageView_hub_room)
+        ImageView mIvRoom;
         @BindView(R.id.Switch_hub)
         JellyToggleButton mSwitchHub;
-        @BindView(R.id.RelativeLayout_hub)
-        RelativeLayout mLayoutHub;
 
         ItemViewHolder(final View view) {
             super(view);
@@ -106,7 +87,7 @@ public class HubListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             });
         }
 
-        @OnClick({R.id.Switch_hub, R.id.TextView_hub})
+        @OnClick({R.id.Switch_hub, R.id.CardView_hub, R.id.Button_hub_edit, R.id.Button_hub_delete})
         public void onClick(final View view) {
             if (mOnItemClickListener == null) {
                 return;
@@ -123,8 +104,14 @@ public class HubListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         mSwitchHub.setChecked(false);
                     }
                     break;
-                case R.id.TextView_hub:
+                case R.id.CardView_hub:
                     action = "detail";
+                    break;
+                case R.id.Button_hub_edit:
+                    action = "update";
+                    break;
+                case R.id.Button_hub_delete:
+                    action = "delete";
                     break;
             }
             mOnItemClickListener.onItemClick(action, view, getLayoutPosition());
