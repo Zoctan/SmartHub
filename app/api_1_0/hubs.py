@@ -111,4 +111,4 @@ def hub_order():
         devices = Device.query.filter_by(hub_id=onenet_id).all()
         for device in devices:
             db.session.delete(device)
-    return Result.success('成功下达指令', send_order(onenet_id, order, status)[0])
+    return Result.success(send_order(onenet_id, order, status)[0])
