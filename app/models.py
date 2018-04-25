@@ -36,7 +36,7 @@ month.watt=24
 db.session.add(month)
 hour = models.HourSpare()
 hour.hub_id='19959358'
-hour.zero=13
+hour.zero=7
 hour.one=6
 hour.two=4
 hour.three=3
@@ -279,10 +279,10 @@ class HourSpare(db.Model):
 
     def to_list(self):
         return [
-            self.one, self.two, self.three, self.four, self.five, self.six, self.seven, self.eight,
+            self.zero, self.one, self.two, self.three, self.four, self.five, self.six, self.seven, self.eight,
             self.nine, self.ten, self.eleven, self.twelve, self.thirteen, self.fourteen, self.fifteen, self.sixteen,
             self.seventeen, self.eighteen, self.nineteen, self.twenty, self.twenty_one, self.twenty_two,
-            self.twenty_three, self.zero
+            self.twenty_three
         ]
 
     def __repr__(self):
