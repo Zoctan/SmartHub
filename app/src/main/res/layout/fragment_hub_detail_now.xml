@@ -37,7 +37,6 @@
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_hub_head"
-                android:tint="@color/white"
                 tools:ignore="ContentDescription" />
 
             <TextView
