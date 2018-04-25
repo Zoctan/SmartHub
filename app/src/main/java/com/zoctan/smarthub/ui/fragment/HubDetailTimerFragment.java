@@ -143,7 +143,7 @@ public class HubDetailTimerFragment extends BaseFragment {
                 .onPositive((_dialog, which) -> {
                     String name = mEtTimerName[0].getText().toString();
                     if (StringUtils.isEmpty(name)) {
-                        this.showFailedMsg("定时器名称不能为空");
+                        showFailedMsg("定时器名称不能为空");
                         return;
                     }
                     if (mEtTimerName[0].getError() == null) {

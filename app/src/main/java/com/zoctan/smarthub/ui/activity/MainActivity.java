@@ -109,7 +109,6 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-
     private void setDrawerLayout(final Bundle savedInstanceState) {
         // 创建抽屉
         drawer = new DrawerBuilder()

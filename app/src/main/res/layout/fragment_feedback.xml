@@ -24,7 +24,7 @@
         android:layout_height="60dp"
         android:layout_marginEnd="12dp"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -121,7 +121,6 @@
             android:layout_height="50dp"
             android:layout_marginEnd="4dp"
             android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp"
             android:src="@drawable/ic_feedback"
             android:tint="@color/blue"
             tools:ignore="ContentDescription" />
@@ -142,8 +141,8 @@
                 android:gravity="start|top"
                 android:hint="@string/feedback_content"
                 android:inputType="textMultiLine"
-                android:maxLines="5"
-                android:minLines="1"
+                android:maxLines="3"
+                android:minLines="3"
                 android:textColor="@color/primary_text"
                 android:textSize="@dimen/edit_size"
                 android:windowSoftInputMode="adjustResize" />
@@ -155,7 +154,6 @@
         android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="12dp"
         android:paddingBottom="10dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"

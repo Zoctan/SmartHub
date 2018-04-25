@@ -85,15 +85,15 @@ public class FeedbackFragment extends BaseFragment implements FragmentUtils.OnBa
         final String phone = mEtPhone.getText().toString();
         final String msg = mEtMsg.getText().toString();
         if (StringUtils.isEmpty(email) && StringUtils.isEmpty(phone)) {
-            this.showFailedMsg("请输入邮箱或手机号");
+            showFailedMsg("请输入邮箱或手机号");
             return;
         }
         if (StringUtils.isEmpty(msg)) {
-            this.showFailedMsg("请输入建议/反馈信息");
+            showFailedMsg("请输入建议/反馈信息");
             return;
         }
         if (mEtEmail.getError() != null || mEtPhone.getError() != null) {
-            this.showFailedMsg("请确保无误后再提交");
+            showFailedMsg("请确保无误后再提交");
             return;
         }
         mPresenter.feedback(new FeedbackBean(email, phone, msg));

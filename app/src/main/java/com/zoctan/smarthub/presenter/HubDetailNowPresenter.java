@@ -171,16 +171,12 @@ public class HubDetailNowPresenter extends BasePresenter {
                         if (response.getError() > 0) {
                             view.showFailedMsg(response.getMsg());
                         } else {
-                            final String result = JsonUtil.deserialize(response.getResult(), String.class);
                             switch (order.getOrder()) {
                                 case "store":
-                                    view.setHubStore(result.equals("1"));
+                                    view.setHubStore(response.getMsg().equals("1"));
                                     break;
                                 case "match":
-                                    view.setHubMatch(Integer.parseInt(result) != 0);
-                                    break;
-                                default:
-                                    view.showSuccessMsg(response.getMsg());
+                                    view.setHubMatch(Integer.parseInt(response.getMsg()) != 0);
                                     break;
                             }
                         }

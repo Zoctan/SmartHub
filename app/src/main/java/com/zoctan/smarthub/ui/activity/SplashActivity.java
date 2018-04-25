@@ -1,10 +1,10 @@
 package com.zoctan.smarthub.ui.activity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.zoctan.smarthub.R;
 
@@ -34,9 +34,7 @@ public class SplashActivity extends Activity {
     }
 
     private void toActivity(final Class cls) {
-        final Intent intent = new Intent(this, cls);
-        startActivity(intent);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        ActivityUtils.startActivity(cls, android.R.anim.fade_in, android.R.anim.fade_out);
         finish();
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }

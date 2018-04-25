@@ -30,9 +30,6 @@
     <string name="user_hint_input_mail">请输入邮箱</string>
     <string name="error_mail_format">邮箱格式不正确</string>
 
-    <string name="main_drawer_open">open</string>
-    <string name="main_drawer_close">close</string>
-
     <string name="permission_denied">权限已拒绝</string>
     <string name="permission_denied_never_ask">权限已拒绝，使用过程若出现问题，请前往「设置」打开APP的权限</string>
     <string name="permission_request">请求权限</string>
@@ -57,10 +54,6 @@
     <string name="all_max_name">名字超过最大长度</string>
 
     <string name="hub_hint_name">插座名字</string>
-    <string name="hub_is_connected">在线</string>
-    <string name="hub_not_connected">离线</string>
-    <string name="hub_is_electric">已通电</string>
-    <string name="hub_not_electric">已断电</string>
 
     <string name="hub_add">添加插座</string>
     <string name="hub_update_room">修改插座所在房间</string>

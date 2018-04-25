@@ -8,7 +8,7 @@
         android:id="@+id/TitleBar_all"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:theme="@style/AppTheme"
         app:layout_scrollFlags="scroll|enterAlways"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:theme="@style/AppTheme" />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 </android.support.design.widget.AppBarLayout>

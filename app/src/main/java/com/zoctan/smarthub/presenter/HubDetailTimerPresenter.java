@@ -91,8 +91,10 @@ public class HubDetailTimerPresenter extends BasePresenter {
                         if (response.getError() > 0) {
                             view.showFailedMsg(response.getMsg());
                         } else {
-                            final List<TimerBean> list = JsonUtil.deserialize(response.getResult(), TimerBean.class);
-                            view.loadTimerList(list);
+                            if (response.getResult() != null) {
+                                final List<TimerBean> list = JsonUtil.deserialize(response.getResult(), TimerBean.class);
+                                view.loadTimerList(list);
+                            }
                         }
                     }
 

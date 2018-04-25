@@ -30,7 +30,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="5"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    tools:ignore="NestedWeights">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -77,7 +78,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="5"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    tools:ignore="NestedWeights">
 
                     <TextView
                         android:id="@+id/TextView_hub_detail_spare_electrical_bill_tip"

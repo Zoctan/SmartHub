@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.CacheUtils;
 import com.blankj.utilcode.util.FragmentUtils;
 import com.blankj.utilcode.util.ImageUtils;
@@ -228,15 +229,23 @@ public class UserDetailFragment extends BaseFragment implements FragmentUtils.On
                     String phone = mEtUserInfo[1].getText().toString();
                     String mail = mEtUserInfo[2].getText().toString();
                     if (StringUtils.isEmpty(name)) {
-                        this.showFailedMsg("请输入用户名");
+                        showFailedMsg(R.string.user_hint_input_username);
                         return;
                     }
                     if (StringUtils.isEmpty(phone)) {
-                        this.showFailedMsg("请输入手机号");
+                        showFailedMsg(R.string.user_hint_input_phone);
                         return;
                     }
                     if (StringUtils.isEmpty(mail)) {
-                        this.showFailedMsg("请输入邮箱");
+                        showFailedMsg(R.string.user_hint_input_mail);
+                        return;
+                    }
+                    if (!RegexUtils.isMobileSimple(phone)) {
+                        showFailedMsg(R.string.error_phone_format);
+                        return;
+                    }
+                    if (!RegexUtils.isEmail(mail)) {
+                        showFailedMsg(R.string.error_mail_format);
                         return;
                     }
                     if (mEtUserInfo[0].getError() == null
@@ -313,12 +322,8 @@ public class UserDetailFragment extends BaseFragment implements FragmentUtils.On
                 .onPositive((_dialog, which) -> {
                     String password1 = mEtPassword[0].getText().toString();
                     String password2 = mEtPassword[1].getText().toString();
-                    if (StringUtils.isEmpty(password1)) {
-                        this.showFailedMsg("请输入密码");
-                        return;
-                    }
-                    if (StringUtils.isEmpty(password2)) {
-                        this.showFailedMsg("请输入密码");
+                    if (StringUtils.isEmpty(password1) || StringUtils.isEmpty(password2)) {
+                        showFailedMsg("请输入密码");
                         return;
                     }
                     if (mEtPassword[0].getError() == null) {
@@ -363,8 +368,9 @@ public class UserDetailFragment extends BaseFragment implements FragmentUtils.On
                 .getPackageManager()
                 .getLaunchIntentForPackage(getHoldingActivity().getPackageName());
         if (intent != null) {
+            getHoldingActivity().finish();
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            ActivityUtils.startActivity(intent, R.anim.anim_in, R.anim.anim_out);
         }
     }
 

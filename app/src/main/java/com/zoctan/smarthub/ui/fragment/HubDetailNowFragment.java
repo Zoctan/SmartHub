@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.ImageUtils;
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.PermissionUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.squareup.picasso.Picasso;
@@ -173,7 +172,7 @@ public class HubDetailNowFragment extends BaseFragment {
                 .onPositive((_dialog, which) -> {
                     String name = mEtDeviceName[0].getText().toString();
                     if (StringUtils.isEmpty(name)) {
-                        this.showFailedMsg("用电器名称不能为空");
+                        showFailedMsg("用电器名称不能为空");
                         return;
                     }
                     final DeviceBean deviceBean = new DeviceBean(name);
@@ -226,7 +225,7 @@ public class HubDetailNowFragment extends BaseFragment {
                 case TAKE_PICTURE:
                     // 先检查有没有相机权限
                     if (!PermissionUtils.isGranted(Manifest.permission.CAMERA)) {
-                        this.showFailedMsg("没有相机权限");
+                        showFailedMsg("没有相机权限");
                         return;
                     }
                     final Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -241,7 +240,7 @@ public class HubDetailNowFragment extends BaseFragment {
     // 裁剪图片
     public void startPhotoZoom(final Uri uri) {
         if (uri == null) {
-            this.showFailedMsg("图片路径不存在");
+            showFailedMsg("图片路径不存在");
             return;
         }
         try {
@@ -259,8 +258,7 @@ public class HubDetailNowFragment extends BaseFragment {
             intent.putExtra("return-data", true);
             startActivityForResult(intent, CROP_SMALL_PICTURE);
         } catch (final ActivityNotFoundException e) {
-            LogUtils.e(e.getMessage());
-            this.showFailedMsg("设备不支持裁剪行为");
+            showFailedMsg("设备不支持裁剪行为");
         }
     }
 

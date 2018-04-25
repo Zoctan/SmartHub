@@ -10,6 +10,7 @@ import android.text.InputType;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.EncodeUtils;
 import com.blankj.utilcode.util.FragmentUtils;
@@ -103,8 +104,8 @@ public class HubListFragment extends BaseFragment implements FragmentUtils.OnBac
                     bundle.putBoolean("hub_connected", hub.getConnected());
                     intent.putExtras(bundle);
                     intent.addCategory("hub");
-                    startActivity(intent);
-                    getHoldingActivity().overridePendingTransition(android.R.anim.slide_in_left, 0);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    ActivityUtils.startActivity(intent, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                     break;
                 case "noConnected":
                     showFailedMsg("插座已离线");
@@ -192,7 +193,7 @@ public class HubListFragment extends BaseFragment implements FragmentUtils.OnBac
                 .input(getString(R.string.hub_hint_name), hub.getName(), (dialog, input) -> {
                     String name = input.toString();
                     if (StringUtils.isEmpty(name)) {
-                        this.showFailedMsg("请输入插座名称");
+                        showFailedMsg("请输入插座名称");
                         return;
                     }
                     HubBean hubBean = new HubBean();
@@ -221,7 +222,7 @@ public class HubListFragment extends BaseFragment implements FragmentUtils.OnBac
     public void openScanner() {
         // 先检查有没有相机权限
         if (!PermissionUtils.isGranted(Manifest.permission.CAMERA)) {
-            this.showFailedMsg("没有相机权限");
+            showFailedMsg("没有相机权限");
             return;
         }
         final IntentIntegrator integrator = IntentIntegrator.forSupportFragment(this);
@@ -277,7 +278,7 @@ public class HubListFragment extends BaseFragment implements FragmentUtils.OnBac
                     isValidateQR = false;
                 }
                 if (!isValidateQR) {
-                    this.showFailedMsg("请扫描正确的插座二维码哦~");
+                    showFailedMsg("请扫描正确的插座二维码哦~");
                 }
             }
         } else {
@@ -294,8 +295,6 @@ public class HubListFragment extends BaseFragment implements FragmentUtils.OnBac
             }
             mData.addAll(hubList);
             mAdapter.setData(mData, roomResId);
-        } else {
-            this.showFailedMsg("添加一个「插座」吧~");
         }
         mAdapter.notifyDataSetChanged();
     }
