@@ -13,6 +13,7 @@ from app import db
 db.session.remove()
 db.drop_all()
 db.create_all()
+
 user = models.User()
 user.avatar='http://smarthub.txdna.cn/test.png'
 user.phone='1234567890'
@@ -21,6 +22,7 @@ user.username='test'
 user.password = 'test'
 db.session.add(user)
 db.session.flush()
+
 hub = models.Hub()
 hub.name='可识别智能插座测试机'
 hub.mac='2e:3a:e8:3e:7b:f8'
@@ -29,11 +31,31 @@ hub.user_id=1
 hub.onenet_id='19959358'
 db.session.add(hub)
 db.session.flush()
+
+device = models.Device()
+device.hub_id='19959358'
+device.name='USB灯'
+device.img='http://smarthub.txdna.cn/119959358.png'
+device.eigenvalue=1
+
+device = models.Device()
+device.hub_id='19959358'
+device.name='USB风扇'
+device.img='http://smarthub.txdna.cn/219959358.png'
+device.eigenvalue=2
+
+device = models.Device()
+device.hub_id='19959358'
+device.name='充电宝'
+device.img='http://smarthub.txdna.cn/319959358.png'
+device.eigenvalue=3
+
 month = models.MonthSpare()
 month.hub_id='19959358'
 month.current_month=4
 month.watt=24
 db.session.add(month)
+
 hour = models.HourSpare()
 hour.hub_id='19959358'
 hour.zero=7
@@ -62,6 +84,7 @@ hour.twenty_one=24
 hour.twenty_two=23
 hour.twenty_three=14
 db.session.add(hour)
+
 timer = models.Timer(hub_id='19959358', name='下班', power=1, repeat='每天', time='16:55', status=0)
 db.session.add(timer)
 timer = models.Timer(hub_id='19959358', name='回家', power=0, repeat='一次性', time='16:54', status=0)
