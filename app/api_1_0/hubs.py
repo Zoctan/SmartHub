@@ -17,8 +17,7 @@ def hub_connected(onenet_id):
     # 产品API
     # https://open.iot.10086.cn/product?pid=99569
     response = requests.get(cmd_url, headers=onenet_header)
-    print(response.json())
-    if response.status_code == 200:
+    if response.json()['errno'] == 0:
         return response.json()['data']['online']
     else:
         return False
@@ -30,7 +29,10 @@ def hub_is_electric(onenet_id):
     url = 'http://api.heclouds.com/devices/{}/datastreams/Relay'.format(onenet_id)
     response = requests.get(url, headers=onenet_header)
     # 服务器api查询的是最后一次通电时的状态，插座本身不在线的话该数据就是不对的
-    return response.json()['data']['current_value'] == 1
+    if response.json()['errno'] == 0:
+        return response.json()['data']['current_value'] == 1
+    else:
+        return False
 
 
 @decorators.route('/api/hubs', methods=['GET'])
