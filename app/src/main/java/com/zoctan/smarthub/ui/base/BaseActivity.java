@@ -1,16 +1,16 @@
 package com.zoctan.smarthub.ui.base;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.inputmethod.InputMethodManager;
 
 import com.gyf.barlibrary.ImmersionBar;
+import com.yinglan.keyboard.HideUtil;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.presenter.BasePresenter;
+import com.zoctan.smarthub.utils.AlerterUtil;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -49,6 +49,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         // 初始化view
         initView();
         setDayNightMode(false);
+        HideUtil.init(this);
     }
 
     /**
@@ -116,12 +117,20 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.finish();
     }
 
-    /**
-     * 关闭软键盘
-     */
-    public void hideSoftKeyBoard(final TextInputEditText mEditText,
-                                 final Context mContext) {
-        this.mInputMethodManager = ((InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE));
-        this.mInputMethodManager.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
+
+    public void showSuccessMsg(final int msg) {
+        AlerterUtil.showInfo(this, msg);
+    }
+
+    public void showSuccessMsg(final String msg) {
+        AlerterUtil.showInfo(this, msg);
+    }
+
+    public void showFailedMsg(final String msg) {
+        AlerterUtil.showDanger(this, msg);
+    }
+
+    public void showFailedMsg(final int msg) {
+        AlerterUtil.showDanger(this, msg);
     }
 }

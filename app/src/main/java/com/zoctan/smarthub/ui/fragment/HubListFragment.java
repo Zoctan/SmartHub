@@ -27,7 +27,6 @@ import com.zoctan.smarthub.presenter.HubListPresenter;
 import com.zoctan.smarthub.ui.activity.ScannerActivity;
 import com.zoctan.smarthub.ui.adapter.HubListAdapter;
 import com.zoctan.smarthub.ui.base.BaseFragment;
-import com.zoctan.smarthub.utils.AlerterUtil;
 import com.zyao89.view.zloading.ZLoadingView;
 
 import java.util.ArrayList;
@@ -170,6 +169,12 @@ public class HubListFragment extends BaseFragment implements FragmentUtils.OnBac
                         case 2:
                             hub.setRoom("room_kitchen");
                             break;
+                        case 3:
+                            hub.setRoom("room_book");
+                            break;
+                        case 4:
+                            hub.setRoom("room_dormitory");
+                            break;
                     }
                     mPresenter.crudHub(hub, "updateRoom");
                     dialog.dismiss();
@@ -301,14 +306,6 @@ public class HubListFragment extends BaseFragment implements FragmentUtils.OnBac
 
     public void hideLoading() {
         zLoadingView.setVisibility(View.GONE);
-    }
-
-    public void showSuccessMsg(final String msg) {
-        AlerterUtil.showInfo(getHoldingActivity(), msg);
-    }
-
-    public void showFailedMsg(final String msg) {
-        AlerterUtil.showDanger(getHoldingActivity(), msg);
     }
 
     @Override

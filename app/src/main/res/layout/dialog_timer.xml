@@ -9,7 +9,6 @@
         android:id="@+id/TextInputLayout_timer_name"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@null"
         app:counterEnabled="true"
         app:counterMaxLength="12"
         app:counterOverflowTextAppearance="@style/TextErrorAppearance"
@@ -21,12 +20,16 @@
             android:id="@+id/EditText_timer_name"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="@null"
             android:hint="@string/timer_hint_name"
             android:inputType="text"
             android:textColor="@color/primary_text"
             android:textSize="@dimen/edit_size" />
     </android.support.design.widget.TextInputLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/grey" />
 
     <TimePicker
         android:id="@+id/TimePicker_timer"
@@ -34,25 +37,28 @@
         android:layout_height="wrap_content"
         android:timePickerMode="spinner" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/grey" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <org.angmarch.views.NiceSpinner
-            android:id="@+id/NiceSpinner_timer_open_close"
+        <Spinner
+            android:id="@+id/Spinner_timer_open_close"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:arrowTint="@color/primary"
-            app:textTint="@color/primary_text" />
+            android:entries="@array/timer_open_close" />
 
-        <org.angmarch.views.NiceSpinner
-            android:id="@+id/NiceSpinner_timer_repeat"
+        <Spinner
+            android:id="@+id/Spinner_timer_repeat"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:arrowTint="@color/primary"
-            app:textTint="@color/primary_text" />
+            android:entries="@array/timer_repeat" />
     </LinearLayout>
 </LinearLayout>

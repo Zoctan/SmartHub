@@ -35,7 +35,6 @@ public class HubDetailNowPresenter extends BasePresenter {
     }
 
     public void listDatastreams(final String onenetId) {
-        view.showLoading();
         ApiManger.getInstance()
                 .getOneNetService()
                 .listDatastreams(onenetId, "I,V,Q,W")
@@ -91,9 +90,10 @@ public class HubDetailNowPresenter extends BasePresenter {
                     public void onNext(final SmartResponseListBean response) {
                         if (response.getError() > 0) {
                             view.showFailedMsg(response.getMsg());
+                            view.failedListDevice();
                         } else {
                             final List<DeviceBean> list = JsonUtil.deserialize(response.getResult(), DeviceBean.class);
-                            view.listDevice(list);
+                            view.successListDevice(list);
                         }
                     }
 

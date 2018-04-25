@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.zoctan.smarthub.presenter.BasePresenter;
+import com.zoctan.smarthub.utils.AlerterUtil;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -89,6 +90,22 @@ public abstract class BaseFragment extends Fragment {
         unbinder = ButterKnife.bind(this, contentView);
         initView(contentView, savedInstanceState);
         return contentView;
+    }
+
+    public void showSuccessMsg(final int msg) {
+        AlerterUtil.showInfo(getHoldingActivity(), msg);
+    }
+
+    public void showSuccessMsg(final String msg) {
+        AlerterUtil.showInfo(getHoldingActivity(), msg);
+    }
+
+    public void showFailedMsg(final String msg) {
+        AlerterUtil.showDanger(getHoldingActivity(), msg);
+    }
+
+    public void showFailedMsg(final int msg) {
+        AlerterUtil.showDanger(getHoldingActivity(), msg);
     }
 
     @Override

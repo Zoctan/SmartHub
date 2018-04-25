@@ -109,6 +109,7 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+
     private void setDrawerLayout(final Bundle savedInstanceState) {
         // 创建抽屉
         drawer = new DrawerBuilder()
@@ -175,7 +176,7 @@ public class MainActivity extends BaseActivity {
                             .content("确定退出吗？")
                             .negativeText(R.string.all_cancel)
                             .positiveText(R.string.all_ensure)
-                            .onPositive((dialog, which) -> finish()).show();
+                            .onPositive((dialog, which) -> ActivityUtils.finishActivity(this)).show();
                     break;
             }
             return false;

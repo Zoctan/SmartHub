@@ -60,6 +60,8 @@ public class HubDetailActivity extends BaseActivity {
                 HubDetailTimerFragment.newInstance(hubBean)
         );
         mViewPager.setAdapter(new HubDetailViewPagerAdapter(getSupportFragmentManager(), mFragmentList));
+        mViewPager.setOffscreenPageLimit(2);
+        mViewPager.setPageMargin(16);
         //we need the savedInstanceState to get the position
         mTabLayout.initialize(mViewPager, getSupportFragmentManager(), mFragmentList, savedInstanceState);
         mTabLayout.setOnClickListener(view -> mViewPager.setCurrentItem(mTabLayout.getCurrentPosition()));

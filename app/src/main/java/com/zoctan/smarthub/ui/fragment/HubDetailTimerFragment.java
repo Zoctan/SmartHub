@@ -7,6 +7,8 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -20,15 +22,10 @@ import com.zoctan.smarthub.presenter.HubDetailTimerPresenter;
 import com.zoctan.smarthub.ui.adapter.HubDetailTimerListAdapter;
 import com.zoctan.smarthub.ui.base.BaseFragment;
 import com.zoctan.smarthub.ui.custom.MyTextWatcher;
-import com.zoctan.smarthub.utils.AlerterUtil;
 import com.zyao89.view.zloading.ZLoadingView;
 
-import org.angmarch.views.NiceSpinner;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -83,7 +80,15 @@ public class HubDetailTimerFragment extends BaseFragment {
                     mPresenter.crudTimer(timer, "update");
                     break;
                 case "delete":
-                    mPresenter.crudTimer(timer, "delete");
+                    new MaterialDialog.Builder(getHoldingActivity())
+                            .title(R.string.timer_delete)
+                            .iconRes(R.drawable.ic_alert)
+                            .negativeText(R.string.all_cancel)
+                            .positiveText(R.string.all_ensure)
+                            .onPositive((dialog, which) -> {
+                                mPresenter.crudTimer(timer, "delete");
+                                dialog.dismiss();
+                            }).show();
                     break;
             }
         }
@@ -124,8 +129,8 @@ public class HubDetailTimerFragment extends BaseFragment {
         final TextInputEditText[] mEtTimerName = new TextInputEditText[1];
         final TextInputLayout[] mLayoutTimerName = new TextInputLayout[1];
         // 下拉菜单
-        final NiceSpinner mSpinnerOpenClose;
-        final NiceSpinner mSpinnerRepeat;
+        final Spinner mSpinnerOpenClose;
+        final Spinner mSpinnerRepeat;
         // 时间选择器
         final TimePicker[] mTimePicker = new TimePicker[1];
 
@@ -141,7 +146,7 @@ public class HubDetailTimerFragment extends BaseFragment {
                         this.showFailedMsg("定时器名称不能为空");
                         return;
                     }
-                    if (mLayoutTimerName[0].getError() == null) {
+                    if (mEtTimerName[0].getError() == null) {
                         // 补零
                         final String hour1 = String.format(Locale.CHINA, "%02d", mTimePicker[0].getCurrentHour());
                         final String minute1 = String.format(Locale.CHINA, "%02d", mTimePicker[0].getCurrentMinute());
@@ -170,24 +175,36 @@ public class HubDetailTimerFragment extends BaseFragment {
                     }
                 }
             });
-            // 下拉菜单
-            mSpinnerOpenClose = view.findViewById(R.id.NiceSpinner_timer_open_close);
-            final LinkedList<String> openCloseList = new LinkedList<>(Arrays.asList("定时关机", "定时开机"));
+
             timer.setPower(timer.getPower());
-            mSpinnerOpenClose.attachDataSource(openCloseList);
-            mSpinnerOpenClose.addOnItemClickListener((adapterView, view1, i, l) -> {
-                if (openCloseList.get(i).equals("定时关机")) {
+            // 下拉菜单
+            mSpinnerOpenClose = view.findViewById(R.id.Spinner_timer_open_close);
+            mSpinnerOpenClose.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(final AdapterView<?> parent, final View view, final int pos, final long id) {
+                    timer.setPower(pos);
+                }
+
+                @Override
+                public void onNothingSelected(final AdapterView<?> parent) {
                     timer.setPower(0);
-                } else {
-                    timer.setPower(1);
                 }
             });
 
-            final LinkedList<String> repeatList = new LinkedList<>(Arrays.asList("每天", "每周1-5", "一次性"));
             timer.setRepeat(timer.getRepeat());
-            mSpinnerRepeat = view.findViewById(R.id.NiceSpinner_timer_repeat);
-            mSpinnerRepeat.attachDataSource(repeatList);
-            mSpinnerRepeat.addOnItemClickListener((adapterView, v, i, l) -> timer.setRepeat(repeatList.get(i)));
+            final String[] repeat = getResources().getStringArray(R.array.timer_repeat);
+            mSpinnerRepeat = view.findViewById(R.id.Spinner_timer_repeat);
+            mSpinnerRepeat.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(final AdapterView<?> parent, final View view, final int pos, final long id) {
+                    timer.setRepeat(repeat[pos]);
+                }
+
+                @Override
+                public void onNothingSelected(final AdapterView<?> parent) {
+                    timer.setRepeat(repeat[0]);
+                }
+            });
 
             mTimePicker[0] = view.findViewById(R.id.TimePicker_timer);
             mTimePicker[0].setIs24HourView(true);
@@ -230,13 +247,5 @@ public class HubDetailTimerFragment extends BaseFragment {
 
     public void hideLoading() {
         zLoadingView.setVisibility(View.GONE);
-    }
-
-    public void showSuccessMsg(final String msg) {
-        AlerterUtil.showInfo(getHoldingActivity(), msg);
-    }
-
-    public void showFailedMsg(final String msg) {
-        AlerterUtil.showDanger(getHoldingActivity(), msg);
     }
 }

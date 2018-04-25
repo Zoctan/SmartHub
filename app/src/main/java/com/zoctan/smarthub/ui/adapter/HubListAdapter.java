@@ -80,11 +80,6 @@ public class HubListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ItemViewHolder(final View view) {
             super(view);
             ButterKnife.bind(this, view);
-            mSwitchHub.setOnStateChangeListener((process, state, jtb) -> {
-                // process - 当前动画进度，在[0, 1]之间
-                // state   - JTB的当前状态，其值为State.LEFT，State.LEFT_TO_RIGHT，State.RIGHT和State.RIGHT_TO_LEFT其中之一
-                // jtb     - JTB自身
-            });
         }
 
         @OnClick({R.id.Switch_hub, R.id.CardView_hub, R.id.Button_hub_edit, R.id.Button_hub_delete, R.id.Button_hub_room})
@@ -92,16 +87,14 @@ public class HubListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             if (mOnItemClickListener == null) {
                 return;
             }
-            String action = null;
-            final HubBean hub = getItem(getLayoutPosition());
+            final String action;
             switch (view.getId()) {
                 case R.id.Switch_hub:
+                    final HubBean hub = getItem(getLayoutPosition());
                     if (hub.getConnected()) {
                         action = hub.getIs_electric() ? "off" : "on";
                     } else {
                         action = "noConnected";
-                        // 插座不在线，点开关也没用
-                        mSwitchHub.setChecked(false);
                     }
                     break;
                 case R.id.CardView_hub:
@@ -116,6 +109,8 @@ public class HubListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 case R.id.Button_hub_delete:
                     action = "delete";
                     break;
+                default:
+                    return;
             }
             mOnItemClickListener.onItemClick(action, view, getLayoutPosition());
         }

@@ -30,7 +30,6 @@ import com.zoctan.smarthub.presenter.BasePresenter;
 import com.zoctan.smarthub.presenter.UserDetailPresenter;
 import com.zoctan.smarthub.ui.base.BaseFragment;
 import com.zoctan.smarthub.ui.custom.MyTextWatcher;
-import com.zoctan.smarthub.utils.AlerterUtil;
 import com.zyao89.view.zloading.ZLoadingView;
 
 import java.io.File;
@@ -240,9 +239,9 @@ public class UserDetailFragment extends BaseFragment implements FragmentUtils.On
                         this.showFailedMsg("请输入邮箱");
                         return;
                     }
-                    if (mLayoutUserInfo[0].getError() == null
-                            && mLayoutUserInfo[1].getError() == null
-                            && mLayoutUserInfo[2].getError() == null) {
+                    if (mEtUserInfo[0].getError() == null
+                            && mEtUserInfo[1].getError() == null
+                            && mEtUserInfo[2].getError() == null) {
                         mPresenter.crudUser(new UserBean.Builder()
                                 .username(name)
                                 .phone(phone)
@@ -322,7 +321,7 @@ public class UserDetailFragment extends BaseFragment implements FragmentUtils.On
                         this.showFailedMsg("请输入密码");
                         return;
                     }
-                    if (mLayoutUserPassword2[0].getError() == null) {
+                    if (mEtPassword[0].getError() == null) {
                         final UserBean userBean = new UserBean();
                         userBean.setPassword(password1);
                         mPresenter.crudUser(userBean, "updatePassword");
@@ -375,13 +374,5 @@ public class UserDetailFragment extends BaseFragment implements FragmentUtils.On
 
     public void hideLoading() {
         zLoadingView.setVisibility(View.GONE);
-    }
-
-    public void showSuccessMsg(final String msg) {
-        AlerterUtil.showInfo(getHoldingActivity(), msg);
-    }
-
-    public void showFailedMsg(final String msg) {
-        AlerterUtil.showDanger(getHoldingActivity(), msg);
     }
 }

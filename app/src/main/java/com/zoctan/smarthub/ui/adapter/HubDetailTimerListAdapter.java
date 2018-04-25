@@ -45,7 +45,7 @@ public class HubDetailTimerListAdapter extends RecyclerView.Adapter<RecyclerView
             final String power = timer.getPower() == 0 ? "关机" : "开机";
             final String detail_time = timer.getRepeat() + " " + power;
             ((ItemViewHolder) holder).mTvTimerRepeat.setText(detail_time);
-            ((ItemViewHolder) holder).mSwitchOpenClose.setChecked(timer.getStatus() == 1);
+            ((ItemViewHolder) holder).mSwitchOpenClose.setCheckedImmediately(timer.getStatus() == 1);
         }
     }
 

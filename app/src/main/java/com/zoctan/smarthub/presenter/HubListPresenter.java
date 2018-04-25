@@ -54,6 +54,7 @@ public class HubListPresenter extends BasePresenter {
                     @Override
                     public void onError(final Throwable e) {
                         view.showFailedMsg(e.getMessage());
+                        view.showLoading();
                     }
 
                     @Override
@@ -82,13 +83,14 @@ public class HubListPresenter extends BasePresenter {
                             view.showFailedMsg(response.getMsg());
                         } else {
                             view.showSuccessMsg(response.getMsg());
-                            listHub();
                         }
+                        listHub();
                     }
 
                     @Override
                     public void onError(final Throwable e) {
                         view.showFailedMsg(e.getMessage());
+                        view.showLoading();
                     }
 
                     @Override
@@ -139,6 +141,7 @@ public class HubListPresenter extends BasePresenter {
                     @Override
                     public void onError(final Throwable e) {
                         view.showFailedMsg(e.getMessage());
+                        view.showLoading();
                     }
 
                     @Override

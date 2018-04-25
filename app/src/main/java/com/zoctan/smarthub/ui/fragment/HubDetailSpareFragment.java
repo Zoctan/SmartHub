@@ -1,6 +1,5 @@
 package com.zoctan.smarthub.ui.fragment;
 
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -18,13 +17,11 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.utils.Utils;
 import com.zoctan.smarthub.R;
 import com.zoctan.smarthub.model.bean.smart.HubBean;
 import com.zoctan.smarthub.presenter.BasePresenter;
 import com.zoctan.smarthub.presenter.HubDetailSparePresenter;
 import com.zoctan.smarthub.ui.base.BaseFragment;
-import com.zoctan.smarthub.utils.AlerterUtil;
 import com.zyao89.view.zloading.ZLoadingView;
 
 import java.util.ArrayList;
@@ -72,22 +69,18 @@ public class HubDetailSpareFragment extends BaseFragment {
         if (hubBean.getConnected()) {
             handler.postDelayed(runnable, 1000);
         } else {
-            setLineChart();
+            mPresenter.listSpare(hubBean.getOnenet_id());
         }
     }
 
     private final Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            setLineChart();
+            mPresenter.listSpare(hubBean.getOnenet_id());
             // 间隔5分钟
             handler.postDelayed(this, 5 * 60 * 1000);
         }
     };
-
-    private void setLineChart() {
-        mPresenter.listSpare(hubBean.getOnenet_id());
-    }
 
     private void initLineChart() {
         // 创建描述信息
@@ -115,6 +108,11 @@ public class HubDetailSpareFragment extends BaseFragment {
         mLineChart.setTouchEnabled(true);
         // 是否可以拖拽
         mLineChart.setDragEnabled(true);
+        // 保证Y轴从0开始，不然会上移一点
+        mLineChart.getAxisLeft().setAxisMinimum(0f);
+        mLineChart.getAxisRight().setAxisMinimum(0f);
+        // 是否绘制网格线
+        mLineChart.getXAxis().setDrawGridLines(false);
         // 是否可以缩放x和y轴, 默认true
         mLineChart.setScaleEnabled(false);
         // 是否可以缩放 仅x轴
@@ -164,6 +162,10 @@ public class HubDetailSpareFragment extends BaseFragment {
             lineDataSet = new LineDataSet(y, "瓦数");
             lineDataSet.setColor(R.color.primary);
             lineDataSet.setCircleColor(R.color.accent);
+            // 设置折线图填充
+            lineDataSet.setDrawFilled(true);
+            // 线模式为圆滑曲线（默认折线）
+            lineDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
             // 改变折线样式，用曲线
             // mLineDataSet.setDrawCubic(true);
             // 默认是直线
@@ -180,20 +182,13 @@ public class HubDetailSpareFragment extends BaseFragment {
             // 设置点击交点后显示高亮线宽
             lineDataSet.setHighlightLineWidth(2f);
             // 设置点击交点后显示交高亮线的颜色
-            lineDataSet.setHighLightColor(Color.RED);
+            lineDataSet.setHighLightColor(R.color.red);
             // 设置显示值的文字大小
             lineDataSet.setValueTextSize(9f);
-            // 设置禁用范围背景填充
-            lineDataSet.setDrawFilled(false);
 
-            if (Utils.getSDKInt() >= 18) {
-                // 填充背景只支持SDK18以上
-                @SuppressWarnings("ConstantConditions") final Drawable drawable = ContextCompat.getDrawable(getContext(), R.color.red);
-                lineDataSet.setFillDrawable(drawable);//设置范围背景填充
-                lineDataSet.setFillColor(Color.YELLOW);
-            } else {
-                lineDataSet.setFillColor(Color.BLACK);
-            }
+            @SuppressWarnings("ConstantConditions") final Drawable drawable = ContextCompat.getDrawable(getContext(), R.color.purple);
+            lineDataSet.setFillDrawable(drawable);//设置范围背景填充
+            lineDataSet.setFillColor(R.color.purple);
 
             // 保存LineDataSet集合
             final ArrayList<ILineDataSet> dataSets = new ArrayList<>();
@@ -237,10 +232,6 @@ public class HubDetailSpareFragment extends BaseFragment {
         super.onDestroyView();
         // 停止刷新
         handler.removeCallbacks(runnable);
-    }
-
-    public void showFailedMsg(final String msg) {
-        AlerterUtil.showDanger(getHoldingActivity(), msg);
     }
 
     private static class MyValueFormatter implements IAxisValueFormatter {

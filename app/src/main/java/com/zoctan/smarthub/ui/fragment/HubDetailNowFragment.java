@@ -35,7 +35,6 @@ import com.zoctan.smarthub.utils.AlerterUtil;
 import com.zyao89.view.zloading.ZLoadingView;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -73,14 +72,14 @@ public class HubDetailNowFragment extends BaseFragment {
     WaveLoadingView mWvP;
     @BindView(R.id.TextView_P)
     TextView mTvP;
+    private static final int CHOOSE_PICTURE = 0;
+    private static final int TAKE_PICTURE = 1;
+    private static final int CROP_SMALL_PICTURE = 2;
     private final Handler handler = new Handler();
     private final HubDetailNowPresenter mPresenter = new HubDetailNowPresenter(this);
     protected static Uri imageUri;
     protected static HubBean hubBean;
     private DeviceBean device;
-    private static final int CHOOSE_PICTURE = 0;
-    private static final int TAKE_PICTURE = 1;
-    private static final int CROP_SMALL_PICTURE = 2;
 
     public static HubDetailNowFragment newInstance(final HubBean hub) {
         final Bundle args = new Bundle();
@@ -106,54 +105,40 @@ public class HubDetailNowFragment extends BaseFragment {
         if (hubBean.getConnected()) {
             handler.postDelayed(runnableLoadHubNowList, 0);
         }
-        // 继电器已通电
-        final boolean flag;
-        if (!hubBean.getIs_electric()) {
-            flag = false;
-            final List<DeviceBean> list = Collections.singletonList(new DeviceBean(getString(R.string.msg_can_not_load_when_no_electric)));
-            listDevice(list);
-        } else {
-            flag = true;
+        // 继电器已通电查询当前用电器
+        if (hubBean.getIs_electric()) {
             mPresenter.listDevice(hubBean.getOnenet_id());
+        } else {
+            failedListDevice(R.string.msg_can_not_load_when_no_electric);
         }
         mFabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
             public boolean onMenuItemSelected(final MenuItem menuItem) {
+                // 空载不允许添加
+                if (!hubBean.getIs_electric()) {
+                    showFailedMsg(R.string.msg_do_when_no_electric);
+                    return false;
+                }
+                if (mTvAppliances.getText().equals(getString(R.string.find_device))) {
+                    showFailedMsg(R.string.find_device);
+                    return false;
+                }
+                if (mTvAppliances.getText().equals(getString(R.string.none_device))) {
+                    showFailedMsg(R.string.msg_do_when_none);
+                    return false;
+                }
                 switch (menuItem.getItemId()) {
                     case R.id.action_add_device:
-                        // 空载不允许添加
-                        // 已经识别到的也不添加
-                        if (flag) {
-                            if (!mTvAppliances.getText().equals(getString(R.string.find_device))) {
-                                if (mTvAppliances.getText().equals(getString(R.string.none_device))) {
-                                    AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_do_when_none);
-                                } else if (mTvAppliances.getText().equals(getString(R.string.msg_add_when_none))) {
-                                    addDevice();
-                                } else {
-                                    AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_update_when_error);
-                                }
-                            } else {
-                                AlerterUtil.showDanger(getHoldingActivity(), R.string.find_device);
-                            }
+                        // 已经识别到的不添加
+                        if (mTvAppliances.getText().equals(getString(R.string.msg_add_when_none))) {
+                            addDevice();
                         } else {
-                            AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_do_when_no_electric);
+                            showFailedMsg(R.string.msg_update_when_error);
                         }
                         break;
                     case R.id.action_update_device:
-                        if (flag) {
-                            if (!mTvAppliances.getText().equals(getString(R.string.find_device))) {
-                                if (mTvAppliances.getText().equals(getString(R.string.none_device))) {
-                                    AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_do_when_none);
-                                } else if (mTvAppliances.getText().equals(getString(R.string.msg_add_when_none))) {
-                                    AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_add_when_none);
-                                } else {
-                                    updateDevice();
-                                }
-                            } else {
-                                AlerterUtil.showDanger(getHoldingActivity(), R.string.find_device);
-                            }
-                        } else {
-                            AlerterUtil.showDanger(getHoldingActivity(), R.string.msg_do_when_no_electric);
+                        if (!mTvAppliances.getText().equals(getString(R.string.msg_add_when_none))) {
+                            updateDevice();
                         }
                         break;
                     case R.id.action_reset_hub:
@@ -363,16 +348,11 @@ public class HubDetailNowFragment extends BaseFragment {
                         showFailedMsg("用电器名称不能为空");
                         return;
                     }
-                    if (mTvStore.getText() != "有效") {
+                    if (mTvStore.getText() != "有效" || mTvMatch.getText() != "有效") {
                         showFailedMsg("插座没有保存到该电器特征值");
                         return;
                     }
-                    if (mTvMatch.getText() != "有效") {
-                        showFailedMsg("插座没能匹配到该电器特征值");
-                        return;
-                    }
-                    if (mLayoutDeviceName[0].getError() == null) {
-                        getHoldingActivity().hideSoftKeyBoard(mEtDeviceName[0], getContext());
+                    if (mEtDeviceName[0].getError() == null) {
                         mPresenter.crudDevice(new DeviceBean.Builder()
                                 .name(name)
                                 .eigenvalue(list)
@@ -387,8 +367,6 @@ public class HubDetailNowFragment extends BaseFragment {
         if (view != null) {
             mLayoutDeviceName[0] = view.findViewById(R.id.TextInputLayout_device_name);
             mEtDeviceName[0] = view.findViewById(R.id.EditText_device_name);
-            mEtDeviceName[0].setText(device.getName());
-            mEtDeviceName[0].setSelection(mEtDeviceName[0].getText().length());
 
             mTvStore = view.findViewById(R.id.TextView_store);
             mTvMatch = view.findViewById(R.id.TextView_match);
@@ -426,7 +404,7 @@ public class HubDetailNowFragment extends BaseFragment {
         mTvMatch.setText(flag ? R.string.is_validate : R.string.not_validate);
     }
 
-    public void listDevice(final List<DeviceBean> list) {
+    public void successListDevice(final List<DeviceBean> list) {
         final DeviceBean device = list.get(0);
         try {
             if (device.getImg() != null) {
@@ -435,34 +413,38 @@ public class HubDetailNowFragment extends BaseFragment {
                         .into(mIvAppliances);
             }
         } catch (final NullPointerException ignored) {
-
+            return;
         }
         mTvAppliances.setText(device.getName());
-        if (device.getHub_id() != null) {
-            this.device = device;
-        }
+        this.device = device;
+    }
+
+    public void failedListDevice(final int string) {
+        mTvAppliances.setText(string);
+    }
+
+    public void failedListDevice() {
+        mTvAppliances.setText(R.string.msg_add_when_none);
     }
 
     public void setData(final Map<String, Double> data) {
         for (final String id : data.keySet()) {
             switch (id) {
                 case "V":
-                    LogUtils.d(data.get(id).intValue());
-                    LogUtils.d(data.get(id).intValue() / 230 * 100);
-                    mWvV.setProgressValue(data.get(id).intValue() / 230 * 100);
-                    mTvV.setText(String.format(Locale.CHINA, "%f", data.get(id)));
+                    mWvV.setProgressValue((int) (data.get(id).intValue() / 230.0 * 100));
+                    mTvV.setText(String.format(Locale.CHINA, "%.3f", data.get(id)));
                     break;
                 case "I":
-                    mWvI.setProgressValue((int) ((data.get(id).intValue() / 0.8) * 100));
-                    mTvI.setText(String.format(Locale.CHINA, "%f", data.get(id)));
+                    mWvI.setProgressValue((int) (data.get(id).intValue() / 0.8 * 100));
+                    mTvI.setText(String.format(Locale.CHINA, "%.3f", data.get(id)));
                     break;
                 case "W":
-                    mWvP.setProgressValue(data.get(id).intValue() / 200 * 100);
-                    mTvP.setText(String.format(Locale.CHINA, "%f", data.get(id)));
+                    mWvP.setProgressValue((int) (data.get(id).intValue() / 200.0 * 100));
+                    mTvP.setText(String.format(Locale.CHINA, "%.3f", data.get(id)));
                     break;
                 case "Q":
-                    mWvQ.setProgressValue(data.get(id).intValue() * 100);
-                    mTvQ.setText(String.format(Locale.CHINA, "%f", data.get(id)));
+                    mWvQ.setProgressValue((int) (data.get(id) * 100));
+                    mTvQ.setText(String.format(Locale.CHINA, "%.3f", data.get(id)));
                     break;
             }
         }
@@ -473,7 +455,7 @@ public class HubDetailNowFragment extends BaseFragment {
     }
 
     public void hideListDeviceLoading() {
-        zLoadingView.setVisibility(View.GONE);
+        zLoadingView.setVisibility(View.INVISIBLE);
     }
 
     public void showLoading() {
@@ -482,14 +464,6 @@ public class HubDetailNowFragment extends BaseFragment {
 
     public void hideLoading() {
         AlerterUtil.hideLoading();
-    }
-
-    public void showSuccessMsg(final String msg) {
-        AlerterUtil.showInfo(getHoldingActivity(), msg);
-    }
-
-    public void showFailedMsg(final String msg) {
-        AlerterUtil.showDanger(getHoldingActivity(), msg);
     }
 
     @Override

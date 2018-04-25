@@ -47,7 +47,7 @@ public class AlerterUtil {
                 .setText(R.string.msg_loading)
                 .setIcon(defaultIcon)
                 .setBackgroundColorRes(R.color.accent)
-                .setDuration(15 * 1000)
+                .setDuration(10 * 1000)
                 .enableProgress(true)
                 .setProgressColorRes(R.color.orange)
                 .show();

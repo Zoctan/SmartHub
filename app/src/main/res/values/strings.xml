@@ -65,8 +65,7 @@
     <string name="hub_add">添加插座</string>
     <string name="hub_update_room">修改插座所在房间</string>
     <string name="hub_add_msg">确定添加插座吗？</string>
-    <string name="hub_delete">删除插座</string>
-    <string name="msg_hub_delete">确定删除插座吗？</string>
+    <string name="hub_delete">确定删除插座吗？</string>
 
     <string name="find_device">正在查询当前用电器…</string>
     <string name="none_device">空载</string>
@@ -81,6 +80,7 @@
     <string name="hub_detail_update_device">更新当前用电器</string>
     <string name="hub_detail_update_device_img">更新当前用电器图片</string>
     <string name="hub_detail_reset_hub">确定清除存储的所有用电器特征值吗？</string>
+    <string name="reset_hub">清除插座特征值</string>
     <string name="msg_hub_reset">清除</string>
     <string name="msg_do_when_no_electric">继电器已断电，请通电后再设置</string>
     <string name="msg_can_not_load_when_no_electric">继电器已断电，无法查询当前用电器</string>
@@ -92,6 +92,7 @@
     <string name="hub_detail_energy_used">日用电量</string>
     <string name="hub_detail_timer">定时</string>
     <string name="hub_detail_timer_setting">定时设置</string>
+    <string name="timer_delete">确定删除定时吗？</string>
     <string name="timer_hint_name">请输入定时器名字</string>
 
     <string name="qr_smart_hub">智能插座扫描</string>

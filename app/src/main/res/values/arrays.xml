@@ -4,5 +4,18 @@
         <item>客厅</item>
         <item>卧室</item>
         <item>厨房</item>
+        <item>书房</item>
+        <item>宿舍</item>
+    </string-array>
+
+    <string-array name="timer_open_close">
+        <item>定时关机</item>
+        <item>定时开机</item>
+    </string-array>
+
+    <string-array name="timer_repeat">
+        <item>每天</item>
+        <item>每周1–5</item>
+        <item>一次性</item>
     </string-array>
 </resources>

@@ -21,7 +21,6 @@ import com.zoctan.smarthub.model.bean.smart.UserBean;
 import com.zoctan.smarthub.presenter.BasePresenter;
 import com.zoctan.smarthub.presenter.UserLoginPresenter;
 import com.zoctan.smarthub.ui.base.BaseActivity;
-import com.zoctan.smarthub.utils.AlerterUtil;
 import com.zyao89.view.zloading.ZLoadingView;
 
 import org.json.JSONException;
@@ -138,13 +137,13 @@ public class UserLoginActivity extends BaseActivity {
         Boolean flag = false;
         if (mEtUserName.getText().length() > 0
                 && mEtPassword.getText().length() > 0
-                && mLayoutUserName.getError() == null
-                && mLayoutUserPassword.getError() == null) {
+                && mEtUserName.getError() == null
+                && mEtPassword.getError() == null) {
             flag = true;
         }
         if (mBtnLogin.getText() == getString(R.string.user_register)
                 && mEtPassword2.getText().length() == 0
-                && mLayoutUserPassword2.getError() != null) {
+                && mEtPassword2.getError() != null) {
             flag = false;
         }
         return flag;
@@ -228,8 +227,9 @@ public class UserLoginActivity extends BaseActivity {
         mGt3GeetestUtils.setDialogTouch(true);
     }
 
+    @Override
     public void showSuccessMsg(final String msg) {
-        AlerterUtil.showInfo(this, msg);
+        super.showSuccessMsg(msg);
         final Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         mGt3GeetestUtils.cancelUtils();
@@ -242,10 +242,6 @@ public class UserLoginActivity extends BaseActivity {
 
     public void hideLoading() {
         zLoadingView.setVisibility(View.GONE);
-    }
-
-    public void showFailedMsg(final String msg) {
-        AlerterUtil.showDanger(this, msg);
     }
 
     @Override

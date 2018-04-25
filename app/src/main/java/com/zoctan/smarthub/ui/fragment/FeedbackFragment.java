@@ -14,7 +14,6 @@ import com.zoctan.smarthub.presenter.BasePresenter;
 import com.zoctan.smarthub.presenter.FeedbackPresenter;
 import com.zoctan.smarthub.ui.base.BaseFragment;
 import com.zoctan.smarthub.ui.custom.MyTextWatcher;
-import com.zoctan.smarthub.utils.AlerterUtil;
 import com.zyao89.view.zloading.ZLoadingView;
 
 import butterknife.BindView;
@@ -93,7 +92,7 @@ public class FeedbackFragment extends BaseFragment implements FragmentUtils.OnBa
             this.showFailedMsg("请输入建议/反馈信息");
             return;
         }
-        if (mILayoutMail.getError() != null || mILayoutPhone.getError() != null) {
+        if (mEtEmail.getError() != null || mEtPhone.getError() != null) {
             this.showFailedMsg("请确保无误后再提交");
             return;
         }
@@ -106,14 +105,6 @@ public class FeedbackFragment extends BaseFragment implements FragmentUtils.OnBa
 
     public void hideLoading() {
         zLoadingView.setVisibility(View.GONE);
-    }
-
-    public void showSuccessMsg(final String msg) {
-        AlerterUtil.showInfo(getHoldingActivity(), msg);
-    }
-
-    public void showFailedMsg(final String msg) {
-        AlerterUtil.showDanger(getHoldingActivity(), msg);
     }
 
     @Override

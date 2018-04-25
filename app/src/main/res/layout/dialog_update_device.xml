@@ -9,7 +9,6 @@
         android:id="@+id/TextInputLayout_device_name"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@null"
         app:counterEnabled="true"
         app:counterMaxLength="12"
         app:counterOverflowTextAppearance="@style/TextErrorAppearance"
@@ -21,18 +20,21 @@
             android:id="@+id/EditText_device_name"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@null"
             android:hint="@string/hub_hint_input_device"
             android:inputType="text"
             android:textColor="@color/primary_text"
             android:textSize="@dimen/edit_size" />
     </android.support.design.widget.TextInputLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/grey" />
+
     <mehdi.sakout.fancybuttons.FancyButton
         android:id="@+id/Button_device_img"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:paddingBottom="10dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"

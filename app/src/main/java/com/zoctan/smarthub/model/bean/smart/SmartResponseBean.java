@@ -15,7 +15,6 @@ public class SmartResponseBean {
         this.msg = msg;
     }
 
-
     public JsonObject getResult() {
         return result;
     }

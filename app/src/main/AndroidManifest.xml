@@ -49,14 +49,17 @@
         <!-- 启动界面 -->
         <activity
             android:name="com.zoctan.smarthub.ui.activity.GuideActivity"
+            android:launchMode="singleInstance"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen" />
         <!-- 主界面 -->
         <activity
             android:name="com.zoctan.smarthub.ui.activity.MainActivity"
+            android:launchMode="singleInstance"
             android:theme="@style/AppTheme.NoActionBar" />
         <!-- 插座详情 -->
         <activity
             android:name="com.zoctan.smarthub.ui.activity.HubDetailActivity"
+            android:launchMode="singleInstance"
             android:theme="@style/AppTheme.NoActionBar.Translucent">
             <intent-filter>
                 <action android:name="hub_detail" />
@@ -68,6 +71,7 @@
         <!-- 用户登录 -->
         <activity
             android:name="com.zoctan.smarthub.ui.activity.UserLoginActivity"
+            android:launchMode="singleInstance"
             android:theme="@style/AppTheme.NoActionBar.Translucent">
             <intent-filter>
                 <action android:name="user_login" />
@@ -79,6 +83,7 @@
         <!-- 二维码扫描 -->
         <activity
             android:name="com.zoctan.smarthub.ui.activity.ScannerActivity"
+            android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:stateNotNeeded="true"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"

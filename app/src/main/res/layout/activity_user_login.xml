@@ -118,7 +118,6 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:layout_marginTop="5dp"
                 android:background="@color/primary" />
 
             <LinearLayout
@@ -165,7 +164,6 @@
                 android:id="@+id/View_user_register"
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:layout_marginTop="5dp"
                 android:background="@color/primary"
                 android:visibility="gone" />
 

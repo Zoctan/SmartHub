@@ -19,26 +19,25 @@ public class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         // 如果是第一次启动，则先进入功能引导页
         if (!mSPUtil.getBoolean("not_first_open")) {
-            final Intent intent = new Intent(this, GuideActivity.class);
-            startActivity(intent);
-            finish();
+            toActivity(GuideActivity.class);
             return;
         }
         // 判断是否登录, 用户登录才进行之后的操作
         if (!mSPUtil.getBoolean("login")) {
-            final Intent intent = new Intent(this, UserLoginActivity.class);
-            startActivity(intent);
-            finish();
+            toActivity(UserLoginActivity.class);
             return;
         }
         // 如果不是第一次启动app，则显示启动屏
         setContentView(R.layout.activity_splash);
-        new Handler().postDelayed(this::toMainActivity, 1500);
+        // 然后延迟1.5秒才进主界面
+        new Handler().postDelayed(() -> toActivity(MainActivity.class), 1500);
     }
 
-    private void toMainActivity() {
-        final Intent intent = new Intent(this, MainActivity.class);
+    private void toActivity(final Class cls) {
+        final Intent intent = new Intent(this, cls);
         startActivity(intent);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }
