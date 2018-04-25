@@ -32,24 +32,6 @@ hub.onenet_id='19959358'
 db.session.add(hub)
 db.session.flush()
 
-hub = models.Hub()
-hub.name='临时插座1'
-hub.mac='aa:aa:aa:aa:aa:aa'
-hub.room='room_book'
-hub.user_id=1
-hub.onenet_id='1234567'
-db.session.add(hub)
-db.session.flush()
-
-hub = models.Hub()
-hub.name='临时插座2'
-hub.mac='bb:bb:bb:bb:bb:bb'
-hub.room='room_kitchen'
-hub.user_id=1
-hub.onenet_id='7654321'
-db.session.add(hub)
-db.session.flush()
-
 device = models.Device()
 device.hub_id='19959358'
 device.name='USB灯'
@@ -107,6 +89,46 @@ timer = models.Timer(hub_id='19959358', name='下班', power=1, repeat='每天',
 db.session.add(timer)
 timer = models.Timer(hub_id='19959358', name='回家', power=0, repeat='一次性', time='16:54', status=0)
 db.session.add(timer)
+
+
+hub = models.Hub()
+hub.name='临时插座1'
+hub.mac='aa:aa:aa:aa:aa:aa'
+hub.room='room_book'
+hub.user_id=1
+hub.onenet_id='7654321'
+db.session.add(hub)
+db.session.flush()
+
+hub = models.Hub()
+hub.name='临时插座2'
+hub.mac='bb:bb:bb:bb:bb:bb'
+hub.room='room_kitchen'
+hub.user_id=1
+hub.onenet_id='8765432'
+db.session.add(hub)
+db.session.flush()
+
+month = models.MonthSpare()
+month.hub_id='7654321'
+month.current_month=4
+month.watt=0
+db.session.add(month)
+
+month = models.MonthSpare()
+month.hub_id='8765432'
+month.current_month=4
+month.watt=0
+db.session.add(month)
+
+hour = models.HourSpare()
+hour.hub_id='7654321'
+db.session.add(hour)
+
+hour = models.HourSpare()
+hour.hub_id='8765432'
+db.session.add(hour)
+
 db.session.commit()
 """
 
