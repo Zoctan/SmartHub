@@ -252,7 +252,6 @@ class HourSpare(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     hub_id = db.Column(db.Unicode(64, collation='utf8_bin'),
             db.ForeignKey('smart_hubs.onenet_id'))
-    zero = db.Column(db.Float, server_default='0.0', default='0.0')
     one = db.Column(db.Float, server_default='0.0', default='0.0')
     two = db.Column(db.Float, server_default='0.0', default='0.0')
     three = db.Column(db.Float, server_default='0.0', default='0.0')
@@ -276,15 +275,15 @@ class HourSpare(db.Model):
     twenty_one = db.Column(db.Float, server_default='0.0', default='0.0')
     twenty_two = db.Column(db.Float, server_default='0.0', default='0.0')
     twenty_three = db.Column(db.Float, server_default='0.0', default='0.0')
+    zero = db.Column(db.Float, server_default='0.0', default='0.0')
 
     def to_list(self):
-        l = [
-            self.zero, self.one, self.two, self.three, self.four, self.five, self.six, self.seven, self.eight,
+        return [
+            self.one, self.two, self.three, self.four, self.five, self.six, self.seven, self.eight,
             self.nine, self.ten, self.eleven, self.twelve, self.thirteen, self.fourteen, self.fifteen, self.sixteen,
             self.seventeen, self.eighteen, self.nineteen, self.twenty, self.twenty_one, self.twenty_two,
-            self.twenty_three
+            self.twenty_three, self.zero
         ]
-        return l
 
     def __repr__(self):
         return '<HourSpare(month_id={})>'.format(self.month_id)
