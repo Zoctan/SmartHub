@@ -32,6 +32,24 @@ hub.onenet_id='19959358'
 db.session.add(hub)
 db.session.flush()
 
+hub = models.Hub()
+hub.name='临时插座1'
+hub.mac='aa:aa:aa:aa:aa:aa'
+hub.room='room_book'
+hub.user_id=1
+hub.onenet_id='1234567'
+db.session.add(hub)
+db.session.flush()
+
+hub = models.Hub()
+hub.name='临时插座2'
+hub.mac='bb:bb:bb:bb:bb:bb'
+hub.room='room_kitchen'
+hub.user_id=1
+hub.onenet_id='7654321'
+db.session.add(hub)
+db.session.flush()
+
 device = models.Device()
 device.hub_id='19959358'
 device.name='USB灯'
