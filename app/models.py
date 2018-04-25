@@ -14,6 +14,7 @@ db.session.remove()
 db.drop_all()
 db.create_all()
 user = models.User()
+user.avatar='http://smarthub.txdna.cn/test.png'
 user.phone='1234567890'
 user.email = '123456@qq.com'
 user.username='test'
@@ -35,19 +36,35 @@ month.watt=24
 db.session.add(month)
 hour = models.HourSpare()
 hour.hub_id='19959358'
-hour.ten=6
-hour.eleven=6
-hour.twelve=3
-hour.fourteen=12
-hour.thirteen=6
-hour.fourteen=7
-hour.fifteen=8
-hour.sixteen=10
-hour.seventeen=9
+hour.zero=13
+hour.one=6
+hour.two=4
+hour.three=3
+hour.four=2
+hour.five=1
+hour.six=3
+hour.seven=5
+hour.eight=6
+hour.nine=8
+hour.ten=12
+hour.eleven=13
+hour.twelve=15
+hour.fourteen=14
+hour.thirteen=12
+hour.fourteen=11
+hour.fifteen=16
+hour.sixteen=14
+hour.seventeen=18
+hour.eighteen=21
+hour.nineteen=22
+hour.twenty=21
+hour.twenty_one=24
+hour.twenty_two=23
+hour.twenty_three=14
 db.session.add(hour)
-timer = models.Timer(hub_id='19959358', name='test', power=1, repeat='每天', time='16:55', status=0)
+timer = models.Timer(hub_id='19959358', name='下班', power=1, repeat='每天', time='16:55', status=0)
 db.session.add(timer)
-timer = models.Timer(hub_id='19959358', name='test2', power=0, repeat='一次性', time='16:54', status=0)
+timer = models.Timer(hub_id='19959358', name='回家', power=0, repeat='一次性', time='16:54', status=0)
 db.session.add(timer)
 db.session.commit()
 """
@@ -61,8 +78,8 @@ class User(db.Model):
     password_hash = db.Column(db.Unicode(
             256, collation='utf8_bin'), nullable=False)
     avatar = db.Column(db.Unicode(256, collation='utf8_bin'),
-            server_default="http://p0qgwnuel.bkt.clouddn.com/default.png",
-            default="http://p0qgwnuel.bkt.clouddn.com/default.png")
+            server_default="http://smarthub.txdna.cn/default.png",
+            default="http://smarthub.txdna.cn/default.png")
     hubs = db.relationship('Hub', backref='User',
             lazy='dynamic', cascade='all, delete-orphan')
     phone = db.Column(db.Unicode(20, collation='utf8_bin'))
