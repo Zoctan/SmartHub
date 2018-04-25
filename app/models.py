@@ -37,18 +37,21 @@ device.hub_id='19959358'
 device.name='USB灯'
 device.img='http://smarthub.txdna.cn/119959358.png'
 device.eigenvalue=1
+db.session.add(device)
 
 device = models.Device()
 device.hub_id='19959358'
 device.name='USB风扇'
 device.img='http://smarthub.txdna.cn/219959358.png'
 device.eigenvalue=2
+db.session.add(device)
 
 device = models.Device()
 device.hub_id='19959358'
 device.name='充电宝'
 device.img='http://smarthub.txdna.cn/319959358.png'
 device.eigenvalue=3
+db.session.add(device)
 
 month = models.MonthSpare()
 month.hub_id='19959358'
