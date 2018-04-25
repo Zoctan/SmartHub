@@ -17,6 +17,7 @@ def hub_connected(onenet_id):
     # 产品API
     # https://open.iot.10086.cn/product?pid=99569
     response = requests.get(cmd_url, headers=onenet_header)
+    print(response.json())
     if response.status_code == 200:
         return response.json()['data']['online']
     else:
